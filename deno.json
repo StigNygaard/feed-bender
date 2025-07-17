@@ -1,0 +1,13 @@
+{
+  "tasks": {
+    "dev": "deno --allow-net --allow-env --allow-read=./static,./canon/static,./.env --watch main.js",
+    "start": "deno --allow-net --allow-env --allow-read=./static,./canon/static,./.env main.js"
+  },
+  "deploy": {
+    "exclude": [
+      "**/node_modules"
+    ],
+    "include": [],
+    "entrypoint": "main.js"
+  }
+}

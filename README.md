@@ -2,4 +2,7 @@
 
 "Bending" news feeds.
 
-But nothing to see here yet.
+Not much to see yet. 
+
+Still working on something...
+
