@@ -9,7 +9,8 @@ let myHeaders = {
 };
 let myHeadersArr = Object.entries(myHeaders).map(([k, v]) => `${k}: ${v}`);
 
-const crPathPattern = new URLPattern({ pathname: "/canon/crfeed{/}?" });
+const crPathPattern = new URLPattern({ pathname: "/canon/crfeed.json" });
+// const crPathPattern = new URLPattern({ pathname: "/canon/crfeed{/}?" });
 // const mainStaticPathPattern = new URLPattern({ pathname: "{/*}?" });
 // const mainStaticPathPattern = new URLPattern({ pathname: "/:file?" });
 

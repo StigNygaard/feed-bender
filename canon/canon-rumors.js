@@ -135,7 +135,7 @@ export async function canonRumors(reqHeaders, info) {
             home_page_url: 'https://www.canonrumors.com/',
             description: 'This is a filtered version of the official feed from Canon Rumors. Posts in some categories are omitted',
             language: 'en-US',
-            feed_url: 'https://feed-bender.deno.dev/canon/crfeed/',
+            feed_url: 'https://feed-bender.deno.dev/canon/crfeed.json',
             authors: [
                 {
                     name: 'Canon Rumors',
