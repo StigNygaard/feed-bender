@@ -135,7 +135,7 @@ export async function canonRumors(reqHeaders, info) {
             home_page_url: 'https://www.canonrumors.com/',
             description: 'This is a filtered version of the official feed from Canon Rumors. Posts in some categories are omitted',
             language: 'en-US',
-            feed_url: 'https://www.canonrumors.com/feed/',  // NOT correct, I have modified/filtered it!...
+            feed_url: 'https://feed-bender.deno.dev/canon/crfeed/',
             authors: [
                 {
                     name: 'Canon Rumors',
@@ -150,6 +150,9 @@ export async function canonRumors(reqHeaders, info) {
         if (items) {
             items.forEach((item) => {
                 if (!unwantedCategory(item)) {
+
+                    // TODO Consider a caching strategy depending on if I want to offer multiple feed formats or just JSON Feed?
+
                     const newItem = {
                         id: item.guid?.value ?? item.link ?? 'https://www.canonrumors.com/', // TODO a random GUID!?
                         title: item.title ?? '(No title)',
@@ -192,7 +195,7 @@ export async function canonRumors(reqHeaders, info) {
         const jsonFeed = generateJsonFeed(jsonFeedData);
 
         console.log('\n *** NEW FEED: *** \n');
-        console.log(jsonFeed); // should be served as application/feed+json
+        console.log(jsonFeed);
 
         return success(200, 'OK', jsonFeed, respHeaders);
 
