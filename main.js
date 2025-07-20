@@ -28,10 +28,10 @@ async function handler(req, info) {
     const origin = urlObj.origin;
     const isLocalhost = urlObj.hostname === 'localhost';
 
-    console.log('\n *** *** *** \n');
-    console.log('urlObj: ', urlObj);
-    console.log('origin: ', origin);
-    console.log('pathname: ', pathname);
+    // console.log('\n *** *** *** \n');
+    // console.log('urlObj: ', urlObj);
+    // console.log('origin: ', origin);
+    // console.log('pathname: ', pathname);
 
     if (isLocalhost) { // Different Content-Security-Policy in header when localhost
 
@@ -49,16 +49,16 @@ async function handler(req, info) {
     if (req.method === 'GET') {
         if (crPathPattern.test(urlObj)) {
 
-            console.log('cr-feed!');
+            // console.log('cr-feed!');
 
-            const result = await canonRumors(req.headers, info);
+            const result = await canonRumors(req.headers, info, isLocalhost);
             return new Response(result.body, { headers: myHeaders, ...result.options });
 
             // return new Response(null, {status: 200, statusText: 'OK', headers: myHeaders});
 
         } else {
 
-            console.log('GET fallback looks in static folder');
+            // console.log('GET fallback looks in static folder');
 
             // Statically served
             return await serveDir(req, {

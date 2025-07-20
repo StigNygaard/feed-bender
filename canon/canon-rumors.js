@@ -116,7 +116,7 @@ function fallback(headers) {
 }
 
 
-export async function canonRumors(reqHeaders, info) {
+export async function canonRumors(reqHeaders, info, logging = false) {
     const origin = reqHeaders.get('Origin');
     const respHeaders = new Headers({ 'Content-Type': 'application/feed+json' });
     // const respHeaders = new Headers({ 'Content-Type': 'application/json' });
@@ -129,7 +129,10 @@ export async function canonRumors(reqHeaders, info) {
 
         const feed = parseRssFeed(text);
 
-        console.log(feed);
+        if (logging) {
+            console.log('\n *** Original content as json: *** \n');
+            console.log(feed);
+        }
 
         const jsonFeedData = {
             title: 'Canon Rumors (filtered)',
@@ -199,8 +202,10 @@ export async function canonRumors(reqHeaders, info) {
 
         const jsonFeed = generateJsonFeed(jsonFeedData);
 
-        console.log('\n *** NEW FEED: *** \n');
-        console.log(jsonFeed);
+        if (logging) {
+            console.log('\n *** NEW FEED: *** \n');
+            console.log(jsonFeed);
+        }
 
         return success(200, 'OK', jsonFeed, respHeaders);
 
