@@ -118,7 +118,8 @@ function fallback(headers) {
 
 export async function canonRumors(reqHeaders, info) {
     const origin = reqHeaders.get('Origin');
-    const respHeaders = new Headers({ 'Content-Type': 'application/feed+json' });
+    // const respHeaders = new Headers({ 'Content-Type': 'application/feed+json' });
+    const respHeaders = new Headers({ 'Content-Type': 'application/json' });
     if (origin && allowedForCors(origin)) {
         respHeaders.set('Access-Control-Allow-Origin', origin);
         respHeaders.set('Vary', 'Origin');
