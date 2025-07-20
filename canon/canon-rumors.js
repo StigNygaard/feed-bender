@@ -118,8 +118,8 @@ function fallback(headers) {
 
 export async function canonRumors(reqHeaders, info) {
     const origin = reqHeaders.get('Origin');
-    // const respHeaders = new Headers({ 'Content-Type': 'application/feed+json' });
-    const respHeaders = new Headers({ 'Content-Type': 'application/json' });
+    const respHeaders = new Headers({ 'Content-Type': 'application/feed+json' });
+    // const respHeaders = new Headers({ 'Content-Type': 'application/json' });
     if (origin && allowedForCors(origin)) {
         respHeaders.set('Access-Control-Allow-Origin', origin);
         respHeaders.set('Vary', 'Origin');
@@ -158,10 +158,14 @@ export async function canonRumors(reqHeaders, info) {
                         id: item.guid?.value ?? item.link ?? 'https://www.canonrumors.com/', // TODO a random GUID!?
                         title: item.title ?? '(No title)',
                         content_html: item.description ?? '<p>(No content)</p>',
-                        author: item.dc?.creator ?? 'Canon Rumors',
-                        authors: {
+                        author: {
                             name: item.dc?.creator ?? 'Canon Rumors'
                         },
+                        authors: [
+                            {
+                                name: item.dc?.creator ?? 'Canon Rumors'
+                            }
+                        ],
                         url: item.link ?? 'https://www.canonrumors.com/',
                         date_published: isRFC2822DateString(item.pubDate ?? '') ? new Date(item.pubDate) : new Date(), // from format like "Sun, 13 Jul 2025 07:17:55 +0000" - RFC 2822 Date format er bredt understøttet som constructor-value, selvom ikke officiel standard
                     };
