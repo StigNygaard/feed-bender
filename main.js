@@ -49,7 +49,7 @@ async function handler(req, info) {
     if (req.method === 'GET') {
         if (crPathPattern.test(urlObj)) {
 
-            // console.log('cr-feed!');
+            console.log(`Feed request by: ${req.headers?.get('User-Agent') ?? ''}`);
 
             const result = await canonRumors(req.headers, info, isLocalhost);
             return new Response(result.body, { headers: myHeaders, ...result.options });
