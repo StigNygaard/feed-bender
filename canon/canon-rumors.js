@@ -1,4 +1,4 @@
-import {parseRssFeed, generateJsonFeed} from "npm:feedsmith@next";
+import { parseRssFeed, generateJsonFeed } from "npm:feedsmith@next";
 
 const corsAllowHostnames = Deno.env.get('feedbender_cors_allow_hostnames')?.toLowerCase()?.split(/\s*(?:;|$)\s*/) ?? [];
 
@@ -22,7 +22,7 @@ const skipCategories = [
  * @returns {boolean}
  */
 function unwantedCategory(item) {
-    const categories = item.categories;
+    const categories= item.categories;
     let returnVal = false;
     categories?.forEach(category => {
         if (skipCategories.includes(category.name.trim().toLowerCase()))
@@ -118,7 +118,7 @@ function fallback(headers) {
 
 export async function canonRumors(reqHeaders, info, logging = false) {
     const origin = reqHeaders.get('Origin');
-    const respHeaders = new Headers({'Content-Type': 'application/feed+json'});
+    const respHeaders = new Headers({ 'Content-Type': 'application/feed+json' });
     // const respHeaders = new Headers({ 'Content-Type': 'application/json' });
     if (origin && allowedForCors(origin)) {
         respHeaders.set('Access-Control-Allow-Origin', origin);
@@ -364,22 +364,19 @@ export async function canonRumors(reqHeaders, info, logging = false) {
                 url: item.link ?? 'https://www.canonrumors.com/',
                 date_published: isRFC2822DateString(item.pubDate ?? '') ? new Date(item.pubDate) : new Date(), // from format like "Sun, 13 Jul 2025 07:17:55 +0000" - RFC 2822 Date format er bredt understøttet som constructor-value, selvom ikke officiel standard
             };
-            if (item.enclosure?.url) {
-                // For now, we assume only ONE enclosure in RSS item (https://github.com/macieklamberski/feedsmith/issues/41)
-                if (item.enclosure.type?.startsWith('image/')) {
-                    newItem.image = item.enclosure.url;
-                } else {
-                    newItem.image = 'https://www.canonrumors.com/wp-content/uploads/2022/05/logo-alt.png';
+                    if (item.enclosures?.length) {
+                        newItem.image = item.enclosures.find(enclosure => enclosure.type?.startsWith('image/'))?.url ?? 'https://www.canonrumors.com/wp-content/uploads/2022/05/logo-alt.png';
+                        newItem.attachments = [];
+                        item.enclosures.forEach(enclosure => {
+                            const attachment = {
+                                url: enclosure.url,
+                                mime_type: enclosure.type
                 }
-                newItem.attachments = [
-                    {
-                        url: item.enclosure.url,
-                        mime_type: item.enclosure.type
+                            if (enclosure.length) {
+                                attachment.size_in_bytes = enclosure.length;
                     }
-                ];
-                if (item.enclosure.length) {
-                    newItem.attachments[0].size_in_bytes = item.enclosure.length;
-                }
+                            newItem.attachments.push(attachment);
+                        });
             }
             if (item.categories?.length) {
                 newItem.tags = [];

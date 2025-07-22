@@ -49,12 +49,9 @@ async function handler(req, info) {
     if (req.method === 'GET') {
         if (crPathPattern.test(urlObj)) {
 
-            console.log(` * CR Feed request by: ${req.headers?.get('User-Agent') ?? ''}`);
+            console.log(`Feed request by: ${req.headers?.get('User-Agent') ?? ''}`);
 
             const result = await canonRumors(req.headers, info, isLocalhost);
-
-            console.log(' *** The result: ', result);
-
             return new Response(result.body, { headers: myHeaders, ...result.options });
 
             // return new Response(null, {status: 200, statusText: 'OK', headers: myHeaders});
