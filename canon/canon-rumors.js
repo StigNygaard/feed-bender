@@ -274,8 +274,7 @@ function hardcodedRSSContent() {
 
     const feed = parseRssFeed(text);
     const items = feed.items;
-    console.log('\n *** PRE-CACHED RSS ITEMS ***\n');
-    console.log(items);
+    console.log('*** USING PRE-CACHED RSS ITEMS ***');
     return items;
 }
 
@@ -285,8 +284,7 @@ async function readRSSFeed() {
     const text = await response.text();
     const feed = parseRssFeed(text);
     const items = feed.items; // ?? [];
-    console.log('\n *** NATIVE RSS ITEMS ***\n');
-    console.log(items);
+    console.log('*** /NATIVE/ RSS ITEMS WAS READ ***');
     return items;
 }
 
@@ -310,7 +308,7 @@ async function feedItems() {
     cachedItems ??= hardcodedRSSContent(); // TEMPORARY!
 
     if ((feedRequestTime.getTime() - cachedTime.getTime()) < (30 * 60 * 1000)) {
-        console.log('\n *** Just using the recently updated CACHED ITEMS ***\n');
+        console.log('*** Just using the recently updated CACHED ITEMS ***');
         return cachedItems;
     }
     const newRSSItems = await readRSSFeed();
@@ -403,8 +401,7 @@ export async function canonRumors(reqHeaders, info, logging = false) {
     const jsonFeed = generateJsonFeed(jsonFeedData);
 
     if (logging) {
-        console.log('\n *** NEW FEED: *** \n');
-        console.log(jsonFeed);
+        console.log('*** JSON FEED CREATED ***');
     }
 
     return success(200, 'OK', jsonFeed, respHeaders);
