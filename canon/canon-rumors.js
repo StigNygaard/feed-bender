@@ -1,4 +1,5 @@
 import {parseRssFeed, generateJsonFeed} from "npm:feedsmith@next";
+import * as caching from "./../util/caching.js";
 
 const corsAllowHostnames = Deno.env.get('feedbender_cors_allow_hostnames')?.toLowerCase()?.split(/\s*(?:;|$)\s*/) ?? [];
 
@@ -116,25 +117,9 @@ function fallback(headers) {
 }
 
 
-export async function canonRumors(reqHeaders, info, logging = false) {
-    const origin = reqHeaders.get('Origin');
-    const respHeaders = new Headers({ 'Content-Type': 'application/feed+json' });
-    // const respHeaders = new Headers({ 'Content-Type': 'application/json' });
-    if (origin && allowedForCors(origin)) {
-        respHeaders.set('Access-Control-Allow-Origin', origin);
-        respHeaders.set('Vary', 'Origin');
-    }
-
-
-    /* TEMP init cache! */
-    if (!localStorage.getItem("cr-cache")) {
-        const prevCache = [];
-        if (prevCache.length === 0) {
-            // localStorage.setItem("cr-cache", JSON.stringify(latestRelevantItems));
-            // const resp = await Deno.readTextFile('cr20250720.xml');
-            // const text = await resp.text();
-
-            const text = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+/* TEMP function with data to init cache */
+function hardcodedRSSContent() {
+    const text = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
 \txmlns:content="http://purl.org/rss/1.0/modules/content/"
 \txmlns:wfw="http://wellformedweb.org/CommentAPI/"
 \txmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -287,24 +272,79 @@ export async function canonRumors(reqHeaders, info, logging = false) {
 \t</channel>
 </rss>`;
 
+    const feed = parseRssFeed(text);
+    const items = feed.items;
+    console.log('\n *** PRE-CACHED RSS ITEMS ***\n');
+    console.log(items);
+    return items;
+}
 
-            const feed = parseRssFeed(text);
-            const items = feed.items;
-            console.log('\n *** PRE-CACHED ITEMS ***\n');
-            console.log(items);
+async function readRSSFeed() {
+    // TODO ERROR-handling!?
+    const response = await fetch('https://www.canonrumors.com/feed/');
+    const text = await response.text();
+    const feed = parseRssFeed(text);
+    const items = feed.items; // ?? [];
+    console.log('\n *** NATIVE RSS ITEMS ***\n');
+    console.log(items);
+    return items;
+}
 
-            localStorage.setItem("cr-cache", JSON.stringify(items));
+async function feedItems() {
+    const feedRequestTime = new Date();
+    let cachedTime = new Date('2000-01-01');
 
-            //     .then(response => response.text()).then(text => {
-            //
-            //     return parseRssFeed(text);
-            //
-            // })
+    // let cachedItems = [];
+    let cachedItems = null; // TEMPORARY!
+
+    const cached = await caching.get('cr-cache');
+    if (cached?.cachedTime) {
+        cachedTime = new Date(cached.cachedTime);
+    }
+    if (cached?.cachedItems) {
+        cachedItems = cached.cachedItems;
+    }
+
+    console.log(`*** CACHED CONTENT FROM ${cachedTime} WAS READ ***`);
+
+    cachedItems ??= hardcodedRSSContent(); // TEMPORARY!
+
+    if ((feedRequestTime.getTime() - cachedTime.getTime()) < (30 * 60 * 1000)) {
+        console.log('\n *** Just using the recently updated CACHED ITEMS ***\n');
+        return cachedItems;
+    }
+    const newRSSItems = await readRSSFeed();
+    const relevantItems = [];
+
+    if (newRSSItems?.length) {
+        newRSSItems.forEach((item) => {
+            if (!unwantedCategory(item)) {
+                relevantItems.push(item);
+            }
+        });
+    }
+
+    cachedItems.forEach((item) => {
+        if (!relevantItems.find(relevant => relevant.guid?.value === item.guid?.value)) {
+            relevantItems.push(item);
         }
+    });
+
+    await caching.set('cr-cache', {cachedTime: feedRequestTime, cachedItems: relevantItems});
+    return relevantItems;
+}
+
+export async function canonRumors(reqHeaders, info, logging = false) {
+    const origin = reqHeaders.get('Origin');
+    const respHeaders = new Headers({'Content-Type': 'application/feed+json'});
+    // const respHeaders = new Headers({ 'Content-Type': 'application/json' });
+    if (origin && allowedForCors(origin)) {
+        respHeaders.set('Access-Control-Allow-Origin', origin);
+        respHeaders.set('Vary', 'Origin');
     }
 
     const jsonFeedData = {
-        title: 'Canon Rumors (filtered)',
+        title: 'Canon Rumors essentials',
         home_page_url: 'https://www.canonrumors.com/',
         description: 'This is a filtered version of the official feed from Canon Rumors. Posts in some categories are omitted',
         language: 'en-US',
@@ -317,95 +357,58 @@ export async function canonRumors(reqHeaders, info, logging = false) {
         ],
         items: []
     };
-    const latestRelevantItems = [];
 
-    return fetch('https://www.canonrumors.com/feed/').then(response => response.text()).then(text => {
-
-        return parseRssFeed(text);
-
-    }).then(feed => {
-
-        if (logging) {
-            console.log('\n *** Original content as json: *** \n');
-            console.log(feed);
-        }
-
-        // Find the latest relevant items
-        const items = feed.items;
-        if (items?.length) {
-            items.forEach((item) => {
-                if (!unwantedCategory(item)) {
-                    latestRelevantItems.push(item);
+    const latestRelevantItems = await feedItems();
+    latestRelevantItems.forEach((item) => {
+        const newItem = {
+            id: item.guid?.value ?? item.link ?? 'https://www.canonrumors.com/', // TODO a random GUID!?
+            title: item.title ?? '(No title)',
+            content_html: item.description ?? '<p>(No content)</p>',
+            author: {
+                name: item.dc?.creator ?? 'Canon Rumors'
+            },
+            authors: [
+                {
+                    name: item.dc?.creator ?? 'Canon Rumors'
                 }
+            ],
+            url: item.link ?? 'https://www.canonrumors.com/',
+            date_published: isRFC2822DateString(item.pubDate ?? '') ? new Date(item.pubDate) : new Date(), // from format like "Sun, 13 Jul 2025 07:17:55 +0000" - RFC 2822 Date format er bredt understøttet som constructor-value, selvom ikke officiel standard
+        };
+        if (item.enclosures?.length) {
+            newItem.image = item.enclosures.find(enclosure => enclosure.type?.startsWith('image/'))?.url ?? 'https://www.canonrumors.com/wp-content/uploads/2022/05/logo-alt.png';
+            newItem.attachments = [];
+            item.enclosures.forEach(enclosure => {
+                const attachment = {
+                    url: enclosure.url,
+                    mime_type: enclosure.type
+                }
+                if (enclosure.length) {
+                    attachment.size_in_bytes = enclosure.length;
+                }
+                newItem.attachments.push(attachment);
             });
         }
-
-
-        const cached = JSON.parse(localStorage.getItem("cr-cache") ?? '[]');
-        cached.forEach((item) => {
-            if (!latestRelevantItems.find(relevant => relevant.guid?.value === item.guid?.value)) {
-                latestRelevantItems.push(item);
-            }
-        });
-
-        latestRelevantItems.forEach((item) => {
-            const newItem = {
-                id: item.guid?.value ?? item.link ?? 'https://www.canonrumors.com/', // TODO a random GUID!?
-                title: item.title ?? '(No title)',
-                content_html: item.description ?? '<p>(No content)</p>',
-                author: {
-                    name: item.dc?.creator ?? 'Canon Rumors'
-                },
-                authors: [
-                    {
-                        name: item.dc?.creator ?? 'Canon Rumors'
-                    }
-                ],
-                url: item.link ?? 'https://www.canonrumors.com/',
-                date_published: isRFC2822DateString(item.pubDate ?? '') ? new Date(item.pubDate) : new Date(), // from format like "Sun, 13 Jul 2025 07:17:55 +0000" - RFC 2822 Date format er bredt understøttet som constructor-value, selvom ikke officiel standard
-            };
-                    if (item.enclosures?.length) {
-                        newItem.image = item.enclosures.find(enclosure => enclosure.type?.startsWith('image/'))?.url ?? 'https://www.canonrumors.com/wp-content/uploads/2022/05/logo-alt.png';
-                        newItem.attachments = [];
-                        item.enclosures.forEach(enclosure => {
-                            const attachment = {
-                                url: enclosure.url,
-                                mime_type: enclosure.type
-                }
-                            if (enclosure.length) {
-                                attachment.size_in_bytes = enclosure.length;
-                    }
-                            newItem.attachments.push(attachment);
-                        });
-            }
-            if (item.categories?.length) {
-                newItem.tags = [];
-                item.categories.forEach(category => {
-                    newItem.tags.push(category.name);
-                });
-            }
-            jsonFeedData.items.push(newItem);
-
-        });
-
-        // Generate new JSON Feed:
-        const jsonFeed = generateJsonFeed(jsonFeedData);
-
-        if (logging) {
-            console.log('\n *** NEW FEED: *** \n');
-            console.log(jsonFeed);
+        if (item.categories?.length) {
+            newItem.tags = [];
+            item.categories.forEach(category => {
+                newItem.tags.push(category.name);
+            });
         }
+        jsonFeedData.items.push(newItem);
 
-        return success(200, 'OK', jsonFeed, respHeaders);
-
-        // return jsonFeed;
-
-    }).catch(error => {
-        console.log(error);
-
-        return fail(respHeaders);
-
-        // return error;
     });
+
+    // Generate new JSON Feed:
+    const jsonFeed = generateJsonFeed(jsonFeedData);
+
+    if (logging) {
+        console.log('\n *** NEW FEED: *** \n');
+        console.log(jsonFeed);
+    }
+
+    return success(200, 'OK', jsonFeed, respHeaders);
+
+    // return jsonFeed;
 
 }
