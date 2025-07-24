@@ -10,19 +10,19 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  display: flex; /* main.demo & footer */
+  display: flex; /* main & footer */
   flex-direction: column;
 }
 
 main {
-  flex: 1;
+  flex: 1 0 auto;
   padding: 1.8rem;
 }
 
 footer {
   flex-shrink: 0;
   padding: 1rem 2rem;
-  background-color: #fadcdc;
+  background-color: #fcf1c7;
 }
 
 h1 {

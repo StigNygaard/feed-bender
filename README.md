@@ -1,8 +1,7 @@
 # feed-bender
 
-"Bending" news feeds.
+Tweaking news feeds as I want them to be.
 
-Not much to see yet. 
+The first is Canon Rumors' news feed filtered down to only essential posts.
 
-Still working on something...
-
+Deno Deploy project deployed at https://feed-bender.deno.dev/.
