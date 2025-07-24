@@ -116,168 +116,6 @@ function fallback(headers) {
     // }
 }
 
-
-/* TEMP function with data to init cache */
-function hardcodedRSSContent() {
-    const text = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
-\txmlns:content="http://purl.org/rss/1.0/modules/content/"
-\txmlns:wfw="http://wellformedweb.org/CommentAPI/"
-\txmlns:dc="http://purl.org/dc/elements/1.1/"
-\txmlns:atom="http://www.w3.org/2005/Atom"
-\txmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
-\txmlns:slash="http://purl.org/rss/1.0/modules/slash/"
-\t>
-
-<channel>
-\t<title>Canon Rumors</title>
-\t<atom:link href="https://www.canonrumors.com/feed/" rel="self" type="application/rss+xml" />
-\t<link>https://www.canonrumors.com/</link>
-\t<description>Your Best Source for Canon News, Rumors and More</description>
-\t<lastBuildDate>Sun, 20 Jul 2025 13:34:49 +0000</lastBuildDate>
-\t<language>en-US</language>
-\t<sy:updatePeriod>
-\thourly\t</sy:updatePeriod>
-\t<sy:updateFrequency>
-\t1\t</sy:updateFrequency>
-\t<generator>https://wordpress.org/?v=6.8.2</generator>
-\t\t<item>
-\t\t<title>Canon Brings Cropping Guide Firmware to the EOS R8 and EOS R6 Mark II</title>
-\t\t<link>https://www.canonrumors.com/canon-brings-cropping-guide-firmware-to-the-eos-r8-and-eos-r6-mark-ii/</link>
-
-\t\t<dc:creator><![CDATA[Craig Blair]]></dc:creator>
-\t\t<pubDate>Sun, 20 Jul 2025 13:27:21 +0000</pubDate>
-\t\t\t\t<category><![CDATA[Canon EOS R]]></category>
-\t\t<category><![CDATA[EOS R6 Mark II]]></category>
-\t\t<category><![CDATA[EOS R8]]></category>
-\t\t<guid isPermaLink="false">https://www.canonrumors.com/?p=78528</guid>
-
-\t\t\t\t\t<description><![CDATA[<p>Canon USA has added support for thea cropping guide feature via a paid firmware upgrade for the EOS R6 Mark II and EOS R8. These are the first Canon full-frame cameras to support the feature. Canon introduced this firmware late last year for the EOS R50, EOS R10 and EOS R7. It has been quite [&#8230;]</p>
-<p>The post <a href="https://www.canonrumors.com/canon-brings-cropping-guide-firmware-to-the-eos-r8-and-eos-r6-mark-ii/">Canon Brings Cropping Guide Firmware to the EOS R8 and EOS R6 Mark II</a> appeared first on <a href="https://www.canonrumors.com">Canon Rumors</a>.</p>
-]]></description>
-
-
-
-\t\t<enclosure url="https://www.canonrumors.com/wp-content/uploads/2025/05/eosr62169header-2.jpg" length="359050" type="image/jpeg" />
-\t</item>
-\t\t<item>
-\t\t<title>Canon Announces the Speedlite EL-1 Version 2</title>
-\t\t<link>https://www.canonrumors.com/canon-announces-the-speedlite-el-1-version-2/</link>
-\t\t\t\t\t<comments>https://www.canonrumors.com/canon-announces-the-speedlite-el-1-version-2/#respond</comments>
-
-\t\t<dc:creator><![CDATA[Craig Blair]]></dc:creator>
-\t\t<pubDate>Thu, 17 Jul 2025 07:39:24 +0000</pubDate>
-\t\t\t\t<category><![CDATA[Canon Accessories]]></category>
-\t\t<category><![CDATA[Speedlite EL-1]]></category>
-\t\t<category><![CDATA[Speedlite EL-1v2]]></category>
-\t\t<guid isPermaLink="false">https://www.canonrumors.com/?p=78476</guid>
-
-\t\t\t\t\t<description><![CDATA[<p>Canon has officially announced the Speedlite EL-1 Version 2. The launch price in the USA is an eye-watering $1349! The new EL-1 v2 is scheduled to begin shipping in September. Canon Speedlite EL-1 Version 2 Overview Power, connectivity, and reliability, the Canon Speedlite EL-1 (Version 2) is an on-camera E-TTL / E-TTL II-compatible flash characterized [&#8230;]</p>
-<p>The post <a href="https://www.canonrumors.com/canon-announces-the-speedlite-el-1-version-2/">Canon Announces the Speedlite EL-1 Version 2</a> appeared first on <a href="https://www.canonrumors.com">Canon Rumors</a>.</p>
-]]></description>
-
-\t\t\t\t\t<wfw:commentRss>https://www.canonrumors.com/canon-announces-the-speedlite-el-1-version-2/feed/</wfw:commentRss>
-\t\t\t<slash:comments>0</slash:comments>
-
-
-\t\t<enclosure url="https://www.canonrumors.com/wp-content/uploads/2025/07/speedliteel1v2h.jpg" length="282053" type="image/jpeg" />
-\t</item>
-\t\t<item>
-\t\t<title>Canon EOS R3 Firmware v1.9.0 Now Available</title>
-\t\t<link>https://www.canonrumors.com/canon-eos-r3-firmware-v1-9-0-now-available/</link>
-\t\t\t\t\t<comments>https://www.canonrumors.com/canon-eos-r3-firmware-v1-9-0-now-available/#respond</comments>
-
-\t\t<dc:creator><![CDATA[Craig Blair]]></dc:creator>
-\t\t<pubDate>Thu, 17 Jul 2025 07:15:58 +0000</pubDate>
-\t\t\t\t<category><![CDATA[Canon EOS R]]></category>
-\t\t<category><![CDATA[EOS R3]]></category>
-\t\t<category><![CDATA[firmware]]></category>
-\t\t<guid isPermaLink="false">https://www.canonrumors.com/?p=78471</guid>
-
-\t\t\t\t\t<description><![CDATA[<p>Canon has released firmware v1.9.0 for the EOS R3, this firmware update adds a couple of new features along with various bug fixes. Canon EOS R3 v1.9.0 This firmware includes the following changes: Download firmware v1.9.0</p>
-<p>The post <a href="https://www.canonrumors.com/canon-eos-r3-firmware-v1-9-0-now-available/">Canon EOS R3 Firmware v1.9.0 Now Available</a> appeared first on <a href="https://www.canonrumors.com">Canon Rumors</a>.</p>
-]]></description>
-
-\t\t\t\t\t<wfw:commentRss>https://www.canonrumors.com/canon-eos-r3-firmware-v1-9-0-now-available/feed/</wfw:commentRss>
-\t\t\t<slash:comments>0</slash:comments>
-
-
-\t\t<enclosure url="https://www.canonrumors.com/wp-content/uploads/2025/03/eosr3colourfulheader.jpg" length="494279" type="image/jpeg" />
-\t</item>
-\t\t<item>
-\t\t<title>Canon EOS R5 Mark II Firmware v1.1.0 Now Available (Update: Firmware has been pulled)</title>
-\t\t<link>https://www.canonrumors.com/canon-eos-r5-mark-ii-firmware-v1-1-0-now-available/</link>
-\t\t\t\t\t<comments>https://www.canonrumors.com/canon-eos-r5-mark-ii-firmware-v1-1-0-now-available/#respond</comments>
-
-\t\t<dc:creator><![CDATA[Craig Blair]]></dc:creator>
-\t\t<pubDate>Thu, 17 Jul 2025 07:10:26 +0000</pubDate>
-\t\t\t\t<category><![CDATA[Canon EOS R]]></category>
-\t\t<category><![CDATA[EOS R5 Mark II]]></category>
-\t\t<category><![CDATA[firmware]]></category>
-\t\t<category><![CDATA[spotlight]]></category>
-\t\t<guid isPermaLink="false">https://www.canonrumors.com/?p=78469</guid>
-
-\t\t\t\t\t<description><![CDATA[<p>Update: In true Canon fashion, they have already pulled this firmware version. They seriously suck at software. Feedback that the firmware for the mirrorless cameras &#8220;EOS R1&#8221; and &#8220;EOS R5 Mark II&#8221; cannot be played back on the camera or PC when using a card with a capacity of over 2TB to shoot video with [&#8230;]</p>
-<p>The post <a href="https://www.canonrumors.com/canon-eos-r5-mark-ii-firmware-v1-1-0-now-available/">Canon EOS R5 Mark II Firmware v1.1.0 Now Available (Update: Firmware has been pulled)</a> appeared first on <a href="https://www.canonrumors.com">Canon Rumors</a>.</p>
-]]></description>
-
-\t\t\t\t\t<wfw:commentRss>https://www.canonrumors.com/canon-eos-r5-mark-ii-firmware-v1-1-0-now-available/feed/</wfw:commentRss>
-\t\t\t<slash:comments>0</slash:comments>
-
-
-\t\t<enclosure url="https://www.canonrumors.com/wp-content/uploads/2025/06/eosr5markiiheaderfire169.jpg" length="409130" type="image/jpeg" />
-\t</item>
-\t\t<item>
-\t\t<title>Canon EOS R1 Firmware v1.1.0 Now Available (Update: Firmware has been pulled)</title>
-\t\t<link>https://www.canonrumors.com/canon-eos-r1-firmware-v1-1-0-now-available/</link>
-\t\t\t\t\t<comments>https://www.canonrumors.com/canon-eos-r1-firmware-v1-1-0-now-available/#respond</comments>
-
-\t\t<dc:creator><![CDATA[Craig Blair]]></dc:creator>
-\t\t<pubDate>Thu, 17 Jul 2025 07:05:53 +0000</pubDate>
-\t\t\t\t<category><![CDATA[Canon EOS R]]></category>
-\t\t<category><![CDATA[EOS R1]]></category>
-\t\t<category><![CDATA[firmware]]></category>
-\t\t<category><![CDATA[spotlight]]></category>
-\t\t<guid isPermaLink="false">https://www.canonrumors.com/?p=78467</guid>
-
-\t\t\t\t\t<description><![CDATA[<p>Update: In true Canon fashion, they have already pulled this firmware version. They seriously suck at software. Feedback that the firmware for the mirrorless cameras &#8220;EOS R1&#8221; and &#8220;EOS R5 Mark II&#8221; cannot be played back on the camera or PC when using a card with a capacity of over 2TB to shoot video with [&#8230;]</p>
-<p>The post <a href="https://www.canonrumors.com/canon-eos-r1-firmware-v1-1-0-now-available/">Canon EOS R1 Firmware v1.1.0 Now Available (Update: Firmware has been pulled)</a> appeared first on <a href="https://www.canonrumors.com">Canon Rumors</a>.</p>
-]]></description>
-
-\t\t\t\t\t<wfw:commentRss>https://www.canonrumors.com/canon-eos-r1-firmware-v1-1-0-now-available/feed/</wfw:commentRss>
-\t\t\t<slash:comments>0</slash:comments>
-
-
-\t\t<enclosure url="https://www.canonrumors.com/wp-content/uploads/2025/05/eosr1japan2025-2.jpg" length="503403" type="image/jpeg" />
-\t</item>
-\t\t<item>
-\t\t<title>Canon Announces New Firmware For the EOS R1 and EOS R5 Mark II</title>
-\t\t<link>https://www.canonrumors.com/canon-announces-new-firmware-for-the-eos-r1-and-eos-r5-mark-ii/</link>
-
-\t\t<dc:creator><![CDATA[Craig Blair]]></dc:creator>
-\t\t<pubDate>Wed, 16 Jul 2025 21:41:10 +0000</pubDate>
-\t\t\t\t<category><![CDATA[Canon EOS R]]></category>
-\t\t<category><![CDATA[EOS R1]]></category>
-\t\t<category><![CDATA[EOS R5 Mark II]]></category>
-\t\t<category><![CDATA[spotlight]]></category>
-\t\t<guid isPermaLink="false">https://www.canonrumors.com/?p=78462</guid>
-
-\t\t\t\t\t<description><![CDATA[<p>Canon is going to be releasing new firmware for most of the current EOS R lineup. The big updates will come to the EOS R1 and EOS R5 Mark II. Canon EOS R1 &#38; EOS R5 Mark II C2PA Both cameras will be getting C2PA Content Authenticity, which Canon has been talking about for quite [&#8230;]</p>
-<p>The post <a href="https://www.canonrumors.com/canon-announces-new-firmware-for-the-eos-r1-and-eos-r5-mark-ii/">Canon Announces New Firmware For the EOS R1 and EOS R5 Mark II</a> appeared first on <a href="https://www.canonrumors.com">Canon Rumors</a>.</p>
-]]></description>
-
-
-
-\t\t<enclosure url="https://www.canonrumors.com/wp-content/uploads/2025/04/eosr52header169.jpg" length="415662" type="image/jpeg" />
-\t</item>
-\t</channel>
-</rss>`;
-
-    const feed = parseRssFeed(text);
-    const items = feed.items;
-    console.log('*** USING PRE-CACHED RSS ITEMS ***');
-    return items;
-}
-
 async function readRSSFeed() {
     // TODO ERROR-handling!?
     const response = await fetch('https://www.canonrumors.com/feed/');
@@ -291,10 +129,7 @@ async function readRSSFeed() {
 async function feedItems() {
     const feedRequestTime = new Date();
     let cachedTime = new Date('2000-01-01');
-
-    // let cachedItems = [];
-    let cachedItems = null; // TEMPORARY!
-
+    let cachedItems = [];
     const cached = await caching.get('cr-cache');
     if (cached?.cachedTime) {
         cachedTime = new Date(cached.cachedTime);
@@ -305,9 +140,7 @@ async function feedItems() {
 
     console.log(`*** CACHED CONTENT FROM ${cachedTime} WAS READ ***`);
 
-    cachedItems ??= hardcodedRSSContent(); // TEMPORARY!
-
-    if ((feedRequestTime.getTime() - cachedTime.getTime()) < (30 * 60 * 1000)) {
+    if (cachedItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (30 * 60 * 1000))) {
         console.log('*** Just using the recently updated CACHED ITEMS ***');
         return cachedItems;
     }
@@ -328,7 +161,8 @@ async function feedItems() {
         }
     });
 
-    await caching.set('cr-cache', {cachedTime: feedRequestTime, cachedItems: relevantItems});
+    await caching.set('cr-cache', {cachedTime: feedRequestTime, cachedItems: relevantItems.slice(0,10)});
+    console.log('*** CACHED CONTENT WAS UPDATED ***');
     return relevantItems;
 }
 
@@ -344,7 +178,7 @@ export async function canonRumors(reqHeaders, info, logging = false) {
     const jsonFeedData = {
         title: 'Canon Rumors essentials',
         home_page_url: 'https://www.canonrumors.com/',
-        description: 'This is a filtered version of the official feed from Canon Rumors. Posts in some categories are omitted',
+        description: 'This is a filtered version of the official news feed from Canon Rumors. Posts in some categories are omitted',
         language: 'en-US',
         feed_url: 'https://feed-bender.deno.dev/canon/crfeed.json',
         authors: [

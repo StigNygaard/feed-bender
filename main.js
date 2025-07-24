@@ -28,11 +28,6 @@ async function handler(req, info) {
     const origin = urlObj.origin;
     const isLocalhost = urlObj.hostname === 'localhost';
 
-    // console.log('\n *** *** *** \n');
-    // console.log('urlObj: ', urlObj);
-    // console.log('origin: ', origin);
-    // console.log('pathname: ', pathname);
-
     if (isLocalhost) { // Different Content-Security-Policy in header when localhost
 
         console.log('Modify headers for localhost use...');
@@ -49,7 +44,7 @@ async function handler(req, info) {
     if (req.method === 'GET') {
         if (crPathPattern.test(urlObj)) {
 
-            console.log(`Feed request by: ${req.headers?.get('User-Agent') ?? ''}`);
+            console.log(`*** Feed request by: ${req.headers?.get('User-Agent') ?? ''}`);
 
             const result = await canonRumors(req.headers, info, isLocalhost);
             return new Response(result.body, { headers: myHeaders, ...result.options });
