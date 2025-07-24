@@ -161,8 +161,10 @@ async function feedItems() {
         }
     });
 
-    await caching.set('cr-cache', {cachedTime: feedRequestTime, cachedItems: relevantItems.slice(0,10)});
-    console.log('*** CACHED CONTENT WAS UPDATED ***');
+    if (relevantItems.length) {
+        await caching.set('cr-cache', {cachedTime: feedRequestTime, cachedItems: relevantItems.slice(0, 10)});
+        console.log('*** CACHED CONTENT WAS UPDATED ***');
+    }
     return relevantItems;
 }
 
