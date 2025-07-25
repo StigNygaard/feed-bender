@@ -40,11 +40,12 @@ async function handler(req, info) {
         if (crPathPattern.test(urlObj)) {
 
             console.log(`*** FEED REQUEST BY: ${req.headers?.get('User-Agent') ?? ''}`);
-
             const result = await canonRumors(req.headers, info, isLocalhost);
+            console.log('*** COMPLETE JSON FEED CREATED ***');
             return new Response(result.body, { headers: myHeaders, ...result.options });
 
         } else {
+
             // Statically served...
             return await serveDir(req, {
                 urlRoot: '',
@@ -56,6 +57,7 @@ async function handler(req, info) {
                 quiet: true, // logging of errors
                 headers: myHeadersArr
             });
+
         }
     } else {
         return new Response('Not found', {

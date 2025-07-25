@@ -180,9 +180,6 @@ export async function canonRumors(reqHeaders, info, logging = false) {
 
     // Generate new JSON Feed:
     const jsonFeed = generateJsonFeed(jsonFeedData);
-    if (logging) {
-        console.log('*** COMPLETE JSON FEED CREATED ***');
-    }
     const json = JSON.stringify(jsonFeed);
     return {
         body: json,
