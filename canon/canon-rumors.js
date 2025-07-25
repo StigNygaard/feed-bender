@@ -43,86 +43,34 @@ function isRFC2822DateString(str) {
 
 
 function allowedForCors(origin) {
-    let originHostname = null;
-    try {
-        originHostname = new URL(origin).hostname.toLowerCase();
-        // Unfortunately, it is (WAS!) too early to use URL.parse() instead to avoid try/catch ( https://caniuse.com/mdn-api_url_parse_static )
-    } catch (_e) {
-        return false;
-    }
-    for (const corsAllowedHostname of corsAllowHostnames) {
-        if (
-            corsAllowedHostname.length &&
-            (originHostname === corsAllowedHostname || originHostname?.endsWith(`.${corsAllowedHostname}`))
-        ) {
-            return true;
+    let originHostname = URL.parse(origin)?.hostname?.toLowerCase();
+    if (originHostname != null) {
+        for (const corsAllowedHostname of corsAllowHostnames) {
+            if (
+                corsAllowedHostname.length &&
+                (originHostname === corsAllowedHostname || originHostname.endsWith(`.${corsAllowedHostname}`))
+            ) {
+                return true;
+            }
         }
     }
     return false;
 }
 
-function success(_status, _statusText, jsonObj, headers) {
-    const json = JSON.stringify(jsonObj);
-    // if (json !== cache.get(`OkResponse`)) { // If we used KV or other database, we would try to avoid unnecessary writes
-    //     cache.set(`OkResponse`, json);
-    // } else {
-    //     // console.log(`SKIP updating cached json - there's no change in data`);
-    // }
-    // cache.set(`OkTime`, Date.now().toString());
-    // cache.set(`NextTime`, String(waitUntil().ok));
-    return {
-        body: json,
-        options: {
-            status: 200,
-            statusText: 'OK',
-            headers: headers
-        }
-    };
-}
-
-function fail(headers) {
-    // const okResponse = cache.get(`OkResponse`) ?? '';
-    // cache.set(`FailTime`, Date.now().toString());
-    // if (okResponse) {
-    //     cache.set(`NextTime`, String(waitUntil().failedWithFallback));
-    // } else {
-    //     cache.set(`NextTime`, String(waitUntil().failedWithoutFallback));
-    // }
-
-    // return error or...
-    return fallback(headers);
-}
-
-function fallback(headers) {
-    // const okResponse = cache.get(`OkResponse`) ?? '';
-    // if (okResponse) {
-    //     return {
-    //         body: okResponse,
-    //         options: {
-    //             status: 200,
-    //             statusText: 'OK - Using previously cached response',
-    //             headers: headers
-    //         }
-    //     };
-    // } else {
-    return {
-        body: `{error: 16, message: 'Not ready. Try again later'}`,
-        options: {
-            status: 425,
-            statusText: 'Not ready. Successful response not available in proxy cache',
-            headers: headers
-        }
-    };
-    // }
-}
-
 async function readRSSFeed() {
-    // TODO ERROR-handling!?
-    const response = await fetch('https://www.canonrumors.com/feed/');
-    const text = await response.text();
-    const feed = parseRssFeed(text);
-    const items = feed.items; // ?? [];
-    console.log('*** /NATIVE/ RSS ITEMS WAS READ ***');
+    let items = [];
+    try {
+        const response = await fetch('https://www.canonrumors.com/feed/');
+        if (!response.ok) {
+            throw new Error(`Fetch feed response status: ${response.status}`);
+        }
+        const text = await response.text();
+        const feed = parseRssFeed(text);
+        items = feed.items ?? [];
+        console.log('*** THE OFFICIAL RSS FEED WAS READ ***');
+    } catch (e) {
+        console.error(e);
+    }
     return items;
 }
 
@@ -137,16 +85,15 @@ async function feedItems() {
     if (cached?.cachedItems) {
         cachedItems = cached.cachedItems;
     }
+    // console.log(`*** CACHED CONTENT FROM ${cachedTime} WAS READ ***`);
 
-    console.log(`*** CACHED CONTENT FROM ${cachedTime} WAS READ ***`);
-
-    if (cachedItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (30 * 60 * 1000))) {
-        console.log('*** Just using the recently updated CACHED ITEMS ***');
+    if (cachedItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (60 * 60 * 1000))) {
+        console.log('*** WILL JUST USE the recently updated CACHED ITEMS ***');
         return cachedItems;
     }
+
     const newRSSItems = await readRSSFeed();
     const relevantItems = [];
-
     if (newRSSItems?.length) {
         newRSSItems.forEach((item) => {
             if (!unwantedCategory(item)) {
@@ -160,10 +107,9 @@ async function feedItems() {
             relevantItems.push(item);
         }
     });
-
     if (relevantItems.length) {
         await caching.set('cr-cache', {cachedTime: feedRequestTime, cachedItems: relevantItems.slice(0, 10)});
-        console.log('*** CACHED CONTENT WAS UPDATED ***');
+        console.log('*** Cached content was updated ***');
     }
     return relevantItems;
 }
@@ -171,7 +117,6 @@ async function feedItems() {
 export async function canonRumors(reqHeaders, info, logging = false) {
     const origin = reqHeaders.get('Origin');
     const respHeaders = new Headers({'Content-Type': 'application/feed+json'});
-    // const respHeaders = new Headers({ 'Content-Type': 'application/json' });
     if (origin && allowedForCors(origin)) {
         respHeaders.set('Access-Control-Allow-Origin', origin);
         respHeaders.set('Vary', 'Origin');
@@ -195,7 +140,7 @@ export async function canonRumors(reqHeaders, info, logging = false) {
     const latestRelevantItems = await feedItems();
     latestRelevantItems.forEach((item) => {
         const newItem = {
-            id: item.guid?.value ?? item.link ?? 'https://www.canonrumors.com/', // TODO a random GUID!?
+            id: item.guid?.value ?? item.link ?? 'https://www.canonrumors.com/',
             title: item.title ?? '(No title)',
             content_html: item.description ?? '<p>(No content)</p>',
             author: {
@@ -207,7 +152,8 @@ export async function canonRumors(reqHeaders, info, logging = false) {
                 }
             ],
             url: item.link ?? 'https://www.canonrumors.com/',
-            date_published: isRFC2822DateString(item.pubDate ?? '') ? new Date(item.pubDate) : new Date(), // from format like "Sun, 13 Jul 2025 07:17:55 +0000" - RFC 2822 Date format er bredt understøttet som constructor-value, selvom ikke officiel standard
+            // RFC 2822 Date format (like "Sun, 13 Jul 2025 07:17:55 +0000") is supported as constructor-value, even if it's not part of ECMAScript standard
+            date_published: isRFC2822DateString(item.pubDate ?? '') ? new Date(item.pubDate) : new Date(),
         };
         if (item.enclosures?.length) {
             newItem.image = item.enclosures.find(enclosure => enclosure.type?.startsWith('image/'))?.url ?? 'https://www.canonrumors.com/wp-content/uploads/2022/05/logo-alt.png';
@@ -230,18 +176,21 @@ export async function canonRumors(reqHeaders, info, logging = false) {
             });
         }
         jsonFeedData.items.push(newItem);
-
     });
 
     // Generate new JSON Feed:
     const jsonFeed = generateJsonFeed(jsonFeedData);
-
     if (logging) {
-        console.log('*** JSON FEED CREATED ***');
+        console.log('*** COMPLETE JSON FEED CREATED ***');
     }
-
-    return success(200, 'OK', jsonFeed, respHeaders);
-
-    // return jsonFeed;
+    const json = JSON.stringify(jsonFeed);
+    return {
+        body: json,
+        options: {
+            status: 200,
+            statusText: 'OK',
+            headers: respHeaders
+        }
+    };
 
 }

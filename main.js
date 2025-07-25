@@ -14,8 +14,6 @@ const crPathPattern = new URLPattern({ pathname: "/canon/crfeed.json" });
 // const mainStaticPathPattern = new URLPattern({ pathname: "{/*}?" });
 // const mainStaticPathPattern = new URLPattern({ pathname: "/:file?" });
 
-
-
 // we could set a port-number with Deno.serve({port: portno}, handler);
 Deno.serve(handler);
 
@@ -24,14 +22,11 @@ console.log(`${new Date().toISOString()} - main.js running on Deno ${Deno.versio
 
 async function handler(req, info) {
     const urlObj = new URL(req.url);
-    const pathname = urlObj.pathname;
     const origin = urlObj.origin;
     const isLocalhost = urlObj.hostname === 'localhost';
 
     if (isLocalhost) { // Different Content-Security-Policy in header when localhost
-
-        console.log('Modify headers for localhost use...');
-
+        // console.log('Modify headers for localhost use...');
         myHeaders = {
             'Content-Security-Policy': `default-src 'none' ; script-src 'self' ; connect-src https: ${origin} ; img-src https: blob: data: ${origin} ; style-src 'self' ; frame-ancestors 'none' ; form-action 'self' ; base-uri 'none'`,
             'Referrer-Policy': 'strict-origin-when-cross-origin',
@@ -44,18 +39,13 @@ async function handler(req, info) {
     if (req.method === 'GET') {
         if (crPathPattern.test(urlObj)) {
 
-            console.log(`*** Feed request by: ${req.headers?.get('User-Agent') ?? ''}`);
+            console.log(`*** FEED REQUEST BY: ${req.headers?.get('User-Agent') ?? ''}`);
 
             const result = await canonRumors(req.headers, info, isLocalhost);
             return new Response(result.body, { headers: myHeaders, ...result.options });
 
-            // return new Response(null, {status: 200, statusText: 'OK', headers: myHeaders});
-
         } else {
-
-            // console.log('GET fallback looks in static folder');
-
-            // Statically served
+            // Statically served...
             return await serveDir(req, {
                 urlRoot: '',
                 fsRoot: 'static',
@@ -67,17 +57,12 @@ async function handler(req, info) {
                 headers: myHeadersArr
             });
         }
-
     } else {
-
         return new Response('Not found', {
             status: 404,
             statusText: `Method ${req.method} not supported here`,
             headers: myHeaders
         });
-
     }
-
     // for other routing examples, see f.ex: https://youtu.be/p541Je4J_ws?si=-tWmB355467gtFIP
-
 }
