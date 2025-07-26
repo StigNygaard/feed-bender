@@ -46,6 +46,8 @@ async function handler(req, info) {
 
         } else {
 
+            console.log(`* ${remoteAddr(info).remoteIp} - ${req.url} - Referer: ${req.headers?.get('referer')} - User-Agent: ${req.headers?.get('user-agent')}`);
+
             // Statically served...
             return await serveDir(req, {
                 urlRoot: '',
@@ -67,4 +69,14 @@ async function handler(req, info) {
         });
     }
     // for other routing examples, see f.ex: https://youtu.be/p541Je4J_ws?si=-tWmB355467gtFIP
+}
+
+function remoteAddr(info) {
+    if ('hostname' in info.remoteAddr) {
+        return {
+            remoteIp: info.remoteAddr.hostname,
+            remotePort: info.remoteAddr.port
+        };
+    }
+    return {};
 }
