@@ -1,7 +1,7 @@
 :root {
   height: 100%;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.4;
   color: rgb(34, 34, 34);
 }
@@ -22,7 +22,11 @@ main {
 footer {
   flex-shrink: 0;
   padding: 1rem 2rem;
-  background-color: #fcf1c7;
+  background-color: #ffa844;
+}
+
+.sitecolumn {
+  max-width: 55rem;
 }
 
 h1 {
