@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <title>Feed-bender - Canon related news feeds</title>
   <link rel="stylesheet" href="./../feedbender.css"/>
-  <link rel="alternate" type="application/feed+json" title="Canon Rumors essentials (JSON Feed)"
+  <link rel="alternate" type="application/feed+json" title="Canon Rumors Essentials (JSON Feed)"
         href="https://feed-bender.deno.dev/canon/crfeed.json"/>
   <meta name="description" content="Feed-bender - Tweaking Canon related news feeds"/>
   <meta name="keywords"
@@ -17,10 +17,13 @@
   <link rel="me" href="https://www.rockland.dk/"/>
   <link rel="me" href="https://mastodon.world/@stignygaard"/>
   <meta property="fediverse:creator" content="@stignygaard@mastodon.world"/>
-  <meta property="og:title" content="Feed-bender - Tweaking Canon related news feeds for convinience and special purposes"/>
-  <!--  <meta property="og:type" content="website" />-->
-  <!--  <meta property="og:url" content="https://feed-bender.deno.dev/" />-->
-  <!--  <meta property="og:description" content="Feed-bender - Tweaking Canon related news feeds" />-->
+  <meta property="og:title" content="Feed-bender - Tweaking Canon related news feeds"/>
+  <meta property="og:description"
+        content="Tweaking Canon related news feeds. Including a Canon Rumors feed filtered to include only 'essential' posts."/>
+  <meta property="og:image" content="https://feed-bender.deno.dev/canon/canon-feeds-black-304x200.png">
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://feed-bender.deno.dev/canon/"/>
+  <meta property="og:site_name" content="Feed-bender"/>
   <meta name="google-site-verification" content="JmHUvheHQClDK983oeALxiV75Ea_Wri5R8YnYh5RQHo"/>
 </head>
 
@@ -30,16 +33,14 @@
     <h1>Canon related news feeds</h1>
     <p>Some tweaked Canon photography related news feeds:</p>
     <ul class="feeds">
-      <li><a title="Canon Rumors essentials - The official feed filtered to essential posts only (JSON Feed format)"
-             href="./crfeed.json">Canon Rumors essentials</a> (JSON Feed format)
+      <li><a title="Canon Rumors Essentials - The official feed filtered to essential posts only (JSON Feed format)"
+             href="./crfeed.json">Canon Rumors Essentials</a> (JSON Feed format)
         <br/>A newsfeed based on
         <a href="https://www.canonrumors.com/feed/" title="Canon Rumors official RSS news feed">Canon Rumors official
-          news feed</a>,
-        but with posts in some categories removed. Currently only available in "JSON Feed format" which is a newer
-        format
-        than RSS and Atom, but supported by <a href="https://feedly.com/">Feedly</a> (which I use) and some other
-        services
-        - but not yet by all newsreaders. I might add an RSS version later if there's an interest.
+          news feed</a>, but with posts in some categories removed. Currently only available in "JSON Feed format"
+        which is a newer format than RSS and Atom, but supported by <a href="https://feedly.com/">Feedly</a> (which I
+        use) and some other services - but not yet by all newsreaders. I might add an RSS version later if there's an
+        interest.
       </li>
     </ul>
   </div>

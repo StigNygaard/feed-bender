@@ -123,7 +123,7 @@ export async function canonRumors(reqHeaders, info, logging = false) {
     }
 
     const jsonFeedData = {
-        title: 'Canon Rumors essentials',
+        title: 'Canon Rumors Essentials',
         home_page_url: 'https://www.canonrumors.com/',
         description: 'This is a filtered version of the official news feed from Canon Rumors. Posts in some categories are omitted',
         language: 'en-US',

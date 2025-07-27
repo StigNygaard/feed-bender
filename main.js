@@ -47,7 +47,7 @@ async function handler(req, info) {
         } else {
 
             if (!/\.[a-zA-Z]{2,3}$/.test(req.url)) { // ignore files with 2-3 characters extension (a very quick filtering of log😉)
-                console.log(`* ${remoteAddr(info).remoteIp} - ${req.url} - Referer: ${req.headers?.get('referer')}\n - User-Agent: ${req.headers?.get('user-agent')}`);
+                console.log(`* ${remoteAddr(info).remoteIp} - ${req.url} - Referer: ${req.headers?.get('referer') ?? '(none)'}\n - User-Agent: ${req.headers?.get('user-agent')}`);
             }
 
             // Statically served...
