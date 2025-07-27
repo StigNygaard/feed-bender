@@ -4,7 +4,7 @@ import * as caching from "./../util/caching.js";
 const corsAllowHostnames = Deno.env.get('feedbender_cors_allow_hostnames')?.toLowerCase()?.split(/\s*(?:;|$)\s*/) ?? [];
 
 /**
- * Unwanted categories to be ignored (lowercase)
+ * Unwanted categories of posts to be ignored (lowercase)
  * @type {string[]}
  */
 const skipCategories = [
@@ -24,12 +24,12 @@ const skipCategories = [
  */
 function unwantedCategory(item) {
     const categories = item.categories;
-    let returnVal = false;
+    let unwanted = false;
     categories?.forEach(category => {
         if (skipCategories.includes(category.name.trim().toLowerCase()))
-            returnVal = true; // is an unwanted item
+            unwanted = true; // is an unwanted item
     });
-    return returnVal;
+    return unwanted;
 }
 
 /**
@@ -108,7 +108,7 @@ async function feedItems() {
         }
     });
     if (relevantItems.length) {
-        await caching.set('cr-cache', {cachedTime: feedRequestTime, cachedItems: relevantItems.slice(0, 10)});
+        await caching.set('cr-cache', {cachedTime: feedRequestTime, cachedItems: relevantItems.slice(0, 12)});
         console.log('*** Cached content was updated ***');
     }
     return relevantItems;
