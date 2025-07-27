@@ -16,6 +16,9 @@ const skipCategories = [
     'from the vault'
 ];
 
+const feedFetcherHeaders = new Headers({
+    'User-Agent': 'Feed-bender/1.0 (https://feed-bender.deno.dev/)'
+});
 
 /**
  * Returns if a post/item contains unwanted categories
@@ -60,7 +63,7 @@ function allowedForCors(origin) {
 async function readRSSFeed() {
     let items = [];
     try {
-        const response = await fetch('https://www.canonrumors.com/feed/');
+        const response = await fetch('https://www.canonrumors.com/feed/', {headers: feedFetcherHeaders});
         if (!response.ok) {
             throw new Error(`Fetch feed response status: ${response.status}`);
         }
