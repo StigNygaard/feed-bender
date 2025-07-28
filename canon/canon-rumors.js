@@ -1,7 +1,8 @@
 import {parseRssFeed, generateJsonFeed} from "npm:feedsmith@next";
 import * as caching from "./../util/caching.js";
 
-const corsAllowHostnames = Deno.env.get('feedbender_cors_allow_hostnames')?.toLowerCase()?.split(/\s*(?:;|$)\s*/) ?? [];
+const corsAllowHostnames = Deno.env.get('feedbender_cors_allow_hostnames')?.toLowerCase()?.split(/\s*(?:[,;]|$)\s*/) ?? [];
+const feedFetcherUserAgent = 'Feed-bender/1.0 (https://feed-bender.deno.dev/)';
 
 /**
  * Unwanted categories of posts to be ignored (lowercase)
@@ -17,7 +18,7 @@ const skipCategories = [
 ];
 
 const feedFetcherHeaders = new Headers({
-    'User-Agent': 'Feed-bender/1.0 (https://feed-bender.deno.dev/)'
+    'User-Agent': feedFetcherUserAgent
 });
 
 /**
@@ -119,7 +120,7 @@ async function feedItems() {
 
 export async function canonRumors(reqHeaders, info, logging = false) {
     const origin = reqHeaders.get('Origin');
-    const respHeaders = new Headers({'Content-Type': 'application/feed+json'});
+    const respHeaders = new Headers({'Content-Type': 'application/feed+json; charset=utf-8'});
     if (origin && allowedForCors(origin)) {
         respHeaders.set('Access-Control-Allow-Origin', origin);
         respHeaders.set('Vary', 'Origin');
