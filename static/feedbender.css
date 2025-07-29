@@ -90,3 +90,52 @@ img.logo {
   padding: 0 0 1rem 1rem;
   margin: -5px -5px 0 0;
 }
+
+.peek {
+  position: relative;
+  display: inline-block;
+
+  .peek-popup {
+    display: none;
+    padding: .2rem .7rem;
+    font-size: 80%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    h3 {
+      margin: .3rem 0;
+    }
+    .peek-item {
+      padding-bottom: .3rem;
+      img {
+        max-width: 8rem;
+        max-height: 6rem;
+        float: left;
+        margin: 0 .6em .1em 0;
+      }
+      time {
+        display: block;
+        font-size: 85%;
+      }
+      h4 {
+        margin: .5em 0;
+      }
+      p {
+        margin: 0;
+      }
+    }
+  }
+
+  &:hover .peek-popup {
+    position: absolute;
+    display: block;
+    top: 0.8lh;
+    left: -11rem;
+    width: 35rem;
+    min-width: 22rem;
+    max-width: 80svw;
+    height: 30rem;
+    background-color: #fff;
+    border: 2px solid var(--feed-orange);
+    color: #000;
+  }
+}
