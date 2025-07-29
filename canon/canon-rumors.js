@@ -14,7 +14,7 @@ const skipCategories = [
     'buyers guide',
     'smart picks',
     'industry news',
-    'from the vault'
+    // 'from the vault'
 ];
 
 const feedFetcherHeaders = new Headers({
