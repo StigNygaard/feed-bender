@@ -97,6 +97,18 @@ img.logo {
 
   .peek-popup {
     display: none;
+    position: absolute;
+    top: 0.8lh;
+    left: -11rem;
+    width: 32rem;
+    min-width: 22rem;
+    max-width: 80svw;
+    height: 30rem;
+    background-color: #fff;
+    border: 2px solid var(--feed-orange);
+    border-radius: .5rem;
+    box-shadow: #777 0 0 .5rem 0;
+    color: #000;
     padding: .2rem .7rem;
     font-size: 80%;
     overflow-x: hidden;
@@ -112,7 +124,7 @@ img.logo {
         float: left;
         margin: 0 .6em .1em 0;
       }
-      time {
+      .byline {
         display: block;
         font-size: 85%;
       }
@@ -126,16 +138,6 @@ img.logo {
   }
 
   &:hover .peek-popup {
-    position: absolute;
     display: block;
-    top: 0.8lh;
-    left: -11rem;
-    width: 35rem;
-    min-width: 22rem;
-    max-width: 80svw;
-    height: 30rem;
-    background-color: #fff;
-    border: 2px solid var(--feed-orange);
-    color: #000;
   }
 }

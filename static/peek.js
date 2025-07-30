@@ -29,49 +29,69 @@ function cr(tagName, attributes = {}, ...content) {
  */
 function stripHtml(html){
     let doc = new DOMParser().parseFromString(html, 'text/html');
-    return doc.body.textContent || "";
+    return doc.body.textContent || '';
 }
 
 /**
- * "feed peeker"...
+ * Setup "feed peeker"...
+ */
+function setupFeedPeeker(el) {
+    function itemAuthor(item) {
+        return item.authors?.at(0)?.name ?? item.author?.name;
+    }
+    function itemDate(item) {
+        const date = new Date(item.date_published);
+        if(date.toString() === 'Invalid Date') return '';
+        return new Intl.DateTimeFormat("en-GB", {
+            dateStyle: "medium",
+            timeStyle: "short",
+            hour12: false
+        }).format(date);
+    }
+    el.addEventListener('mouseenter', // mouseover?
+        function (ev) {
+            let popup = ev.target.querySelector('.peek-popup');
+            if (!popup) {
+                popup = cr('div', {class: 'peek-popup'});
+                el.append(popup);
+                fetch(ev.target.dataset.json).then(
+                    response => response.json()
+                ).then(
+                    json => {
+                        popup.append(cr('h3', {}, cr('a', {href: json.home_page_url}, json.title)));
+                        json.items.forEach(item => {
+                            const author = itemAuthor(item);
+                            const itemEl = cr('div', {class: 'peek-item'},
+                                cr('img', {src: item.image ?? '', alt: ''}),
+                                cr('h4', {}, cr('a', {href: item.url}, item.title)),
+                                cr('div', {class: 'byline'}, cr('time', {datetime: item.date_published}, itemDate(item)), (author ? ` - by ${author}` : '')),
+                                cr('p', {class: 'item-content'}, item.content_text ?? stripHtml(item.content_html)));
+                            popup.append(itemEl);
+                        })
+                    }
+                ).catch(
+                    error => {
+                        // TODO write error-msg in popup (unable to load feed)
+                        console.error(error);
+                    }
+                ).finally(
+                    () => {
+                        // TODO remove a shown "load-spinner"
+                    }
+                )
+            }
+        });
+}
+
+/**
+ * "on-load" handler
  */
 window.addEventListener('DOMContentLoaded',
     function () {
-        console.log('DOMContentLoaded');
-        document.querySelectorAll('.peek').forEach(
-            function (el) {
-                console.log(`Setting up eventhandlers on peek-element for feed ${el.dataset.json}`);
-                el.addEventListener('mouseenter', function (ev) { // mouseover?
-                    let popup = ev.target.querySelector('.peek-popup');
-                    if (!popup) {
-                        popup = cr('div', {class: 'peek-popup'});
-                        el.append(popup);
-                        fetch(ev.target.dataset.json).then(
-                            response => response.json()
-                        ).then(
-                            json => {
-                                console.info(json);
-                                popup.append(cr('h3', {}, cr('a', {href: json.home_page_url}, json.title)));
-                                json.items.forEach(item => {
-                                    const itemEl = cr('div', {class: 'peek-item'},
-                                        cr('img', {src: item.image, alt: ''}),
-                                        cr('h4', {}, cr('a', {href: item.url}, item.title)),
-                                        cr('time', {datetime: item.date_published}, item.date_published),
-                                        cr('p', {class: 'item-content'}, stripHtml(item.content_html)));
-                                    popup.append(itemEl);
-                                })
-                            }
-                        ).catch(
-                            error => {
-                                console.error(error);
-                            }
-                        )
-                    }
-                });
-                el.addEventListener('mouseleave', function (ev) { // mouseout?
-                });
-            }
-        )
-    }, false
-
+        /**
+         * setup "feed-peekers"...
+         */
+        document.querySelectorAll('.peek').forEach(setupFeedPeeker);
+    },
+    false
 );
