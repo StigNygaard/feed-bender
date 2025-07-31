@@ -39,15 +39,15 @@ async function handler(req, info) {
     if (req.method === 'GET') {
         if (crPathPattern.test(urlObj)) {
 
-            console.log(`*** FEED REQUEST BY: ${req.headers?.get('User-Agent') ?? ''}`);
+            console.log(` 🤖 FEED REQUEST BY: ${req.headers?.get('User-Agent') ?? ''}`);
             const result = await canonRumors(req.headers, info, isLocalhost);
-            console.log('*** COMPLETE JSON FEED CREATED ***');
+            console.log(' 🤖 COMPLETE JSON FEED CREATED');
             return new Response(result.body, { headers: responseHeaders, ...result.options });
 
         } else {
 
             if (!/\.[a-zA-Z]{2,3}$/.test(req.url)) { // ignore files with 2-3 characters extension (a very quick filtering of log😉)
-                console.log(`* ${remoteAddr(info).remoteIp} - ${req.url} - Referer: ${req.headers?.get('referer') ?? '(none)'}\n - User-Agent: ${req.headers?.get('user-agent')}`);
+                console.log(` 📄 ${remoteAddr(info).remoteIp} - ${req.url} - Referer: ${req.headers?.get('referer') ?? '(none)'}\n - User-Agent: ${req.headers?.get('user-agent')}`);
             }
 
             // Statically served...

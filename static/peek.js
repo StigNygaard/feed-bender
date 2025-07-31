@@ -42,11 +42,13 @@ function setupFeedPeeker(el) {
     function itemDate(item) {
         const date = new Date(item.date_published);
         if(date.toString() === 'Invalid Date') return '';
-        return new Intl.DateTimeFormat("en-GB", {
-            dateStyle: "medium",
-            timeStyle: "short",
-            hour12: false
+        return new Intl.DateTimeFormat(/* undefined */ 'en-CA', { // Just happen to like this en-CA based datetime format :-)
+            dateStyle: 'short',
+            timeStyle: 'short',
+            hour12: false // timeZoneName: 'shortOffset' (or 'short'?)
         }).format(date);
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat
     }
     el.addEventListener('mouseenter', // mouseover?
         function (ev) {
@@ -64,21 +66,23 @@ function setupFeedPeeker(el) {
                             const itemEl = cr('div', {class: 'peek-item'},
                                 cr('img', {src: item.image ?? '', alt: ''}),
                                 cr('h4', {}, cr('a', {href: item.url}, item.title)),
-                                cr('div', {class: 'byline'}, cr('time', {datetime: item.date_published}, itemDate(item)), (author ? ` - by ${author}` : '')),
+                                cr('div', {class: 'byline'}, cr('time', {datetime: item.date_published, title: item.date_published}, itemDate(item)), (author ? ` - by ${author}` : '')),
                                 cr('p', {class: 'item-content'}, item.content_text ?? stripHtml(item.content_html)));
                             popup.append(itemEl);
                         })
                     }
                 ).catch(
                     error => {
-                        // TODO write error-msg in popup (unable to load feed)
+                        popup.append(cr('p', {class: 'error'}, 'There was a problem loading the feed - Come back and try again later.'));
                         console.error(error);
                     }
                 ).finally(
                     () => {
-                        // TODO remove a shown "load-spinner"
+                        popup.classList.add('fetched'); // remove "load-spinner"
                     }
                 )
+            } else {
+                popup.scrollTop = 0;
             }
         });
 }

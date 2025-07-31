@@ -71,7 +71,7 @@ async function readRSSFeed() {
         const text = await response.text();
         const feed = parseRssFeed(text);
         items = feed.items ?? [];
-        console.log('*** THE OFFICIAL RSS FEED WAS READ ***');
+        console.log(' 🤖 THE OFFICIAL RSS FEED WAS READ');
     } catch (e) {
         console.error(e);
     }
@@ -89,10 +89,10 @@ async function feedItems() {
     if (cached?.cachedItems) {
         cachedItems = cached.cachedItems;
     }
-    // console.log(`*** CACHED CONTENT FROM ${cachedTime} WAS READ ***`);
+    // console.log(` 🤖 CACHED CONTENT FROM ${cachedTime} WAS READ`);
 
     if (cachedItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (60 * 60 * 1000))) {
-        console.log('*** WILL JUST USE the recently updated CACHED ITEMS ***');
+        console.log(' 🤖 WILL JUST USE the recently updated CACHED ITEMS');
         return cachedItems;
     }
 
@@ -113,7 +113,7 @@ async function feedItems() {
     });
     if (relevantItems.length) {
         await caching.set('cr-cache', {cachedTime: feedRequestTime, cachedItems: relevantItems.slice(0, 12)});
-        console.log('*** Cached content was updated ***');
+        console.log(' 🤖 Cached content was updated');
     }
     return relevantItems;
 }
