@@ -70,6 +70,10 @@ ul {
   padding-inline-start: 20px;
 }
 
+li {
+  margin-bottom: .2em;
+}
+
 ul ul {
   margin-block-start: .2em;
 }
@@ -155,5 +159,14 @@ img.logo {
 
   &:hover .peek-popup {
     display: block;
+  }
+}
+
+@media screen and (min-width: 42rem) {
+  .peek .peek-popup {
+    top: -8lh;
+    left: 1em;
+    height: 40rem;
+    max-height: 60svh;
   }
 }

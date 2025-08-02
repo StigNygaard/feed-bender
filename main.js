@@ -41,9 +41,9 @@ async function handler(req, info) {
         const crFeedType = crPathPattern.exec(urlObj)?.pathname?.groups?.type;
         if (crFeedType) { // if (crPathPattern.test(urlObj)) ...
 
-            console.log(` 🤖 FEED REQUEST BY: ${req.headers?.get('User-Agent') ?? ''}`);
+            console.log(` 🤖 ${crFeedType.toUpperCase()} FEED REQUEST BY: ${req.headers?.get('User-Agent') ?? ''}`);
             const result = await canonRumors(crFeedType, req.headers, info, isLocalhost); // TODO add responseHeaders
-            console.log(' 🤖 COMPLETE JSON FEED CREATED');
+            console.log(` 🤖 COMPLETE ${crFeedType.toUpperCase()} FEED CREATED`);
             return new Response(result.body, { headers: responseHeaders, ...result.options }); // TODO or merge response headers
 
         } else {
