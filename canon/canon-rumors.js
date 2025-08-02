@@ -70,7 +70,9 @@ async function readRSSFeed() {
         }
         const text = await response.text();
         const feed = parseRssFeed(text);
+
         // console.log(`THE FEED!:\n${JSON.stringify(feed)}`);
+
         items = feed.items ?? [];
         console.log(' 🤖 THE OFFICIAL RSS FEED WAS READ');
     } catch (e) {
@@ -187,7 +189,14 @@ const rssFeed = { // TODO naming newRSSFeed?
     template: function () { // TODO: make a "getter"? (naming: basics, basicData, structure. fundament, skeleton ?)
         return {
             title: 'Canon Rumors - Essential posts only',
-            link: 'https://www.canonrumors.com/', // or feed link?
+            link: 'https://www.canonrumors.com/',
+            atom: {
+                links: [{
+                    href: 'https://feed-bender.deno.dev/canon/crfeed.rss',
+                    rel: 'self',
+                    type: 'application/rss+xml'
+                }]
+            },
             description: 'This is a filtered version of the official news feed from Canon Rumors. Posts in some categories are omitted',
             language: 'en-US',
             generator: 'https://feed-bender.deno.dev/',
@@ -205,7 +214,9 @@ const rssFeed = { // TODO naming newRSSFeed?
             description: item.description ?? '<p>(No content)</p>',
             // RFC 2822 Date format (like "Sun, 13 Jul 2025 07:17:55 +0000") is supported as constructor-value, even if it's not part of ECMAScript standard
             pubDate: item.pubDate, // isRFC2822DateString(item.pubDate ?? '') ? new Date(item.pubDate) : new Date(),
-            authors: [item.dc?.creator ?? 'Canon Rumors']
+            dc: {
+                creator: item.dc?.creator ?? 'Canon Rumors'
+            }
         };
         if (item.enclosures?.length) {
             newItem.enclosures = [];
