@@ -9,7 +9,8 @@ let responseHeaders = {
 };
 let responseHeadersArr = Object.entries(responseHeaders).map(([k, v]) => `${k}: ${v}`);
 
-const crPathPattern = new URLPattern({ pathname: "/canon/crfeed.json" });
+// const crPathPattern = new URLPattern({ pathname: "/canon/crfeed.json" });
+const crPathPattern = new URLPattern({ pathname: "/canon/crfeed.:type(json|rss)" });
 // const crPathPattern = new URLPattern({ pathname: "/canon/crfeed{/}?" });
 // const mainStaticPathPattern = new URLPattern({ pathname: "{/*}?" });
 // const mainStaticPathPattern = new URLPattern({ pathname: "/:file?" });
@@ -37,16 +38,17 @@ async function handler(req, info) {
 
     // The "Router"...
     if (req.method === 'GET') {
-        if (crPathPattern.test(urlObj)) {
+        const crFeedType = crPathPattern.exec(urlObj)?.pathname?.groups?.type;
+        if (crFeedType) { // if (crPathPattern.test(urlObj)) ...
 
             console.log(` 🤖 FEED REQUEST BY: ${req.headers?.get('User-Agent') ?? ''}`);
-            const result = await canonRumors(req.headers, info, isLocalhost);
+            const result = await canonRumors(crFeedType, req.headers, info, isLocalhost); // TODO add responseHeaders
             console.log(' 🤖 COMPLETE JSON FEED CREATED');
-            return new Response(result.body, { headers: responseHeaders, ...result.options });
+            return new Response(result.body, { headers: responseHeaders, ...result.options }); // TODO or merge response headers
 
         } else {
 
-            if (!/\.[a-zA-Z]{2,3}$/.test(req.url)) { // ignore files with 2-3 characters extension (a very quick filtering of log😉)
+            if (!/\.[a-zA-Z]{2,3}$/.test(req.url)) { // skip logging files with 2-3 characters extension (a very quick filtering of log😉)
                 console.log(` 📄 ${remoteAddr(info).remoteIp} - ${req.url} - Referer: ${req.headers?.get('referer') ?? '(none)'}\n - User-Agent: ${req.headers?.get('user-agent')}`);
             }
 
@@ -64,11 +66,13 @@ async function handler(req, info) {
 
         }
     } else {
+
         return new Response('Not found', {
             status: 404,
             statusText: `Method ${req.method} not supported here`,
             headers: responseHeaders
         });
+
     }
     // for other routing examples, see f.ex: https://youtu.be/p541Je4J_ws?si=-tWmB355467gtFIP
 }

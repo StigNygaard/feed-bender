@@ -1,4 +1,4 @@
-import {parseRssFeed, generateJsonFeed} from "npm:feedsmith@next";
+import {parseRssFeed, generateJsonFeed, generateRssFeed} from "npm:feedsmith@next";
 import * as caching from "./../util/caching.js";
 
 const corsAllowHostnames = Deno.env.get('feedbender_cors_allow_hostnames')?.toLowerCase()?.split(/\s*(?:[,;]|$)\s*/) ?? [];
@@ -45,7 +45,6 @@ function isRFC2822DateString(str) {
     return /^(?:(Sun|Mon|Tue|Wed|Thu|Fri|Sat),\s+)?(0[1-9]|[1-2]?[0-9]|3[01])\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(19[0-9]{2}|[2-9][0-9]{3})\s+(2[0-3]|[0-1][0-9]):([0-5][0-9])(?::(60|[0-5][0-9]))?\s+([-+][0-9]{2}[0-5][0-9]|(?:UT|GMT|(?:E|C|M|P)(?:ST|DT)|[A-IK-Z]))(\s+|\(([^()]+|\\\(|\\\))*\))*$/.test(str);
 }
 
-
 function allowedForCors(origin) {
     let originHostname = URL.parse(origin)?.hostname?.toLowerCase();
     if (originHostname != null) {
@@ -65,11 +64,13 @@ async function readRSSFeed() {
     let items = [];
     try {
         const response = await fetch('https://www.canonrumors.com/feed/', {headers: feedFetcherHeaders});
+        // TODO minor refactoring here...
         if (!response.ok) {
             throw new Error(`Fetch feed response status: ${response.status}`);
         }
         const text = await response.text();
         const feed = parseRssFeed(text);
+        // console.log(`THE FEED!:\n${JSON.stringify(feed)}`);
         items = feed.items ?? [];
         console.log(' 🤖 THE OFFICIAL RSS FEED WAS READ');
     } catch (e) {
@@ -118,31 +119,25 @@ async function feedItems() {
     return relevantItems;
 }
 
-export async function canonRumors(reqHeaders, info, logging = false) {
-    const origin = reqHeaders.get('Origin');
-    const respHeaders = new Headers({'Content-Type': 'application/feed+json; charset=utf-8'});
-    if (origin && allowedForCors(origin)) {
-        respHeaders.set('Access-Control-Allow-Origin', origin);
-        respHeaders.set('Vary', 'Origin');
-    }
-
-    const jsonFeedData = {
-        title: 'Canon Rumors Essentials',
-        home_page_url: 'https://www.canonrumors.com/',
-        description: 'This is a filtered version of the official news feed from Canon Rumors. Posts in some categories are omitted',
-        language: 'en-US',
-        feed_url: 'https://feed-bender.deno.dev/canon/crfeed.json',
-        authors: [
-            {
-                name: 'Canon Rumors',
-                url: 'https://www.canonrumors.com/',
-            }
-        ],
-        items: []
-    };
-
-    const latestRelevantItems = await feedItems();
-    latestRelevantItems.forEach((item) => {
+const jsonFeed = { // TODO naming newJsonFeed?
+    contentType: 'application/feed+json; charset=utf-8',
+    template: function () { // TODO: make a "getter"? (naming: basics, basicData, structure. fundament, skeleton ?)
+        return {
+            title: 'Canon Rumors - Essential posts only',
+            home_page_url: 'https://www.canonrumors.com/',
+            description: 'This is a filtered version of the official news feed from Canon Rumors. Posts in some categories are omitted',
+            language: 'en-US',
+            feed_url: 'https://feed-bender.deno.dev/canon/crfeed.json',
+            authors: [
+                {
+                    name: 'Canon Rumors',
+                    url: 'https://www.canonrumors.com/',
+                }
+            ],
+            items: []
+        }
+    },
+    createItem: function (item) {
         const newItem = {
             id: item.guid?.value ?? item.link ?? 'https://www.canonrumors.com/',
             title: item.title ?? '(No title)',
@@ -179,14 +174,81 @@ export async function canonRumors(reqHeaders, info, logging = false) {
                 newItem.tags.push(category.name);
             });
         }
-        jsonFeedData.items.push(newItem);
-    });
+        return newItem;
+    },
+    createResponseBody: function (feedData) {
+        const jsonFeedObj = generateJsonFeed(feedData);
+        return JSON.stringify(jsonFeedObj);
+    }
+}
 
-    // Generate new JSON Feed:
-    const jsonFeed = generateJsonFeed(jsonFeedData);
-    const json = JSON.stringify(jsonFeed);
+const rssFeed = { // TODO naming newRSSFeed?
+    contentType: 'application/rss+xml; charset=utf-8',
+    template: function () { // TODO: make a "getter"? (naming: basics, basicData, structure. fundament, skeleton ?)
+        return {
+            title: 'Canon Rumors - Essential posts only',
+            link: 'https://www.canonrumors.com/', // or feed link?
+            description: 'This is a filtered version of the official news feed from Canon Rumors. Posts in some categories are omitted',
+            language: 'en-US',
+            generator: 'https://feed-bender.deno.dev/',
+            items: []
+        }
+    },
+    createItem: function (item) {
+        const newItem = {
+            guid: {
+                value: item.guid?.value ?? item.link ?? 'https://www.canonrumors.com/',
+                isPermaLink: false
+            },
+            title: item.title ?? '(No title)',
+            link: item.link ?? 'https://www.canonrumors.com/',
+            description: item.description ?? '<p>(No content)</p>',
+            // RFC 2822 Date format (like "Sun, 13 Jul 2025 07:17:55 +0000") is supported as constructor-value, even if it's not part of ECMAScript standard
+            pubDate: item.pubDate, // isRFC2822DateString(item.pubDate ?? '') ? new Date(item.pubDate) : new Date(),
+            authors: [item.dc?.creator ?? 'Canon Rumors']
+        };
+        if (item.enclosures?.length) {
+            newItem.enclosures = [];
+            item.enclosures.forEach(enclosure => {
+                const newEnclosure = {
+                    url: enclosure.url,
+                    type: enclosure.type
+                }
+                if (enclosure.length) {
+                    newEnclosure.length = enclosure.length;
+                }
+                newItem.enclosures.push(newEnclosure);
+            });
+        }
+        if (item.categories?.length) {
+            newItem.categories = [];
+            item.categories.forEach(category => {
+                newItem.categories.push({name: category.name});
+            });
+        }
+        return newItem;
+    },
+    createResponseBody: function (feedData) {
+        return generateRssFeed(feedData);
+    }
+}
+
+export async function canonRumors(feedType, reqHeaders, info, logging = false) {
+    const feed = feedType.toLowerCase() === 'json' ? jsonFeed : rssFeed;
+    const origin = reqHeaders.get('Origin');
+    const respHeaders = new Headers({'Content-Type': feed.contentType});
+    if (origin && allowedForCors(origin)) {
+        respHeaders.set('Access-Control-Allow-Origin', origin);
+        respHeaders.set('Vary', 'Origin');
+    }
+    const feedData = feed.template();
+    const latestRelevantItems = await feedItems();
+    latestRelevantItems.forEach((item) => {
+        feedData.items.push(feed.createItem(item));
+    });
+    const responseBody = feed.createResponseBody(feedData);
     return {
-        body: json,
+        body: responseBody,
         options: {
             status: 200,
             statusText: 'OK',

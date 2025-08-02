@@ -57,6 +57,7 @@ function setupFeedPeeker(el) {
                 popup = cr('div', {class: 'peek-popup'});
                 el.append(popup);
                 fetch(ev.target.dataset.json).then(
+                    // TODO: Some basic error-logging - look at response.ok etc...
                     response => response.json()
                 ).then(
                     json => {
@@ -73,7 +74,7 @@ function setupFeedPeeker(el) {
                     }
                 ).catch(
                     error => {
-                        popup.append(cr('p', {class: 'error'}, 'There was a problem loading the feed - Come back and try again later.'));
+                        popup.append(cr('p', {class: 'error'}, 'There was a problem loading the feed - Try reloading page or come back later.'));
                         console.error(error);
                     }
                 ).finally(
