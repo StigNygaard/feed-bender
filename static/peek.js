@@ -27,7 +27,7 @@ function cr(tagName, attributes = {}, ...content) {
  * @param {string} html - The HTML string from which to strip tags.
  * @return {string} The plain text content extracted from the input HTML string.
  */
-function stripHtml(html){
+function stripHtml(html) {
     let doc = new DOMParser().parseFromString(html, 'text/html');
     return doc.body.textContent || '';
 }
@@ -36,12 +36,14 @@ function stripHtml(html){
  * Setup "feed peeker"...
  */
 function setupFeedPeeker(el) {
+
     function itemAuthor(item) {
         return item.authors?.at(0)?.name ?? item.author?.name;
     }
+
     function itemDate(item) {
         const date = new Date(item.date_published);
-        if(date.toString() === 'Invalid Date') return '';
+        if (date.toString() === 'Invalid Date') return '';
         return new Intl.DateTimeFormat(/* undefined */ 'en-CA', { // Just happen to like this en-CA based datetime format :-)
             dateStyle: 'short',
             timeStyle: 'short',
@@ -50,11 +52,12 @@ function setupFeedPeeker(el) {
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat
     }
+
     el.addEventListener('mouseenter', // mouseover?
         function (ev) {
             let popup = ev.target.querySelector('.peek-popup');
             if (!popup) {
-                popup = cr('div', {class: 'peek-popup'});
+                popup = cr('aside', {class: 'peek-popup'});
                 el.append(popup);
                 fetch(ev.target.dataset.json).then(
                     // TODO: Some basic error-logging - look at response.ok etc...
@@ -65,9 +68,12 @@ function setupFeedPeeker(el) {
                         json.items.forEach(item => {
                             const author = itemAuthor(item);
                             const itemEl = cr('div', {class: 'peek-item'},
-                                cr('img', {src: item.image ?? '', alt: ''}),
+                                cr('img', {src: item.image ?? '', alt: '', loading: 'lazy'}),
                                 cr('h4', {}, cr('a', {href: item.url}, item.title)),
-                                cr('div', {class: 'byline'}, cr('time', {datetime: item.date_published, title: item.date_published}, itemDate(item)), (author ? ` - by ${author}` : '')),
+                                cr('div', {class: 'byline'}, cr('time', {
+                                    datetime: item.date_published,
+                                    title: item.date_published
+                                }, itemDate(item)), (author ? ` - by ${author}` : '')),
                                 cr('p', {class: 'item-content'}, item.content_text ?? stripHtml(item.content_html)));
                             popup.append(itemEl);
                         })

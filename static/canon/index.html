@@ -5,8 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Feed-bender - Canon related news feeds</title>
-  <link rel="prefetch" href="./../loading.gif" as="image" type="image/gif" />
-  <link rel="dns-prefetch" href="https://www.canonrumors.com" />
+  <link rel="prefetch" href="./../loading.gif" as="image" type="image/gif"/>
+  <link rel="dns-prefetch" href="https://www.canonrumors.com"/>
   <link rel="stylesheet" href="./../feedbender.css"/>
   <link rel="alternate" type="application/rss+xml" title="Canon Rumors - Essential posts only (RSS Feed)"
         href="https://feed-bender.deno.dev/canon/crfeed.rss"/>
@@ -38,22 +38,31 @@
 <body>
 <main>
   <div class="sitecolumn">
-    <img src="canon-feeds-flat-274x74-v2.png" alt="logo" class="logo" />
-    <h1>Canon related news feeds</h1>
-    <p>Some tweaked Canon photography related news feeds...</p>
-    <h2>Canon Rumors - Essential posts only</h2>
-    <p>Lately Canon Rumors has become a very spammy site, with lots of irrelevant and low quality posts to attract "random" searchers and get more "affiliate clicks". But among all the noise, there are still relevant and interesting posts. I just don't want my news reader flooded with all the other crap. So I have created a slimmed down news feed.</p>
-    <p>"My feed" is based on the <a href="https://www.canonrumors.com/feed/" title="Canon Rumors official RSS news feed">official news feed</a>, but I'm filtering it in an attempt to keep the essential posts only. For now, the feed omits posts in the categories <em>Deal Zone</em>, <em>Buyers Guide</em>,
-      <em>Smart Picks</em> and <em>Industry News</em>. But I might of course adjust that as needed. I have made the feed available in both <i>JSON Feed</i> and <i>RSS</i> format:</p>
-    <ul class="feeds">
-      <li><a title="Canon Rumors - Essential posts only (JSON Feed format)"
-             href="./crfeed.json">JSON Feed</a>
-        <span class="peek" data-json="./crfeed.json"> 👁️ </span>
-      </li>
-      <li><a title="Canon Rumors - Essential posts only (RSS format)"
-             href="./crfeed.rss">RSS</a>
-      </li>
-    </ul>
+    <img src="canon-feeds-flat-274x74-v2.png" alt="logo" class="logo"/>
+    <section>
+      <h1>Canon related news feeds</h1>
+      <p>Some tweaked Canon photography related news feeds...</p>
+      <h2>Canon Rumors - Essential posts only</h2>
+      <p>Lately <a href="https://www.canonrumors.com/">Canon Rumors</a> has become a very spammy site, with lots of
+        irrelevant and low quality posts to attract "random" searchers and get more "affiliate clicks". But among all
+        the noise, there are still relevant and interesting posts. I just don't want my news-reader flooded with all
+        the other crap. So I have created a slimmed down custom-made news feed.</p>
+      <p>"My feed" is based on the <a href="https://www.canonrumors.com/feed/"
+                                      title="Canon Rumors official RSS news feed">official news feed</a>, but I'm
+        filtering it in an attempt to keep the essential posts only. For now, the feed omits posts in the categories
+        <em>Deal Zone</em>, <em>Buyers Guide</em>, <em>Smart Picks</em> and <em>Industry News</em>. But I might adjust
+        that if I feel the need to do so. The custom-made feed is available in both <i>JSON Feed</i> and <i>RSS</i>
+        format:</p>
+      <ul class="feeds">
+        <li><a title="Canon Rumors - Essential posts only (JSON Feed format)"
+               href="./crfeed.json">JSON Feed</a>
+          <span class="peek" data-json="./crfeed.json"> 👁️ </span>
+        </li>
+        <li><a title="Canon Rumors - Essential posts only (RSS format)"
+               href="./crfeed.rss">RSS</a>
+        </li>
+      </ul>
+    </section>
   </div>
 </main>
 <footer>

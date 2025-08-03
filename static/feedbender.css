@@ -3,6 +3,7 @@
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 1.4;
+  background-color: #fff;
   color: rgb(34, 34, 34);
 
   --feed-orange: #ffa844
@@ -25,6 +26,10 @@ footer {
   flex-shrink: 0;
   padding: 1rem 2rem;
   background-color: var(--feed-orange);
+  color: #fff;
+  a {
+    color: #fff;
+  }
 }
 
 .sitecolumn {
