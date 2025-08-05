@@ -58,7 +58,7 @@ async function handler(req, info) {
         } else {
 
             if (!skipLog(req)) {
-                console.log(` 👁️ ${remoteAddr(info).remoteIp} - ${req.url} - Referer: ${req.headers?.get('referer') ?? '(none)'}\n - User-Agent: ${req.headers?.get('user-agent')}`);
+                console.log(` 👀 ${remoteAddr(info).remoteIp} - ${req.url} - Referer: ${req.headers?.get('referer') ?? '(none)'}\n - User-Agent: ${req.headers?.get('user-agent')}`);
             }
 
             // Statically served...
