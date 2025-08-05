@@ -36,20 +36,29 @@ async function handler(req, info) {
         responseHeadersArr = Object.entries(responseHeaders).map(([k, v]) => `${k}: ${v}`);
     }
 
+    function skipLog(req) {
+        return /\.[a-zA-Z]{2,3}$/.test(req.url) // skip logging files with 2-3 characters extension (a very quick filtering of log😉)
+            || ( // and tired of this stupid one...
+                req.url === 'https://feed-bender.deno.dev:443/'
+                && req.headers?.get('referer') === 'http://feed-bender.deno.dev'
+                && req.headers?.get('user-agent') === 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
+            );
+    }
+
     // The "Router"...
     if (req.method === 'GET') {
         const crFeedType = crPathPattern.exec(urlObj)?.pathname?.groups?.type;
         if (crFeedType) { // if (crPathPattern.test(urlObj)) ...
 
             console.log(` 🤖 ${crFeedType.toUpperCase()} FEED REQUEST BY: ${req.headers?.get('User-Agent') ?? ''}`);
-            const result = await canonRumors(crFeedType, req.headers, info, isLocalhost); // TODO add responseHeaders
+            const result = await canonRumors(crFeedType, req.headers, info, isLocalhost);
             console.log(` 🤖 COMPLETE ${crFeedType.toUpperCase()} FEED CREATED`);
-            return new Response(result.body, { headers: responseHeaders, ...result.options }); // TODO or merge response headers
+            return new Response(result.body, { headers: responseHeaders, ...result.options });
 
         } else {
 
-            if (!/\.[a-zA-Z]{2,3}$/.test(req.url)) { // skip logging files with 2-3 characters extension (a very quick filtering of log😉)
-                console.log(` 📄 ${remoteAddr(info).remoteIp} - ${req.url} - Referer: ${req.headers?.get('referer') ?? '(none)'}\n - User-Agent: ${req.headers?.get('user-agent')}`);
+            if (!skipLog(req)) {
+                console.log(` 👁️ ${remoteAddr(info).remoteIp} - ${req.url} - Referer: ${req.headers?.get('referer') ?? '(none)'}\n - User-Agent: ${req.headers?.get('user-agent')}`);
             }
 
             // Statically served...
