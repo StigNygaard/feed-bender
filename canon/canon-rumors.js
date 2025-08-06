@@ -60,22 +60,43 @@ function allowedForCors(origin) {
     return false;
 }
 
+async function fetchText(request, options) {
+    const response = await fetch(request, options);
+    if (!response.ok) {
+        throw new Error(`fetch '${request.url ?? request}' response status: \n${response.status}: ${response.statusText}`);
+    }
+    return await response.text();
+}
+
+async function fetchJson(request, options) {
+    const response = await fetch(request, options);
+    if (!response.ok) {
+        throw new Error(`fetch '${request.url ?? request}' response status: \n${response.status}: ${response.statusText}`);
+    }
+    return await response.json();
+}
+
 async function readRSSFeed() {
     let items = [];
+    let text;
     try {
-        const response = await fetch('https://www.canonrumors.com/feed/', {headers: feedFetcherHeaders});
-        // TODO minor refactoring here...
-        if (!response.ok) {
-            throw new Error(`Fetch feed response status: ${response.status}`);
-        }
-        const text = await response.text();
+        text = await fetchText(
+            'https://www.canonrumors.com/feed/',
+            {
+                headers: feedFetcherHeaders,
+                signal: AbortSignal.timeout(10000) // timeout after 10 seconds
+            }
+        );
         const feed = parseRssFeed(text);
 
-        // console.log(`THE FEED!:\n${JSON.stringify(feed)}`);
+        // console.log(`The full feed:\n${JSON.stringify(feed)}`);
 
         items = feed.items ?? [];
         console.log(' 🤖 THE OFFICIAL RSS FEED WAS READ');
     } catch (e) {
+        if (text?.length) {
+            console.log('Response body:\n', text);
+        }
         console.error(e);
     }
     return items;
@@ -116,14 +137,16 @@ async function feedItems() {
     });
     if (relevantItems.length) {
         await caching.set('cr-cache', {cachedTime: feedRequestTime, cachedItems: relevantItems.slice(0, 12)});
-        console.log(' 🤖 Cached content was updated');
+        console.log(` 🤖 Cached content was ${newRSSItems?.length ? 'updated' : '"extended"'}`);
     }
     return relevantItems;
 }
 
-const jsonFeed = { // TODO naming newJsonFeed?
-    contentType: 'application/feed+json; charset=utf-8',
-    template: function () { // TODO: make a "getter"? (naming: basics, basicData, structure. fundament, skeleton ?)
+const JsonFeedTool = {
+    get contentType() {
+        return 'application/feed+json; charset=utf-8'
+    },
+    get template() {
         return {
             title: 'Canon Rumors - Essential posts only',
             home_page_url: 'https://www.canonrumors.com/',
@@ -184,9 +207,11 @@ const jsonFeed = { // TODO naming newJsonFeed?
     }
 }
 
-const rssFeed = { // TODO naming newRSSFeed?
-    contentType: 'application/rss+xml; charset=utf-8',
-    template: function () { // TODO: make a "getter"? (naming: basics, basicData, structure. fundament, skeleton ?)
+const RssFeedTool = {
+    get contentType() {
+        return 'application/rss+xml; charset=utf-8'
+    },
+    get template() {
         return {
             title: 'Canon Rumors - Essential posts only',
             link: 'https://www.canonrumors.com/',
@@ -245,19 +270,19 @@ const rssFeed = { // TODO naming newRSSFeed?
 }
 
 export async function canonRumors(feedType, reqHeaders, info, logging = false) {
-    const feed = feedType.toLowerCase() === 'json' ? jsonFeed : rssFeed;
+    const FeedTool = feedType.toLowerCase() === 'json' ? JsonFeedTool : RssFeedTool;
     const origin = reqHeaders.get('Origin');
-    const respHeaders = new Headers({'Content-Type': feed.contentType});
+    const respHeaders = new Headers({'Content-Type': FeedTool.contentType});
     if (origin && allowedForCors(origin)) {
         respHeaders.set('Access-Control-Allow-Origin', origin);
         respHeaders.set('Vary', 'Origin');
     }
-    const feedData = feed.template();
+    const feedData = FeedTool.template;
     const latestRelevantItems = await feedItems();
     latestRelevantItems.forEach((item) => {
-        feedData.items.push(feed.createItem(item));
+        feedData.items.push(FeedTool.createItem(item));
     });
-    const responseBody = feed.createResponseBody(feedData);
+    const responseBody = FeedTool.createResponseBody(feedData);
     return {
         body: responseBody,
         options: {

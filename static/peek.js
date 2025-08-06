@@ -60,8 +60,12 @@ function setupFeedPeeker(el) {
                 popup = cr('aside', {class: 'peek-popup'});
                 el.append(popup);
                 fetch(ev.target.dataset.json).then(
-                    // TODO: Some basic error-logging - look at response.ok etc...
-                    response => response.json()
+                    response => {
+                        if (!response.ok) {
+                            throw new Error(`fetch '${ev.target.dataset.json}' response status: \n${response.status}: ${response.statusText}`);
+                        }
+                        return response.json();
+                    }
                 ).then(
                     json => {
                         popup.append(cr('h3', {}, cr('a', {href: json.home_page_url}, json.title)));
@@ -70,10 +74,14 @@ function setupFeedPeeker(el) {
                             const itemEl = cr('div', {class: 'peek-item'},
                                 cr('img', {src: item.image ?? '', alt: '', loading: 'lazy'}),
                                 cr('h4', {}, cr('a', {href: item.url}, item.title)),
-                                cr('div', {class: 'byline'}, cr('time', {
-                                    datetime: item.date_published,
-                                    title: item.date_published
-                                }, itemDate(item)), (author ? ` - by ${author}` : '')),
+                                cr('div', {class: 'byline'},
+                                    cr('time',
+                                        {
+                                            datetime: item.date_published,
+                                            title: item.date_published
+                                        },
+                                        itemDate(item)), (author ? ` - by ${author}` : '')
+                                ),
                                 cr('p', {class: 'item-content'}, item.content_text ?? stripHtml(item.content_html)));
                             popup.append(itemEl);
                         })
@@ -100,7 +108,7 @@ function setupFeedPeeker(el) {
 window.addEventListener('DOMContentLoaded',
     function () {
         /**
-         * setup "feed-peekers"...
+         * setup the "feed-peekers"...
          */
         document.querySelectorAll('.peek').forEach(setupFeedPeeker);
     },
