@@ -107,6 +107,16 @@ async function readRSSFeed() {
     return items;
 }
 
+function filteredItemsList(items) {
+    const filteredItems = [];
+    items.forEach((item) => {
+        if (!unwantedCategory(item)) {
+            filteredItems.push(item);
+        }
+    });
+    return filteredItems;
+}
+
 async function feedItems() {
     const feedRequestTime = new Date();
     let cachedTime = new Date('2000-01-01');
@@ -116,7 +126,7 @@ async function feedItems() {
         cachedTime = new Date(cached.cachedTime);
     }
     if (cached?.cachedItems) {
-        cachedItems = cached.cachedItems;
+        cachedItems = filteredItemsList(cached.cachedItems);
     }
     // console.log(` 🤖 CACHED CONTENT FROM ${cachedTime} WAS READ`);
 
@@ -126,13 +136,9 @@ async function feedItems() {
     }
 
     const newRSSItems = await readRSSFeed();
-    const relevantItems = [];
+    let relevantItems = [];
     if (newRSSItems?.length) {
-        newRSSItems.forEach((item) => {
-            if (!unwantedCategory(item)) {
-                relevantItems.push(item);
-            }
-        });
+        relevantItems = filteredItemsList(newRSSItems);
     }
 
     cachedItems.forEach((item) => {
@@ -275,7 +281,7 @@ const RssFeedTool = {
 }
 
 export async function canonRumors(feedType, reqHeaders, info, logging = false) {
-    const FeedTool = feedType.toLowerCase() === 'json' ? JsonFeedTool : RssFeedTool;
+    const FeedTool = feedType.toLowerCase() === 'json' ? JsonFeedTool : RssFeedTool; // semi-OOP ;-)
     const origin = reqHeaders.get('Origin');
     const respHeaders = new Headers({'Content-Type': FeedTool.contentType});
     if (origin && allowedForCors(origin)) {
