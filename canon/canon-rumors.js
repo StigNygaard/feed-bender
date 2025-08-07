@@ -10,10 +10,15 @@ const feedFetcherUserAgent = 'Feed-bender/1.0 (https://feed-bender.deno.dev/)';
  */
 const skipCategories = [
     'deal zone',
+    'featured deal zone',
     'dealzone',
+    'featured dealzone',
     'buyers guide',
+    'featured buyers guide',
     'smart picks',
+    'featured smart picks',
     'industry news',
+    'featured industry news'
     // 'from the vault'
 ];
 
@@ -30,7 +35,7 @@ function unwantedCategory(item) {
     const categories = item.categories;
     let unwanted = false;
     categories?.forEach(category => {
-        if (skipCategories.includes(category.name.trim().toLowerCase()))
+        if (skipCategories.includes(category.name.trim().toLowerCase())) // To accept partial match as unwanted too?
             unwanted = true; // is an unwanted item
     });
     return unwanted;
