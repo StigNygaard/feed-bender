@@ -10,15 +10,10 @@ const feedFetcherUserAgent = 'Feed-bender/1.0 (https://feed-bender.deno.dev/)';
  */
 const skipCategories = [
     'deal zone',
-    'featured deal zone',
     'dealzone',
-    'featured dealzone',
     'buyers guide',
-    'featured buyers guide',
     'smart picks',
-    'featured smart picks',
     'industry news',
-    'featured industry news'
     // 'from the vault'
 ];
 
@@ -27,7 +22,7 @@ const feedFetcherHeaders = new Headers({
 });
 
 /**
- * Returns if a post/item contains unwanted categories
+ * Returns if a post/item belongs to some unwanted category
  * @param item
  * @returns {boolean}
  */
@@ -35,8 +30,11 @@ function unwantedCategory(item) {
     const categories = item.categories;
     let unwanted = false;
     categories?.forEach(category => {
-        if (skipCategories.includes(category.name.trim().toLowerCase())) // To accept partial match as unwanted too?
+        const categoryName = category.name.trim().toLowerCase();
+        // Also unwanted if just a "substring" of a category-name matches a skipCategory:
+        if (skipCategories.some(skipCategory => categoryName.includes(skipCategory))) {
             unwanted = true; // is an unwanted item
+        }
     });
     return unwanted;
 }
@@ -107,14 +105,19 @@ async function readRSSFeed() {
     return items;
 }
 
+/**
+ * Returns a filtered list of items, omitting items in unwanted categories
+ * @param items
+ * @returns {*[]}
+ */
 function filteredItemsList(items) {
-    const filteredItems = [];
+    const filteredList = [];
     items.forEach((item) => {
         if (!unwantedCategory(item)) {
-            filteredItems.push(item);
+            filteredList.push(item);
         }
     });
-    return filteredItems;
+    return filteredList;
 }
 
 async function feedItems() {
