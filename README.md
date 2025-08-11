@@ -1,6 +1,6 @@
 # feed-bender
 
-Tweaking various news feeds as I want them to be.
+Tweaking various news feeds as I personally want them to be. Either served for use in the newsreader I use - or as an "preburned" API for other (planed) projects.
 
 The first is Canon Rumors' news feed filtered down to [only essential posts](https://feed-bender.deno.dev/canon/crfeed.json), by ignoring posts in several categories.
 
