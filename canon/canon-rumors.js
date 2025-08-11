@@ -150,6 +150,9 @@ async function feedItems() {
         }
     });
     if (relevantItems.length) {
+        if (relevantItems.length > cachedItems.length) {
+            console.log(' 🌟 A new item was added to the feed!');
+        }
         await caching.set('cr-cache', {cachedTime: feedRequestTime, cachedItems: relevantItems.slice(0, 12)});
         console.log(` 🤖 Cached content was ${newRSSItems?.length ? 'updated' : '"extended"'}`);
     }
