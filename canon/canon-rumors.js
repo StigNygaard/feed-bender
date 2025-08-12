@@ -26,7 +26,7 @@ const feedFetcherHeaders = new Headers({
  * @param item
  * @returns {boolean}
  */
-function unwantedCategory(item) {
+function inUnwantedCategory(item) {
     const categories = item.categories;
     let unwanted = false;
     categories?.forEach(category => {
@@ -48,7 +48,7 @@ function isRFC2822DateString(str) {
     return /^(?:(Sun|Mon|Tue|Wed|Thu|Fri|Sat),\s+)?(0[1-9]|[1-2]?[0-9]|3[01])\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(19[0-9]{2}|[2-9][0-9]{3})\s+(2[0-3]|[0-1][0-9]):([0-5][0-9])(?::(60|[0-5][0-9]))?\s+([-+][0-9]{2}[0-5][0-9]|(?:UT|GMT|(?:E|C|M|P)(?:ST|DT)|[A-IK-Z]))(\s+|\(([^()]+|\\\(|\\\))*\))*$/.test(str);
 }
 
-function allowedForCors(origin) {
+function isAllowedForCors(origin) {
     let originHostname = URL.parse(origin)?.hostname?.toLowerCase();
     if (originHostname != null) {
         for (const corsAllowedHostname of corsAllowHostnames) {
@@ -66,7 +66,7 @@ function allowedForCors(origin) {
 async function fetchText(request, options) {
     const response = await fetch(request, options);
     if (!response.ok) {
-        throw new Error(`fetch '${request.url ?? request}' response status: \n${response.status}: ${response.statusText}`);
+        throw new Error(`fetch '${request.url ?? request}' response status: ${response.status}: \n${response.statusText}`);
     }
     return await response.text();
 }
@@ -74,7 +74,7 @@ async function fetchText(request, options) {
 async function fetchJson(request, options) {
     const response = await fetch(request, options);
     if (!response.ok) {
-        throw new Error(`fetch '${request.url ?? request}' response status: \n${response.status}: ${response.statusText}`);
+        throw new Error(`fetch '${request.url ?? request}' response status: ${response.status}: \n${response.statusText}`);
     }
     return await response.json();
 }
@@ -113,7 +113,7 @@ async function readRSSFeed() {
 function filteredItemsList(items) {
     const filteredList = [];
     items.forEach((item) => {
-        if (!unwantedCategory(item)) {
+        if (!inUnwantedCategory(item)) {
             filteredList.push(item);
         }
     });
@@ -290,7 +290,7 @@ export async function canonRumors(feedType, reqHeaders, info, logging = false) {
     const FeedTool = feedType.toLowerCase() === 'json' ? JsonFeedTool : RssFeedTool; // semi-OOP ;-)
     const origin = reqHeaders.get('Origin');
     const respHeaders = new Headers({'Content-Type': FeedTool.contentType});
-    if (origin && allowedForCors(origin)) {
+    if (origin && isAllowedForCors(origin)) {
         respHeaders.set('Access-Control-Allow-Origin', origin);
         respHeaders.set('Vary', 'Origin');
     }

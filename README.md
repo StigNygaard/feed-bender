@@ -1,8 +1,8 @@
 # feed-bender
 
-Tweaking various news feeds as I personally want them to be. Either served for use in the newsreader I use - or as an "preburned" API for other (planed) projects.
+Feed-bender is a place where I plan to create, tweak or combine various news feeds for convenience and special purposes. Either to be served for my newsreader — or as a "preburned API" for other (future planned) projects/ideas.
 
-The first is Canon Rumors' news feed filtered down to [only essential posts](https://feed-bender.deno.dev/canon/crfeed.json), by ignoring posts in several categories.
+My first "custom feed" is Canon Rumors' news-feed filtered down to [only essential posts](https://feed-bender.deno.dev/canon/crfeed.json), by ignoring posts in several categories.
 
 Feed-bender uses [Feedsmith by Maciej Lamberski](https://github.com/macieklamberski/feedsmith) ([MIT](https://github.com/macieklamberski/feedsmith/blob/main/LICENSE) licensed)
 
