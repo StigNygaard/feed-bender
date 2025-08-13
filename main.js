@@ -27,7 +27,6 @@ async function handler(req, info) {
     const isLocalhost = urlObj.hostname === 'localhost';
 
     if (isLocalhost) { // Different Content-Security-Policy in header when localhost
-        // console.log('Modify headers for localhost use...');
         responseHeaders = {
             'Content-Security-Policy': `default-src 'none' ; script-src 'self' ; connect-src https: ${origin} ; img-src https: blob: data: ${origin} ; style-src 'self' ; frame-ancestors 'none' ; form-action 'self' ; base-uri 'none'`,
             'Referrer-Policy': 'strict-origin-when-cross-origin',
@@ -78,7 +77,7 @@ async function handler(req, info) {
 
         return new Response('Not found', {
             status: 404,
-            statusText: `Method ${req.method} not supported here`,
+            statusText: `Not found or method '${req.method}' not supported here`,
             headers: responseHeaders
         });
 
