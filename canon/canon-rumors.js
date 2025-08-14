@@ -14,6 +14,7 @@ const skipCategories = [
     'buyers guide',
     'smart picks',
     'industry news',
+    'canon reviews',
     // 'from the vault'
 ];
 
