@@ -116,6 +116,9 @@ img.logo {
   float: right;
   padding: 0 0 1rem 1rem;
   margin: -5px -5px 0 0;
+  &.feedicon {
+    width: 128px;
+  }
 }
 
 .peek {

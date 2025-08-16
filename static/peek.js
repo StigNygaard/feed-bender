@@ -87,8 +87,10 @@ function setupFeedPeeker(el) {
                                         itemDate(item)), (author ? ` - by ${author}` : '')
                                 ),
                                 cr('p', {class: 'item-content'}, item.content_text ?? stripHtml(item.content_html)),
-                                cr('div', {class: 'item-categories'}, item.tags?.join(', '))
                             );
+                            if (item.tags?.length) {
+                                itemEl.append(cr('div', {class: 'item-categories'}, item.tags.join(', ')));
+                            }
                             popup.append(itemEl);
                         })
                     }
