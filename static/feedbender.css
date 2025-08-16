@@ -175,6 +175,7 @@ img.logo {
         margin: 0;
       }
       .item-categories {
+        margin-top: .2em;
         font-size: 70%;
         font-style: italic;
         color: #777;

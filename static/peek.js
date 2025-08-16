@@ -69,6 +69,10 @@ function setupFeedPeeker(el) {
                 ).then(
                     json => {
                         popup.append(cr('h3', {}, cr('a', {href: json.home_page_url}, json.title)));
+                        if (!json.items?.length) {
+                            popup.append(cr('p', {class: 'error'}, 'Did not retrieve any feed content - Try reloading page or come back later.'));
+                            return;
+                        }
                         json.items.forEach(item => {
                             const author = itemAuthor(item);
                             const itemEl = cr('div', {class: 'peek-item'},
