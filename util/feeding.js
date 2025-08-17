@@ -118,7 +118,7 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
         const newItem = {
             id: item.guid?.value ?? item.link ?? 'https://www.canonrumors.com/',
             title: item.title ?? '(No title)',
-            content_html: item.description ?? '<p>(No content)</p>',
+            content_html: item.content?.encoded ?? item.description ?? '<p>(No content)</p>',
             author: {
                 name: item.dc?.creator ?? 'Canon Rumors'
             },
@@ -162,7 +162,7 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
             },
             title: item.title ?? '(No title)',
             link: item.link ?? 'https://www.canonrumors.com/',
-            description: item.description ?? '<p>(No content)</p>',
+            description: item.content?.encoded ?? item.description ?? '<p>(No content)</p>',
             // RFC 2822 Date format (like "Sun, 13 Jul 2025 07:17:55 +0000") is supported as constructor-value, even if it's not part of ECMAScript standard
             pubDate: item.pubDate, // isRFC2822DateString(item.pubDate ?? '') ? new Date(item.pubDate) : new Date(),
             dc: {
