@@ -121,6 +121,15 @@ img.logo {
   }
 }
 
+img.colorinline {
+  display: inline;
+  height: 1.2cap;
+  width: auto;
+  margin: 0;
+  padding: 0.2em 0 0 0;
+  background-color: var(--feed-orange);
+}
+
 .peek {
   position: relative;
   display: inline-block;

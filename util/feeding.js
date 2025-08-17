@@ -2,10 +2,11 @@ import {parseRssFeed, generateJsonFeed, generateRssFeed} from 'npm:feedsmith@nex
 
 const corsAllowHostnames = Deno.env.get('feedbender_cors_allow_hostnames')?.toLowerCase()?.split(/\s*(?:[,;]|$)\s*/) ?? [];
 
-const fetcherUserAgent = 'Feed-bender/1.0 (https://feed-bender.deno.dev/)';
-const feedFetcherHeaders = new Headers({
-    'User-Agent': fetcherUserAgent
-});
+export const fetcherUserAgent = Deno.env.get('feedbender_fetcher_useragent');
+const feedFetcherHeaders = new Headers({});
+if (fetcherUserAgent) {
+    feedFetcherHeaders.set('User-Agent', fetcherUserAgent);
+}
 
 /**
  * Checks if str is a date in RFC 2822 date format
