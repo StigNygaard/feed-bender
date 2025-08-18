@@ -68,6 +68,7 @@ function setupFeedPeeker(el) {
                     }
                 ).then(
                     json => {
+                        // console.log(JSON.stringify(json));
                         popup.append(cr('h3', {}, cr('a', {href: json.home_page_url}, json.title)));
                         if (!json.items?.length) {
                             popup.append(cr('p', {class: 'error'}, 'Did not retrieve any feed content - Try reloading page or come back later.'));
@@ -85,6 +86,7 @@ function setupFeedPeeker(el) {
                                             title: item.date_published
                                         },
                                         itemDate(item)), (author ? ` - by ${author}` : '')
+                                        // , item.id ? ` (${item.id})` : ''
                                 ),
                                 cr('p', {class: 'item-content'}, item.content_text ?? stripHtml(item.content_html)),
                             );

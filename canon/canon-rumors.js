@@ -66,7 +66,7 @@ async function feedItems() {
     // console.log(` 🤖 CACHED CONTENT FROM ${cachedTime} WAS READ`);
 
     if (cachedItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (60 * 60 * 1000))) {
-        console.log(' 🤖 WILL JUST USE the recently updated CACHED ITEMS');
+        console.log(' 🤖 WILL JUST USE the NEWS\' recently updated CACHED ITEMS');
         return cachedItems;
     }
 
@@ -86,7 +86,7 @@ async function feedItems() {
             console.log(' 🌟 A new item was added to the feed!');
         }
         await caching.set('cr-cache', {cachedTime: feedRequestTime, cachedItems: relevantItems.slice(0, 12)});
-        console.log(` 🤖 Cached content was ${sourceItems?.length ? 'updated' : '"extended"'}`);
+        console.log(` 🤖 Cached NEWS content was ${sourceItems?.length ? 'updated' : '"extended"'}`);
     }
     return relevantItems;
 }

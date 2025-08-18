@@ -1,6 +1,6 @@
 # feed-bender
 
-*Feed-bender* is a project where I will create, tweak or combine various news feeds for convenience and special purposes. Either to be served for my newsreader — or as a "preburner API" for other (future planned) projects/ideas.
+*Feed-bender* is a project where I will create, tweak or combine various news feeds (RSS etc.) for convenience and special purposes. Either to be served for my newsreader — or as a "preburner API" for other (future planned) projects/ideas.
 
 My first "custom feed" is Canon Rumors' news-feed filtered down to [only essential posts](https://feed-bender.deno.dev/canon/crfeed.json), by ignoring posts in several categories.
 
