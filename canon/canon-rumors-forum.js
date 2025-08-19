@@ -3,17 +3,16 @@ import * as caching from './../util/caching.js';
 
 /**
  * Tries to detect if an item is a comment-thread for a post on the main site.
- * Unfortunately, it is not exact science based on only the content of the feed.
+ * Unfortunately, it is not exact science when based on only the content of the feed.
  * @param item
  * @returns {boolean}
  */
 function isPostCommentThread(item) {
-    return item.content?.encoded.endsWith('See full article...</a></div>') ||
-        item.content?.encoded.endsWith('\n\t\t\t\t\t\t\n\t\t\t\t\t</span>\n\t\t\t\t\twww.canonrumors.com\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div></div>');
-
-    //     return item.content?.encoded.endsWith('See full article...</a></div>') ||
-    //         (item.content?.encoded.endsWith('\n\t\t\t\t\t\t\n\t\t\t\t\t</span>\n\t\t\t\t\twww.canonrumors.com\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div></div>')
-    //             && item.authors?.endsWith('(Richard CR)'));
+    return /full\sarticle\s?(\.\.\.)?<\/a><\/div>$/i.test(item.content?.encoded?.trim())
+        || (
+            (item.content?.encoded.endsWith('\n\t\t\t\t\t\t\n\t\t\t\t\t</span>\n\t\t\t\t\twww.canonrumors.com\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div></div>')
+                && item.authors?.at(0)?.endsWith('(Richard CR)'))
+        );
 }
 
 /**
@@ -66,7 +65,9 @@ async function feedItems() {
     console.log('highestGuid of finalItems(cached items): ', highestGuid);
 
     const sourceItems = await feeding.getParsedSourceItems('https://www.canonrumors.com/forum/forums/-/index.rss?order=post_date');
+
     // console.log('sourceItems:\n', JSON.stringify(sourceItems));
+
     let relevantSourceItems = [];
     if (sourceItems?.length) {
         relevantSourceItems = filteredItemsList(sourceItems.toSorted((a, b) => {
