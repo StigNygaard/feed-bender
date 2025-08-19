@@ -9,7 +9,8 @@ import * as caching from './../util/caching.js';
  */
 function isPostCommentThread(item) {
     return item.content?.encoded.endsWith('See full article...</a></div>') ||
-        item.content?.encoded.endsWith('\n\t\t\t\t\t\t\n\t\t\t\t\t</span>\n\t\t\t\t\twww.canonrumors.com\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div></div>');
+        (item.content?.encoded.endsWith('\n\t\t\t\t\t\t\n\t\t\t\t\t</span>\n\t\t\t\t\twww.canonrumors.com\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div></div>')
+            && item.authors?.endsWith('(Richard CR)'));
 }
 
 /**
@@ -62,6 +63,7 @@ async function feedItems() {
     console.log('highestGuid of finalItems(cached items): ', highestGuid);
 
     const sourceItems = await feeding.getParsedSourceItems('https://www.canonrumors.com/forum/forums/-/index.rss?order=post_date');
+    // console.log('sourceItems:\n', JSON.stringify(sourceItems));
     let relevantSourceItems = [];
     if (sourceItems?.length) {
         relevantSourceItems = filteredItemsList(sourceItems.toSorted((a, b) => {
@@ -100,7 +102,7 @@ export async function canonRumorsForum(feedType, reqHeaders, info, logging = fal
     const CreateFeedTool = feeding.getCreateFeedTool(
         feedType,
         'Canon Rumors Forum - New threads',
-        'This is...',
+        'This is...', // TODO  !!!!
         `https://feed-bender.deno.dev/canon/crforumfeed.${feedType}`,
         'https://www.canonrumors.com/forum/',
         'Canon Rumors Forum user',
