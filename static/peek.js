@@ -24,12 +24,11 @@ function cr(tagName, attributes = {}, ...content) {
 
 /**
  * Removes all HTML tags from the given HTML string and returns the plain text content.
- * @param {string} html - The HTML string from which to strip tags.
- * @return {string} The plain text content extracted from the input HTML string.
+ * @param {string | Document} html - The HTML string (or HTMLDocument) from which to strip html-tags.
+ * @return {string} The plain text content extracted from the input.
  */
 function stripHtml(html) {
-    let doc = new DOMParser().parseFromString(html, 'text/html');
-    return doc.body.textContent ?? '';
+    return (html instanceof Document ? html : new DOMParser().parseFromString(html, 'text/html')).body.textContent ?? '';
 }
 
 /**
@@ -75,6 +74,13 @@ function setupFeedPeeker(el) {
                             return;
                         }
                         json.items.forEach(item => {
+                            const htmlDoc = new DOMParser().parseFromString(item.content_html ?? '', 'text/html');
+                            if (!item.image) {
+                                const img = htmlDoc.querySelector('img[src^="https://"]')?.src ?? '';
+                                if (img) {
+                                    item.image = img;
+                                }
+                            }
                             const author = itemAuthor(item);
                             const itemEl = cr('div', {class: 'peek-item'},
                                 cr('img', {src: item.image ?? '', alt: '', loading: 'lazy'}),
@@ -88,7 +94,7 @@ function setupFeedPeeker(el) {
                                         itemDate(item)), (author ? ` - by ${author}` : '')
                                         // , item.id ? ` (${item.id})` : ''
                                 ),
-                                cr('p', {class: 'item-content'}, item.content_text ?? stripHtml(item.content_html)),
+                                cr('p', {class: 'item-content'}, item.content_text ?? stripHtml(htmlDoc)),
                             );
                             if (item.tags?.length) {
                                 itemEl.append(cr('div', {class: 'item-categories'}, item.tags.join(', ')));

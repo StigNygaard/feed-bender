@@ -44,7 +44,7 @@ function cleanItems(items) {
 }
 
 /**
- * Returns a list of relevant/filtered feed items
+ * Returns a list of relevant/filtered feed items for CR FORUM
  * @returns {Promise<Object[]>}
  */
 async function feedItems() {
@@ -58,26 +58,15 @@ async function feedItems() {
     if (cached?.cachedItems) {
         finalItems = cleanItems(filteredItemsList(cached.cachedItems));
     }
-
-    // console.log(` 🤖 CACHED CONTENT FROM ${cachedTime} WAS READ. There was ${finalItems?.length} cached items.`);
+    // console.log(` 🤖 CACHED FORUM-CONTENT FROM ${cachedTime} WAS READ. There was ${finalItems?.length} cached items.`);
 
     if (finalItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (60 * 60 * 1000))) {
         console.log(' 🤖 WILL JUST USE the FORUM\'s recently updated CACHED ITEMS');
         return finalItems;
     }
-
-
-    /** finalItems combines cachedItems and basisList: From the basisList, take the ones with higher
-     * guid-values than the highest value found in cachedItems, and combine these with the cachedItems in a final
-     * array of items sorted with descending guid-values.
-     */
-
-
     const highestGuid = finalItems.length ? finalItems[0].guid.value : 0;
-    console.log('highestGuid of finalItems(cached items): ', highestGuid);
 
     const sourceItems = await feeding.getParsedSourceItems('https://www.canonrumors.com/forum/forums/-/index.rss?order=post_date');
-
     let relevantSourceItems = [];
     if (sourceItems?.length) {
         sourceItems.sort((a, b) => {
@@ -85,26 +74,20 @@ async function feedItems() {
             let vb = Number(b.guid?.value);
             return (isNaN(vb) ? 0 : vb) - (isNaN(va) ? 0 : va)
         });
-
         // console.log('\nsourceItems:\n', JSON.stringify(sourceItems));
-
         relevantSourceItems = cleanItems(filteredItemsList(sourceItems));
     }
-    console.log('\nForum: Length of cached items\n', finalItems?.length);
-
+    const lengthOfCachedItems = finalItems.length;
     finalItems.unshift(...relevantSourceItems.filter(item => item.guid.value > highestGuid));
-    // TODO (if finalItems grew in size, some new items was added)
-    console.log('Forum: After "merge", the *final* finalItems.length: ', finalItems?.length);
-
+    if (finalItems?.length > lengthOfCachedItems) {
+        console.log(` 🌟 ${finalItems?.length - lengthOfCachedItems} new thread(s) was added to the FORUM feed!`);
+    }
     if (finalItems.length) {
         await caching.set('crforum-cache', {cachedTime: feedRequestTime, cachedItems: finalItems.slice(0, 12)});
         console.log(` 🤖 Cached FORUM content was ${relevantSourceItems?.length ? 'updated' : '"extended"'}`);
     }
-
     return finalItems;
-
 }
-
 
 /**
  * Returns a filtered feed of new Canon Rumors Forum threads, omitting the threads created to be
@@ -120,7 +103,7 @@ export async function canonRumorsForum(feedType, reqHeaders, info, logging = fal
     const CreateFeedTool = feeding.getCreateFeedTool(
         feedType,
         'Canon Rumors Forum - New threads',
-        'Keeping track of new threads in Canon Rumors Forum', // TODO more !!!!
+        'Keeping track of new threads in Canon Rumors Forum, but trying to ignore threads created as comment-section for a news-post on the main site',
         `https://feed-bender.deno.dev/canon/crforumfeed.${feedType}`,
         'https://www.canonrumors.com/forum/',
         'Canon Rumors Forum user',
