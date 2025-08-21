@@ -90,11 +90,11 @@ async function feedItems() {
 
         relevantSourceItems = cleanItems(filteredItemsList(sourceItems));
     }
-    console.log('\nrelevantSourceItems.length:\n', relevantSourceItems?.length);
+    console.log('\nForum: Length of cached items\n', finalItems?.length);
 
     finalItems.unshift(...relevantSourceItems.filter(item => item.guid.value > highestGuid));
     // TODO (if finalItems grew in size, some new items was added)
-    console.log('After "merge", the *final* finalItems.length: ', relevantSourceItems?.length);
+    console.log('Forum: After "merge", the *final* finalItems.length: ', finalItems?.length);
 
     if (finalItems.length) {
         await caching.set('crforum-cache', {cachedTime: feedRequestTime, cachedItems: finalItems.slice(0, 12)});
