@@ -76,7 +76,7 @@ function setupFeedPeeker(el) {
                         json.items.forEach(item => {
                             const htmlDoc = new DOMParser().parseFromString(item.content_html ?? '', 'text/html');
                             if (!item.image) {
-                                const img = htmlDoc.querySelector('img[src^="https://"]')?.src ?? '';
+                                const img = htmlDoc.querySelector('img[src^="https://"],img[src^="//"]')?.src ?? '';
                                 if (img) {
                                     item.image = img;
                                 }
