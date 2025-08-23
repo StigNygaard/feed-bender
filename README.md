@@ -4,7 +4,7 @@
 
 My first two "custom feeds" are both related to [Canon Rumors](https://canonrumors.com/).
 One feed is based on CR main-site's own RSS news feed, but filtered down to only having "essential posts" by ignoring posts in some categories.
-The other keeps track of new *threads* in the forum of the site, except it tries to ignore threads created to be a "comment-section" to one of the posts on the main-site.
+The other feed keeps track of *new threads* (topics) in the forum of the site, except it tries to ignore threads created to be a "comment-section" to one of the posts on the main-site.
 
 Feed-bender uses [*Feedsmith* by *Maciej Lamberski*](https://github.com/macieklamberski/feedsmith) ([MIT](https://github.com/macieklamberski/feedsmith/blob/main/LICENSE) licensed)
 

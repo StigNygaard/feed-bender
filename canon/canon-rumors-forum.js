@@ -16,8 +16,8 @@ function isCommentThread(item) {
 }
 
 /**
- * Returns a filtered list of new threads in forum, trying to avoid the threads
- * created as comment-thread for a post on the main site.
+ * Returns a filtered list of new threads (topics) in forum, trying to avoid the
+ * threads created to be a comment-section for a post on the main-site.
  * @param items
  * @returns {Object[]}
  */
@@ -90,8 +90,8 @@ async function feedItems() {
 }
 
 /**
- * Returns a filtered feed of new Canon Rumors Forum threads, omitting the threads created to be
- * comment-thread for a news posting on the main site.
+ * Returns a filtered feed of new Canon Rumors Forum threads (topics), omitting the threads created
+ * to be a "comment-section" for a news-posting on the main-site.
  * @param feedType {'json'|'rss'}
  * @param reqHeaders {Headers}
  * @param [info] {ServeHandlerInfo<Addr>}
@@ -102,11 +102,11 @@ export async function canonRumorsForum(feedType, reqHeaders, info, logging = fal
 
     const CreateFeedTool = feeding.getCreateFeedTool(
         feedType,
-        'Canon Rumors Forum - New threads',
-        'Keeping track of new threads in Canon Rumors Forum, but trying to ignore threads created as comment-section for a news-post on the main site',
+        'Canon Rumors Forum - New threads (topics)',
+        'Keeping track of new threads (topics) in Canon Rumors Forum, but trying to ignore threads created as comment-section for a news-post on the main-site',
         `https://feed-bender.deno.dev/canon/crforumfeed.${feedType}`,
         'https://www.canonrumors.com/forum/',
-        'Canon Rumors Forum user',
+        'Canon Rumors Forum users',
         'https://www.canonrumors.com/wp-content/uploads/2022/05/logo-alt.png'
     );
 

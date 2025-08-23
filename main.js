@@ -72,7 +72,7 @@ async function handler(req, info) {
             return new Response(result.body, { headers: responseHeaders, ...result.options });
         }
 
-        /* Feed: Canon Rumors Forum - New threads */
+        /* Feed: Canon Rumors Forum - New threads (topics) */
         feedType = crforumPathPattern.exec(urlObj)?.pathname?.groups?.type;
         if (feedType) { // if (crforumPathPattern.test(urlObj)) ...
             console.log(` 🤖 FORUM ${feedType.toUpperCase()} FEED REQUEST BY: ${req.headers?.get('User-Agent') ?? ''}`);
