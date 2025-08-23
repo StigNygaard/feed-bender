@@ -66,7 +66,7 @@ async function feedItems() {
     // console.log(` 🤖 CACHED CONTENT FROM ${cachedTime} WAS READ`);
 
     if (cachedItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (60 * 60 * 1000))) {
-        console.log(' 🤖 WILL JUST USE the NEWS\' recently updated CACHED ITEMS');
+        console.log(` 🤖 WILL JUST USE the NEWS' recently (${cachedTime.toLocaleString()}) updated CACHED ITEMS`);
         return cachedItems;
     }
 

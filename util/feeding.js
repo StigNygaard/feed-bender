@@ -80,7 +80,7 @@ export async function getParsedSourceItems(req, timeout = 15000) {
             req,
             {
                 headers: feedFetcherHeaders,
-                signal: AbortSignal.timeout(timeout) // timeout after 10 seconds
+                signal: AbortSignal.timeout(timeout) // timeout after (default) 15 seconds
             }
         );
         const feed = parseRssFeed(text);
@@ -117,18 +117,18 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
 
     function createJsonItem(item) {
         const newItem = {
-            id: item.guid?.value ?? item.link ?? 'https://www.canonrumors.com/',
+            id: item.guid?.value ?? item.link ?? siteUrl,
             title: item.title ?? '(No title)',
             content_html: item.content?.encoded ?? item.description ?? '<p>(No content)</p>',
             author: {
-                name: item.dc?.creator ?? 'Canon Rumors'
+                name: item.dc?.creator ?? authorName ?? feedTitle
             },
             authors: [
                 {
-                    name: item.dc?.creator ?? 'Canon Rumors'
+                    name: item.dc?.creator ?? authorName ?? feedTitle
                 }
             ],
-            url: item.link ?? 'https://www.canonrumors.com/',
+            url: item.link ?? siteUrl,
             // RFC 2822 Date format (like "Sun, 13 Jul 2025 07:17:55 +0000") is supported as constructor-value, even if it's not part of ECMAScript standard
             date_published: isRFC2822DateString(item.pubDate ?? '') ? new Date(item.pubDate) : new Date(),
         };
@@ -158,16 +158,16 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
     function createRssItem(item) {
         const newItem = {
             guid: {
-                value: item.guid?.value ?? item.link ?? 'https://www.canonrumors.com/',
+                value: item.guid?.value ?? item.link ?? siteUrl,
                 isPermaLink: false
             },
             title: item.title ?? '(No title)',
-            link: item.link ?? 'https://www.canonrumors.com/',
+            link: item.link ?? siteUrl,
             description: item.content?.encoded ?? item.description ?? '<p>(No content)</p>',
             // RFC 2822 Date format (like "Sun, 13 Jul 2025 07:17:55 +0000") is supported as constructor-value, even if it's not part of ECMAScript standard
             pubDate: item.pubDate, // isRFC2822DateString(item.pubDate ?? '') ? new Date(item.pubDate) : new Date(),
             dc: {
-                creator: item.dc?.creator ?? 'Canon Rumors'
+                creator: item.dc?.creator ?? authorName ?? feedTitle
             }
         };
         if (item.enclosures?.length) {
@@ -214,7 +214,7 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
                     home_page_url: siteUrl,
                     language: 'en-US',
                     feed_url: feedUrl,
-                    authors: [ // but only if there are a "global" author?
+                    authors: [ // TODO: but only if there are a "global" author?
                         {
                             name: authorName,
                             url: siteUrl
