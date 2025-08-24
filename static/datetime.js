@@ -1,5 +1,5 @@
 /**
- * Pads a number with leading zeros to a given length.
+ * Pads a number (as absolute integer) with leading zeros to a given length.
  * @param n
  * @param len
  * @returns {string}
@@ -9,30 +9,30 @@ function pad(n, len = 2) {
 }
 
 /**
- * Get offset of current timezone in ISO format
+ * Get offset of timezone in ISO format
+ * @param dt {Date} - Defaults to current date/time. A specific date is needed to detect if summertime is active.
  * @returns {string}
  */
-export function getTimezoneOffset() {
-    const today = new Date();
-    const tzOffset = -today.getTimezoneOffset();
+export function getTimezoneOffset(dt = new Date()) {
+    const tzOffset = -dt.getTimezoneOffset();
     const diff = tzOffset >= 0 ? '+' : '-';
     return diff + pad(tzOffset / 60) + ':' + pad(tzOffset % 60);
 }
 
 /**
- * Get name of current timezone
+ * Get name of timezone
+ * @param dt {Date} - Defaults to current date/time. A specific date is needed to detect if summertime is active.
  * @param {'short', 'long', 'shortOffset', 'longOffset', 'shortGeneric', 'longGeneric', 'regional'} timezoneFormat
  * @returns {string}
  */
-export function getTimezoneName(timezoneFormat = 'short') {
+export function getTimezoneName(dt = new Date(), timezoneFormat = 'short') {
     if (timezoneFormat === 'regional') {
         // ? Returns IANA timezone name by definition, which is in English
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat/resolvedOptions
         return Intl.DateTimeFormat().resolvedOptions().timeZone;
     }
-    const today = new Date();
-    const short = today.toLocaleDateString(undefined);
-    const full = today.toLocaleDateString(undefined, { timeZoneName: timezoneFormat });
+    const short = dt.toLocaleDateString(undefined);
+    const full = dt.toLocaleDateString(undefined, { timeZoneName: timezoneFormat });
     // Trying to remove date from the string in a locale-agnostic way
     const shortIndex = full.indexOf(short);
     if (shortIndex >= 0) {
@@ -42,7 +42,7 @@ export function getTimezoneName(timezoneFormat = 'short') {
         return trimmed.replace(/^[\s,.\-:;]+|[\s,.\-:;]+$/g, '');
     } else {
         // fallback to offset in ISO format
-        return getTimezoneOffset()
+        return getTimezoneOffset(dt)
     }
 }
 
@@ -51,14 +51,14 @@ export function getTimezoneName(timezoneFormat = 'short') {
  * @param date
  * @returns {string}
  */
-export function toISOStringWithTimezone(date) { // technically not ISO?
+export function toISOStringWithTimezone(date) { // technically not really ISO?
     return date.getFullYear() +
         '-' + pad(date.getMonth() + 1) +
         '-' + pad(date.getDate()) +
         'T' + pad(date.getHours()) +
         ':' + pad(date.getMinutes()) +
         ':' + pad(date.getSeconds()) +
-        getTimezoneOffset();
+        getTimezoneOffset(date);
 }
 
 /**
@@ -82,7 +82,7 @@ export function shortDateTime(date, tzFormat = 'none') {
     let tz;
     switch (tzFormat) {
         case 'offset':
-            tz = getTimezoneOffset();
+            tz = getTimezoneOffset(date);
             break;
         case 'short':
         case 'long':
@@ -91,7 +91,7 @@ export function shortDateTime(date, tzFormat = 'none') {
         case 'shortGeneric':
         case 'longGeneric':
         case 'regional':
-            tz = getTimezoneName(tzFormat);
+            tz = getTimezoneName(date, tzFormat);
             break;
         case 'utc':
         case 'UTC':

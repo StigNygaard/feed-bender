@@ -23,7 +23,7 @@ Deno.serve(handler);
 
 const now = new Date();
 // https://github.com/denoland/deploy_feedback/issues/705
-console.log(` >>>  ${shortDateTime(now, 'offset')} - main.js running on Deno ${Deno.version.deno} (${navigator.userAgent.toLowerCase()})`);
+console.log(` >>>  ${shortDateTime(now, 'shortOffset')} - main.js running on Deno ${Deno.version.deno} (${navigator.userAgent.toLowerCase()})`);
 
 
 async function handler(req, info) {

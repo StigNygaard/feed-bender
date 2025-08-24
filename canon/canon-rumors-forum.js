@@ -62,7 +62,7 @@ async function feedItems() {
     // console.log(` 🤖 CACHED FORUM-CONTENT FROM ${cachedTime} WAS READ. There was ${finalItems?.length} cached items.`);
 
     if (finalItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (60 * 60 * 1000))) {
-        console.log(` 🤖 WILL JUST USE the FORUM's recently (${shortDateTime(cachedTime, 'offset')}) updated CACHED ITEMS`);
+        console.log(` 🤖 WILL JUST USE the FORUM's recently (${shortDateTime(cachedTime, 'shortOffset')}) updated CACHED ITEMS`);
         return finalItems;
     }
     const highestGuid = finalItems.length ? finalItems[0].guid.value : 0;
