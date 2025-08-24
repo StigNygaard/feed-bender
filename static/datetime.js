@@ -1,7 +1,7 @@
 /**
  * Pads a number (as absolute integer) with leading zeros to a given length.
- * @param n
- * @param len
+ * @param n {number} - The number to pad.
+ * @param [len=2] {number} - "Padded length". Defaults to 2.
  * @returns {string}
  */
 function pad(n, len = 2) {
@@ -10,7 +10,7 @@ function pad(n, len = 2) {
 
 /**
  * Get offset of timezone in ISO format
- * @param dt {Date} - Defaults to current date/time. A specific date is needed to detect if summertime is active.
+ * @param [dt=Date()] {Date} - Defaults to current date/time. A specific date is needed to detect if summertime is active.
  * @returns {string}
  */
 export function getTimezoneOffset(dt = new Date()) {
@@ -20,19 +20,20 @@ export function getTimezoneOffset(dt = new Date()) {
 }
 
 /**
- * Get name of timezone
- * @param dt {Date} - Defaults to current date/time. A specific date is needed to detect if summertime is active.
- * @param {'short', 'long', 'shortOffset', 'longOffset', 'shortGeneric', 'longGeneric', 'regional'} timezoneFormat
+ * Get a string value of timezone
+ * @param [dt=Date()] {Date} - Defaults to current date/time. A specific date is needed to detect if summertime is active.
+ * @param [timezoneFormat='short'] {'short'|'long'|'shortOffset'|'longOffset'|'shortGeneric'|'longGeneric'|'regional'}
  * @returns {string}
  */
-export function getTimezoneName(dt = new Date(), timezoneFormat = 'short') {
+export function getTimezoneValue(dt = new Date(), timezoneFormat = 'short') {
+    // This is a bit "hacky". Maybe not for critical use...
     if (timezoneFormat === 'regional') {
         // ? Returns IANA timezone name by definition, which is in English
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat/resolvedOptions
         return Intl.DateTimeFormat().resolvedOptions().timeZone;
     }
     const short = dt.toLocaleDateString(undefined);
-    const full = dt.toLocaleDateString(undefined, { timeZoneName: timezoneFormat });
+    const full = dt.toLocaleDateString(undefined, {timeZoneName: timezoneFormat});
     // Trying to remove date from the string in a locale-agnostic way
     const shortIndex = full.indexOf(short);
     if (shortIndex >= 0) {
@@ -41,17 +42,17 @@ export function getTimezoneName(dt = new Date(), timezoneFormat = 'short') {
         // trim it from both sides
         return trimmed.replace(/^[\s,.\-:;]+|[\s,.\-:;]+$/g, '');
     } else {
-        // fallback to offset in ISO format
+        // Fallback to offset in ISO format
         return getTimezoneOffset(dt)
     }
 }
 
 /**
- * Returns a string representation of the given date in ISO(?) format,
- * @param date
+ * Returns a string representation of the given date in ISO-like format
+ * @param [date=Date()] {Date} - Defaults to current date/time.
  * @returns {string}
  */
-export function toISOStringWithTimezone(date) { // technically not really ISO?
+export function dateAsISOStringWithTimezone(date = new Date()) { // technically not really ISO?
     return date.getFullYear() +
         '-' + pad(date.getMonth() + 1) +
         '-' + pad(date.getDate()) +
@@ -62,7 +63,7 @@ export function toISOStringWithTimezone(date) { // technically not really ISO?
 }
 
 /**
- * The preferred "universal" datetime format of mine - with tz-format variations.
+ * The preferred "universal" datetime format of mine - with various tz-format options.
  * Examples results:
  * 2025-07-24 20:39                                 // none (default)
  * 2025-07-24 20:39 +02:00                          // offset
@@ -74,11 +75,11 @@ export function toISOStringWithTimezone(date) { // technically not really ISO?
  * 2025-07-24 20:39 Central European Time           // longGeneric
  * 2025-07-24 20:39 Europe/Copenhagen               // regional
  * 2025-07-24 18:39 UTC                             // UTC
- * @param date
- * @param {'none', 'offset', 'short', 'long', 'shortOffset', 'longOffset', 'shortGeneric', 'longGeneric', 'regional', 'UTC'} [tzFormat='none']
+ * @param [date=Date()] {Date} - Defaults to current date/time.
+ * @param [tzFormat='none'] {'none'|'offset'|'short'|'long'|'shortOffset'|'longOffset'|'shortGeneric'|'longGeneric'|'regional'|'UTC'}
  * @returns {string}
  */
-export function shortDateTime(date, tzFormat = 'none') {
+export function shortDateTime(date = new Date(), tzFormat = 'none') {
     let tz;
     switch (tzFormat) {
         case 'offset':
@@ -91,7 +92,7 @@ export function shortDateTime(date, tzFormat = 'none') {
         case 'shortGeneric':
         case 'longGeneric':
         case 'regional':
-            tz = getTimezoneName(date, tzFormat);
+            tz = getTimezoneValue(date, tzFormat);
             break;
         case 'utc':
         case 'UTC':
