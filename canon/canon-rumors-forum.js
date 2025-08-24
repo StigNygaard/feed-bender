@@ -74,7 +74,9 @@ async function feedItems() {
             let vb = Number(b.guid?.value);
             return (isNaN(vb) ? 0 : vb) - (isNaN(va) ? 0 : va)
         });
+
         // console.log('\nsourceItems:\n', JSON.stringify(sourceItems));
+
         relevantSourceItems = cleanItems(filteredItemsList(sourceItems));
     }
     const lengthOfCachedItems = finalItems.length;

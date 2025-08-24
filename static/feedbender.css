@@ -206,7 +206,7 @@ img.colorinline {
 
 @media screen and (min-width: 42rem) {
   .peek .peek-popup {
-    top: -8lh;
+    top: -14lh;
     left: 1em;
     height: 40rem;
     max-height: 60svh;
