@@ -2,6 +2,7 @@ import { serveDir } from 'jsr:@std/http/file-server';
 import 'jsr:@std/dotenv/load';
 import { canonRumors } from './canon/canon-rumors.js';
 import { canonRumorsForum } from './canon/canon-rumors-forum.js';
+import { shortDateTime } from './static/datetime.js';
 
 let responseHeaders = {
     'Content-Security-Policy': `default-src 'none' ; script-src 'self' ; connect-src https: ; img-src https: blob: data: ; style-src 'self' ; frame-ancestors 'none' ; form-action 'self' ; base-uri 'none'`,
@@ -20,9 +21,9 @@ const crforumPathPattern = new URLPattern({ pathname: "/canon/crforumfeed.:type(
 // we could set a port-number with Deno.serve({port: portno}, handler);
 Deno.serve(handler);
 
+const now = new Date();
 // https://github.com/denoland/deploy_feedback/issues/705
-console.log(`${new Date().toISOString()} - main.js running on Deno ${Deno.version.deno} (${navigator.userAgent.toLowerCase()})`);
-
+console.log(` >>>  ${shortDateTime(now, 'offset')} - main.js running on Deno ${Deno.version.deno} (${navigator.userAgent.toLowerCase()})`);
 
 
 async function handler(req, info) {

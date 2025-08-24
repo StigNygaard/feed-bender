@@ -1,5 +1,6 @@
 import * as feeding from './../util/feeding.js';
 import * as caching from './../util/caching.js';
+import {shortDateTime} from "../static/datetime.js";
 
 /**
  * Tries to detect if an item is a comment-thread for a post on the main site.
@@ -61,7 +62,7 @@ async function feedItems() {
     // console.log(` 🤖 CACHED FORUM-CONTENT FROM ${cachedTime} WAS READ. There was ${finalItems?.length} cached items.`);
 
     if (finalItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (60 * 60 * 1000))) {
-        console.log(` 🤖 WILL JUST USE the FORUM's recently (${cachedTime.toLocaleString()}) updated CACHED ITEMS`);
+        console.log(` 🤖 WILL JUST USE the FORUM's recently (${shortDateTime(cachedTime, 'offset')}) updated CACHED ITEMS`);
         return finalItems;
     }
     const highestGuid = finalItems.length ? finalItems[0].guid.value : 0;

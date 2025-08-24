@@ -1,3 +1,5 @@
+import { shortDateTime } from './datetime.js';
+
 /**
  * Create a DOM element with optional attributes and content (children/subtree)
  * @param tagName {string} - The tagname for HTMLElement to create
@@ -43,13 +45,7 @@ function setupFeedPeeker(el) {
     function itemDate(item) {
         const date = new Date(item.date_published);
         if (date.toString() === 'Invalid Date') return '';
-        return new Intl.DateTimeFormat(/* undefined */ 'en-CA', { // Just happen to like this en-CA based datetime format :-)
-            dateStyle: 'short',
-            timeStyle: 'short',
-            hour12: false // timeZoneName: 'shortOffset' (or 'short'?)
-        }).format(date);
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat
+        return shortDateTime(date);
     }
 
     el.addEventListener('mouseenter', // mouseover?

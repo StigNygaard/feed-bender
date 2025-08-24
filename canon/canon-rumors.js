@@ -1,5 +1,6 @@
 import * as feeding from './../util/feeding.js';
 import * as caching from './../util/caching.js';
+import { shortDateTime } from '../static/datetime.js';
 
 /**
  * Unwanted categories of posts to be ignored (lowercase)
@@ -66,7 +67,7 @@ async function feedItems() {
     // console.log(` 🤖 CACHED CONTENT FROM ${cachedTime} WAS READ`);
 
     if (cachedItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (60 * 60 * 1000))) {
-        console.log(` 🤖 WILL JUST USE the NEWS' recently (${cachedTime.toLocaleString()}) updated CACHED ITEMS`);
+        console.log(` 🤖 WILL JUST USE the NEWS' recently (${shortDateTime(cachedTime,'offset')}) updated CACHED ITEMS`);
         return cachedItems;
     }
 
