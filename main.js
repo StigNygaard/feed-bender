@@ -2,6 +2,7 @@ import { serveDir } from 'jsr:@std/http/file-server';
 import 'jsr:@std/dotenv/load';
 import { canonRumors } from './canon/canon-rumors.js';
 import { canonRumorsForum } from './canon/canon-rumors-forum.js';
+import { ymCinema } from './canon/ymcinema.js';
 import { shortDateTime } from './static/datetime.js';
 
 let responseHeaders = {
@@ -12,11 +13,12 @@ let responseHeaders = {
 let responseHeadersArr = Object.entries(responseHeaders).map(([k, v]) => `${k}: ${v}`);
 
 // const crPathPattern = new URLPattern({ pathname: "/canon/crfeed.json" });
-const crPathPattern = new URLPattern({ pathname: "/canon/crfeed.:type(json|rss)" });
-const crforumPathPattern = new URLPattern({ pathname: "/canon/crforumfeed.:type(json|rss)" });
 // const crPathPattern = new URLPattern({ pathname: "/canon/crfeed{/}?" });
 // const mainStaticPathPattern = new URLPattern({ pathname: "{/*}?" });
 // const mainStaticPathPattern = new URLPattern({ pathname: "/:file?" });
+const crPathPattern = new URLPattern({ pathname: "/canon/crfeed.:type(json|rss)" });
+const crforumPathPattern = new URLPattern({ pathname: "/canon/crforumfeed.:type(json|rss)" });
+const ymcPathPattern = new URLPattern({ pathname: "/canon/ymcfeed.:type(json|rss)" });
 
 // we could set a port-number with Deno.serve({port: portno}, handler);
 Deno.serve(handler);
@@ -79,6 +81,15 @@ async function handler(req, info) {
             console.log(` 🤖 FORUM ${feedType.toUpperCase()} FEED REQUEST BY: ${req.headers?.get('User-Agent') ?? ''}`);
             const result = await canonRumorsForum(feedType, req.headers, info, isLocalhost);
             console.log(` 🤖 COMPLETE ${feedType.toUpperCase()} FEED CREATED for FORUM`);
+            return new Response(result.body, { headers: responseHeaders, ...result.options });
+        }
+
+        /* Feed: Y.M. Cinema - Canon related only */
+        feedType = ymcPathPattern.exec(urlObj)?.pathname?.groups?.type;
+        if (feedType) { // if (ymcPathPattern.test(urlObj)) ...
+            console.log(` 🤖 YMC ${feedType.toUpperCase()} FEED REQUEST BY: ${req.headers?.get('User-Agent') ?? ''}`);
+            const result = await ymCinema(feedType, req.headers, info, isLocalhost);
+            console.log(` 🤖 COMPLETE ${feedType.toUpperCase()} FEED CREATED for YMC`);
             return new Response(result.body, { headers: responseHeaders, ...result.options });
         }
 
