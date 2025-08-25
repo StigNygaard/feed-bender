@@ -9,6 +9,13 @@ export async function get(key) {
     return JSON.parse(content?.value ?? '[]');
 }
 
+/**
+ * Set a value in the cache
+ * TODO: Note, Kv.set(key,val) throws exception if val > 65536 bytes
+ * @param key
+ * @param value
+ * @returns {Promise<Deno.KvCommitResult>}
+ */
 export async function set(key, value) {
     if (!Array.isArray(key)) {
         key = [key];

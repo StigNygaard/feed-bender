@@ -20,13 +20,13 @@ export function getTimezoneOffset(dt = new Date()) {
 }
 
 /**
- * Get a string value of timezone
+ * Get a string "display-value" of timezone
  * @param [dt=Date()] {Date} - Defaults to current date/time. A specific date is needed to detect if summertime is active.
  * @param [timezoneFormat='short'] {'short'|'long'|'shortOffset'|'longOffset'|'shortGeneric'|'longGeneric'|'regional'}
  * @returns {string}
  */
-export function getTimezoneValue(dt = new Date(), timezoneFormat = 'short') {
-    // This is a bit "hacky". Maybe not for critical use...
+export function getTimezoneDisplay(dt = new Date(), timezoneFormat = 'short') {
+    // This is a bit "hacky". Maybe not ready for critical use?...
     if (timezoneFormat === 'regional') {
         // ? Returns IANA timezone name by definition, which is in English
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat/resolvedOptions
@@ -63,9 +63,9 @@ export function dateAsISOStringWithTimezone(date = new Date()) { // technically 
 }
 
 /**
- * The preferred "universal" datetime format of mine - with various tz-format options.
+ * The preferred "universal" compact datetime format of mine - with some timezone format display options.
  * Examples results:
- * 2025-07-24 20:39                                 // none (default)
+ * 2025-07-24 20:39                                 // none (default timezone display option)
  * 2025-07-24 20:39 +02:00                          // offset
  * 2025-07-24 20:39 CEST                            // short
  * 2025-07-24 20:39 Central European Summer Time    // long
@@ -92,7 +92,7 @@ export function shortDateTime(date = new Date(), tzFormat = 'none') {
         case 'shortGeneric':
         case 'longGeneric':
         case 'regional':
-            tz = getTimezoneValue(date, tzFormat);
+            tz = getTimezoneDisplay(date, tzFormat);
             break;
         case 'utc':
         case 'UTC':

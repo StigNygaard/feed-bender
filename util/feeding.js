@@ -133,7 +133,7 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
             date_published: isRFC2822DateString(item.pubDate ?? '') ? new Date(item.pubDate) : new Date(),
         };
         if (item.enclosures?.length) {
-            newItem.image = item.enclosures.find(enclosure => enclosure.type?.startsWith('image/'))?.url ?? logoUrl;
+            newItem.image = item.enclosures.find(enclosure => enclosure.type?.startsWith('image/'))?.url;
             newItem.attachments = [];
             item.enclosures.forEach(enclosure => {
                 const attachment = {
@@ -145,6 +145,9 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
                 }
                 newItem.attachments.push(attachment);
             });
+        }
+        if (!newItem.image && item._image) {
+            newItem.image = item._image;
         }
         if (item.categories?.length) {
             newItem.tags = [];
