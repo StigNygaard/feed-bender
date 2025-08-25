@@ -31,7 +31,7 @@ function inUnwantedCategory(item) {
 
 /**
  * Returns a filtered list of items, omitting items in unwanted categories
- * @param items
+ * @param items {Object[]}
  * @returns {Object[]}
  */
 function filteredItemsList(items) {
@@ -46,8 +46,8 @@ function filteredItemsList(items) {
 
 /**
  * Removes the (typically) very big content.encoded field from the items, leaving only the shorter description field.
- * @param items
- * @returns {*}
+ * @param items {Object[]}
+ * @returns {Object[]}
  */
 function slimItems(items) {
     const imgsrc = /<img\s[^>]*src="(https:\/\/ymcinema\.com\/wp-content\/uploads\/[^">]+\.(webp|jpg|avif|jxl))"[^>]*>/;
@@ -80,7 +80,7 @@ async function feedItems() {
     }
     // console.log(` 🤖 CACHED CONTENT FROM ${cachedTime} WAS READ`);
 
-    if (cachedItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (60 * 60 * 1000))) {
+    if (cachedItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (120 * 60 * 1000))) {
         console.log(` 🤖 WILL JUST USE the YMC's recently (${shortDateTime(cachedTime,'shortOffset')}) updated CACHED ITEMS`);
         return cachedItems;
     }

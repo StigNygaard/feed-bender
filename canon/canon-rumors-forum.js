@@ -32,6 +32,10 @@ function filteredItemsList(items) {
     return filteredList;
 }
 
+/**
+ * Removes "read more" links
+ * @param items {Object[]}
+ * @returns {Object[]} */
 function cleanItems(items) {
     items.forEach((item) => {
         if (item.content?.encoded) {
