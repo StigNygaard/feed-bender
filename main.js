@@ -69,27 +69,27 @@ async function handler(req, info) {
         /* Feed: Canon Rumors - Essential posts only */
         let feedType = crPathPattern.exec(urlObj)?.pathname?.groups?.type;
         if (feedType) { // if (crPathPattern.test(urlObj)) ...
-            console.log(` 🤖 NEWS ${feedType.toUpperCase()} FEED REQUEST BY: ${req.headers?.get('User-Agent') ?? ''}`);
+            console.log(` 🤖 ${feedType.toUpperCase()} feed request for CRNEWS by: ${req.headers?.get('User-Agent') ?? ''}`);
             const result = await canonRumors(feedType, req.headers, info, isLocalhost);
-            console.log(` 🤖 COMPLETE ${feedType.toUpperCase()} FEED CREATED for NEWS`);
+            console.log(` 🤖 Complete ${feedType.toUpperCase()} feed created for CRNEWS`);
             return new Response(result.body, { headers: responseHeaders, ...result.options });
         }
 
         /* Feed: Canon Rumors Forum - New threads (topics) */
         feedType = crforumPathPattern.exec(urlObj)?.pathname?.groups?.type;
         if (feedType) { // if (crforumPathPattern.test(urlObj)) ...
-            console.log(` 🤖 FORUM ${feedType.toUpperCase()} FEED REQUEST BY: ${req.headers?.get('User-Agent') ?? ''}`);
+            console.log(` 🤖 ${feedType.toUpperCase()} feed request for CRFORUM by: ${req.headers?.get('User-Agent') ?? ''}`);
             const result = await canonRumorsForum(feedType, req.headers, info, isLocalhost);
-            console.log(` 🤖 COMPLETE ${feedType.toUpperCase()} FEED CREATED for FORUM`);
+            console.log(` 🤖 Complete ${feedType.toUpperCase()} feed created for CRFORUM`);
             return new Response(result.body, { headers: responseHeaders, ...result.options });
         }
 
         /* Feed: Y.M. Cinema - Canon related only */
         feedType = ymcPathPattern.exec(urlObj)?.pathname?.groups?.type;
         if (feedType) { // if (ymcPathPattern.test(urlObj)) ...
-            console.log(` 🤖 YMC ${feedType.toUpperCase()} FEED REQUEST BY: ${req.headers?.get('User-Agent') ?? ''}`);
+            console.log(` 🤖 ${feedType.toUpperCase()} feed request for YMCINEMA by: ${req.headers?.get('User-Agent') ?? ''}`);
             const result = await ymCinema(feedType, req.headers, info, isLocalhost);
-            console.log(` 🤖 COMPLETE ${feedType.toUpperCase()} FEED CREATED for YMC`);
+            console.log(` 🤖 Complete ${feedType.toUpperCase()} feed created for YMCINEMA`);
             return new Response(result.body, { headers: responseHeaders, ...result.options });
         }
 

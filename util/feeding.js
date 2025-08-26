@@ -107,9 +107,11 @@ export async function getParsedSourceItems(req, timeout = 15000) {
  * @param siteUrl {string}
  * @param authorName {string} - A "site-global" authorname. Could just be sitename or some general term like "users".
  * @param logoUrl {string}
+ * @param updatePeriod {'hourly'|'daily'|'weekly'|'monthly'|'yearly'} - update period
+ * @param updateFrequency {number} - number to set the update frequency relative to the update period.
  * @returns {{title, description, home_page_url, language: string, feed_url, authors: [{name, url}], items: *[]}|{title, description, link, atom: {links: [{href, rel: string, type: string}]}, language: string, generator: string, items: *[]}|string|{readonly contentType: string, readonly template: {title: *, description: *, home_page_url: *, language: string, feed_url: *, authors: [{name: *, url: *}], items: []}|{title: *, description: *, link: *, atom: {links: [{href: *, rel: string, type: string}]}, language: string, generator: string, items: []}, createItem: {(*): {id: (*|string), title: string, content_html: string, author: {name: (*|string)}, authors: [{name: (*|string)}], url: string, date_published: Date}, (*): {guid: {value: (*|string), isPermaLink: boolean}, title: string, link: string, description: string, pubDate: *, dc: {creator: (*|string)}}}, createResponseBody: {(*): string, (*): *}}}
  */
-export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl, siteUrl, authorName, logoUrl) {
+export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl, siteUrl, authorName, logoUrl, updatePeriod = 'hourly', updateFrequency = 1) {
 
     const contentType = (feedType === 'json' ?
         'application/feed+json; charset=utf-8'
@@ -133,7 +135,9 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
             date_published: isRFC2822DateString(item.pubDate ?? '') ? new Date(item.pubDate) : new Date(),
         };
         if (item.enclosures?.length) {
+            // newItem.image only used when creating a JSON Feed
             newItem.image = item.enclosures.find(enclosure => enclosure.type?.startsWith('image/'))?.url;
+            // newItem.attachments are used for both RSS and JSON Feeds
             newItem.attachments = [];
             item.enclosures.forEach(enclosure => {
                 const attachment = {
@@ -147,6 +151,7 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
             });
         }
         if (!newItem.image && item._image) {
+            // item._image is a "custom property", which might be defined when parsing/tweaking the original feed.
             newItem.image = item._image;
         }
         if (item.categories?.length) {
@@ -238,6 +243,10 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
                     },
                     language: 'en-US',
                     generator: 'https://feed-bender.deno.dev/',
+                    sy: {
+                        updatePeriod: updatePeriod,
+                        updateFrequency: updateFrequency
+                    },
                     items: []
                 }
         },

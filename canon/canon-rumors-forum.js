@@ -2,6 +2,12 @@ import * as feeding from './../util/feeding.js';
 import * as caching from './../util/caching.js';
 import {shortDateTime} from "../static/datetime.js";
 
+const sourceFeed = 'https://www.canonrumors.com/forum/forums/-/index.rss?order=post_date';
+const sourceLabel = 'CRFORUM';
+const cacheId = 'crforum-cache';
+const cacheMinuttes = 60;
+const feedLength = 12;
+
 /**
  * Tries to detect if an item is a comment-thread for a post on the main site.
  * Unfortunately, it is not exact science when based on only the content of the feed.
@@ -22,7 +28,7 @@ function isCommentThread(item) {
  * @param items
  * @returns {Object[]}
  */
-function filteredItemsList(items) {
+function filteredItemList(items) {
     const filteredList = [];
     items.forEach((item) => {
         if (!isCommentThread(item)) {
@@ -36,7 +42,7 @@ function filteredItemsList(items) {
  * Removes "read more" links
  * @param items {Object[]}
  * @returns {Object[]} */
-function cleanItems(items) {
+function tweakItems(items) {
     items.forEach((item) => {
         if (item.content?.encoded) {
             item.content.encoded = item.content.encoded.replace(
@@ -56,22 +62,22 @@ async function feedItems() {
     const feedRequestTime = new Date();
     let cachedTime = new Date('2000-01-01');
     let finalItems = [];
-    const cached = await caching.get('crforum-cache');
+    const cached = await caching.get(cacheId);
     if (cached?.cachedTime) {
         cachedTime = new Date(cached.cachedTime);
     }
     if (cached?.cachedItems) {
-        finalItems = cleanItems(filteredItemsList(cached.cachedItems));
+        finalItems = tweakItems(filteredItemList(cached.cachedItems));
     }
     // console.log(` 🤖 CACHED FORUM-CONTENT FROM ${cachedTime} WAS READ. There was ${finalItems?.length} cached items.`);
 
-    if (finalItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (60 * 60 * 1000))) {
-        console.log(` 🤖 WILL JUST USE the FORUM's recently (${shortDateTime(cachedTime, 'shortOffset')}) updated CACHED ITEMS`);
+    if (finalItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (cacheMinuttes * 60 * 1000))) {
+        console.log(` 🤖 For ${sourceLabel}, just use the recently updated (${shortDateTime(cachedTime,'shortOffset')}) CACHED ITEMS`);
         return finalItems;
     }
     const highestGuid = finalItems.length ? finalItems[0].guid.value : 0;
 
-    const sourceItems = await feeding.getParsedSourceItems('https://www.canonrumors.com/forum/forums/-/index.rss?order=post_date');
+    const sourceItems = await feeding.getParsedSourceItems(sourceFeed);
     let relevantSourceItems = [];
     if (sourceItems?.length) {
         sourceItems.sort((a, b) => {
@@ -82,16 +88,16 @@ async function feedItems() {
 
         // console.log('\nsourceItems:\n', JSON.stringify(sourceItems));
 
-        relevantSourceItems = cleanItems(filteredItemsList(sourceItems));
+        relevantSourceItems = tweakItems(filteredItemList(sourceItems));
     }
     const lengthOfCachedItems = finalItems.length;
     finalItems.unshift(...relevantSourceItems.filter(item => item.guid.value > highestGuid));
     if (finalItems?.length > lengthOfCachedItems) {
-        console.log(` 🌟 ${finalItems?.length - lengthOfCachedItems} new thread(s) was added to the FORUM feed!`);
+        console.log(` 🌟 ${finalItems?.length - lengthOfCachedItems} new thread(s) was added to the ${sourceLabel} feed!`);
     }
     if (finalItems.length) {
-        await caching.set('crforum-cache', {cachedTime: feedRequestTime, cachedItems: finalItems.slice(0, 12)});
-        console.log(` 🤖 Cached FORUM content was ${relevantSourceItems?.length ? 'updated' : '"extended"'}`);
+        await caching.set(cacheId, {cachedTime: feedRequestTime, cachedItems: finalItems.slice(0, feedLength)});
+        console.log(` 🤖 The cached ${sourceLabel} content was ${sourceItems?.length ? 'updated' : '"extended"'}`);
     }
     return finalItems;
 }

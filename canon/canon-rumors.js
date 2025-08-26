@@ -2,6 +2,12 @@ import * as feeding from './../util/feeding.js';
 import * as caching from './../util/caching.js';
 import { shortDateTime } from '../static/datetime.js';
 
+const sourceFeed = 'https://www.canonrumors.com/feed/';
+const sourceLabel = 'CRNEWS';
+const cacheId = 'cr-cache';
+const cacheMinuttes = 60;
+const feedLength = 12;
+
 /**
  * Unwanted categories of posts to be ignored (lowercase)
  * @type {string[]}
@@ -40,7 +46,7 @@ function inUnwantedCategory(item) {
  * @param items
  * @returns {Object[]}
  */
-function filteredItemsList(items) {
+function filteredItemList(items) {
     const filteredList = [];
     items.forEach((item) => {
         if (!inUnwantedCategory(item)) {
@@ -58,24 +64,24 @@ async function feedItems() {
     const feedRequestTime = new Date();
     let cachedTime = new Date('2000-01-01');
     let cachedItems = [];
-    const cached = await caching.get('cr-cache');
+    const cached = await caching.get(cacheId);
     if (cached?.cachedTime) {
         cachedTime = new Date(cached.cachedTime);
     }
     if (cached?.cachedItems) {
-        cachedItems = filteredItemsList(cached.cachedItems);
+        cachedItems = filteredItemList(cached.cachedItems);
     }
     // console.log(` 🤖 CACHED CONTENT FROM ${cachedTime} WAS READ`);
 
-    if (cachedItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (60 * 60 * 1000))) {
-        console.log(` 🤖 WILL JUST USE the NEWS' recently (${shortDateTime(cachedTime,'shortOffset')}) updated CACHED ITEMS`);
+    if (cachedItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (cacheMinuttes * 60 * 1000))) {
+        console.log(` 🤖 For ${sourceLabel}, just use the recently updated (${shortDateTime(cachedTime,'shortOffset')}) CACHED ITEMS`);
         return cachedItems;
     }
 
-    const sourceItems = await feeding.getParsedSourceItems('https://www.canonrumors.com/feed/');
+    const sourceItems = await feeding.getParsedSourceItems(sourceFeed);
     let relevantItems = [];
     if (sourceItems?.length) {
-        relevantItems = filteredItemsList(sourceItems);
+        relevantItems = filteredItemList(sourceItems);
     }
 
     cachedItems.forEach((item) => {
@@ -85,10 +91,10 @@ async function feedItems() {
     });
     if (relevantItems.length) {
         if (relevantItems.length > cachedItems.length) {
-            console.log(' 🌟 A new item was added to the feed!');
+            console.log(` 🌟 A new item was added to the ${sourceLabel} feed!`);
         }
-        await caching.set('cr-cache', {cachedTime: feedRequestTime, cachedItems: relevantItems.slice(0, 12)});
-        console.log(` 🤖 Cached NEWS content was ${sourceItems?.length ? 'updated' : '"extended"'}`);
+        await caching.set(cacheId, {cachedTime: feedRequestTime, cachedItems: relevantItems.slice(0, feedLength)});
+        console.log(` 🤖 The cached ${sourceLabel} content was ${sourceItems?.length ? 'updated' : '"extended"'}`);
     }
     return relevantItems;
 }
