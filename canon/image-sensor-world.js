@@ -2,54 +2,26 @@ import * as feeding from './../util/feeding.js';
 import * as caching from './../util/caching.js';
 import { shortDateTime } from '../static/datetime.js';
 
-const sourceFeed = 'https://www.canonrumors.com/feed/';
-const sourceLabel = 'CRNEWS';
-const cacheId = 'cr-cache';
-const cacheMinuttes = 60;
-const feedLength = 12;
+const sourceFeed = 'https://image-sensors-world.blogspot.com/feeds/posts/default?alt=rss';
+const sourceLabel = 'ISWORLD';
+const cacheId = 'isw-cache';
+const cacheMinuttes = 240; // 4 hours
+const feedLength = 6;
 
-/**
- * Unwanted categories of posts to be ignored (lowercase)
- * @type {string[]}
- */
-const skipCategories = [
-    'deal zone',
-    'dealzone',
-    'buyers guide',
-    'smart picks',
-    'industry news',
-    'industry rumors',
-    'canon reviews',
-    // 'from the vault'
-];
-
-/**
- * Returns if a post/item belongs to some unwanted category
- * @param item {Object}
- * @returns {boolean}
- */
-function inUnwantedCategory(item) {
-    const categories = item.categories;
-    let unwanted = false;
-    categories?.forEach(category => {
-        const categoryName = category.name.trim().toLowerCase();
-        // Also unwanted if just a "substring" of a category-name matches a skipCategory:
-        if (skipCategories.some(skipCategory => categoryName.includes(skipCategory))) {
-            unwanted = true; // is an unwanted item
-        }
-    });
-    return unwanted;
-}
+const matchCanonRegex = feeding.wordMatchRegex('canon');
 
 /**
  * Returns a filtered list of items, omitting items in unwanted categories
- * @param items
+ * @param items {Object[]}
  * @returns {Object[]}
  */
 function filteredItemList(items) {
     const filteredList = [];
     items.forEach((item) => {
-        if (!inUnwantedCategory(item)) {
+        if (item.categories?.some(category => matchCanonRegex.test(category.name))
+            || matchCanonRegex.test(item.title ?? '')
+            || matchCanonRegex.test(item.description ?? '')
+        ) {
             filteredList.push(item);
         }
     });
@@ -100,24 +72,26 @@ async function feedItems() {
 }
 
 /**
- * Returns a filtered feed of Canon Rumors posts, omitting posts in unwanted categories
+ * Returns a filtered feed, omitting posts in unwanted categories
  * @param feedType {'json'|'rss'}
  * @param reqHeaders {Headers}
  * @param [info] {ServeHandlerInfo<Addr>}
  * @param [logging=false] {boolean} - if true, potentially extra logging for debugging
  * @returns {Promise<{body: string, options: {status: number, statusText: string, headers: Headers}}>}
  */
-export async function canonRumors(feedType, reqHeaders, info, logging = false) {
+export async function isWorld(feedType, reqHeaders, info, logging = false) {
 
     const CreateFeedTool = feeding.getCreateFeedTool(
         feedType,
-        'Canon Rumors - Essential posts only',
-        'This is a filtered version of the official news feed from Canon Rumors. Posts in some categories are omitted',
-        `https://feed-bender.deno.dev/canon/crfeed.${feedType}`,
-        'https://www.canonrumors.com/',
-        'Canon Rumors',
-        'https://www.canonrumors.com/wp-content/uploads/2022/05/logo-alt.png'
-        );
+        'Image Sensor World - Canon related post only',
+        'This is a filtered version of the official news feed from Image Sensor World with only the Canon related posts.',
+        `https://feed-bender.deno.dev/canon/iswfeed.${feedType}`,
+        'https://image-sensors-world.blogspot.com/',
+        'Image Sensor World',
+        'https://www.feed-bender.deno.dev/favicon-32x32.png', // because I don't have anything better to use right now // TODO ?
+        'daily',
+        3 // every eight hours
+    );
 
     const origin = reqHeaders.get('Origin');
     const respHeaders = new Headers({'Content-Type': CreateFeedTool.contentType});

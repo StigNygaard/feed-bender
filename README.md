@@ -9,4 +9,4 @@ The other feed keeps track of *new threads* (topics) in the forum of the site, e
 Feed-bender uses [*Feedsmith* by *Maciej Lamberski*](https://github.com/macieklamberski/feedsmith) ([MIT](https://github.com/macieklamberski/feedsmith/blob/main/LICENSE) licensed)
 
 This is a *Deno Deploy project* deployed at https://feed-bender.deno.dev/. 
-Feed-bender has currently home in a _public_ repository, but it is still a "personalized" project. If you fork/copy it, please remember to update any personal references, for example in the HTML pages. 
+While source-code of _Feed-bender_ has home in a _public_ repository, it is still a "personalized" project. If you fork/copy it, please remember to remove any personal references, for example in the HTML pages.

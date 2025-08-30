@@ -13,7 +13,7 @@
     "jsr:@std/net@^1.0.4": "1.0.4",
     "jsr:@std/path@^1.1.1": "1.1.1",
     "jsr:@std/streams@^1.0.10": "1.0.10",
-    "npm:feedsmith@next": "2.0.0-next.4"
+    "npm:feedsmith@next": "2.0.0-next.6"
   },
   "jsr": {
     "@std/cli@1.0.21": {
@@ -78,8 +78,8 @@
       ],
       "bin": true
     },
-    "feedsmith@2.0.0-next.4": {
-      "integrity": "sha512-tUZp5zbXOGd2MaxP0GXueljXnCNdeJx/PnuJCgDCGV9Nkr12sbYpL9pUWyawoPWDmuQj/fpX6RBhlJjN4PO89Q==",
+    "feedsmith@2.0.0-next.6": {
+      "integrity": "sha512-MhpWkcYChJzj6DCjq4inMtuvxJbLlwfLLUsG2YMFzQhZikAl3QZ6KfUxFcZpckuMEhgmKqluvGSQPEcXM7jAvw==",
       "dependencies": [
         "entities",
         "fast-xml-parser"

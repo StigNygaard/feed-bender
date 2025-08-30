@@ -26,7 +26,7 @@ export function getTimezoneOffset(dt = new Date()) {
  * @returns {string}
  */
 export function getTimezoneDisplay(dt = new Date(), timezoneFormat = 'short') {
-    // This is a bit "hacky". Maybe not ready for critical use?...
+    // This is a bit "hacky". Maybe not for "critical" use?...
     if (timezoneFormat === 'regional') {
         // ? Returns IANA timezone name by definition, which is in English
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat/resolvedOptions

@@ -146,7 +146,7 @@ export async function ymCinema(feedType, reqHeaders, info, logging = false) {
     latestRelevantItems.forEach((item) => {
         feedData.items.push(CreateFeedTool.createItem(item));
     });
-    const responseBody = CreateFeedTool.createResponseBody(feedData);
+    const responseBody = CreateFeedTool.createResponseBody(feedData, { lenient: true });
     return {
         body: responseBody,
         options: {

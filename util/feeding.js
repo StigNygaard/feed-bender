@@ -9,8 +9,18 @@ if (fetcherUserAgent) {
 }
 
 /**
+ * Returns a RegExp for checking if an exact word (not part of a longer word) is in a string
+ * @param word {string}
+ * @param [modifier='iu'] {string}
+ * @returns {RegExp}
+ */
+export function wordMatchRegex(word, modifier = 'iu') {
+    return new RegExp(`(?:^|\\W)${word}(?:$|\\W)`, modifier);
+}
+
+/**
  * Checks if str is a date in RFC 2822 date format
- * @param str
+ * @param str {string}
  * @returns {boolean}
  */
 export function isRFC2822DateString(str) {
@@ -68,9 +78,9 @@ async function fetchJson(request, options) {
 /**
  * Fetches and parses the source items from a provided RSS feed URL.
  *
- * @param {string} req The URL of the RSS feed to fetch and parse.
- * @param {number} [timeout=15000] The maximum time (in milliseconds) to wait for the fetch request to complete before timing out. Defaults to 15 seconds.
- * @return {Promise<Object[]>} A promise that resolves to an array of parsed source items from the RSS feed. If an error occurs, it returns an empty array.
+ * @param req {string} - The URL of the RSS feed to fetch and parse.
+ * @param [timeout=15000] {number} - The maximum time (in milliseconds) to wait for the fetch request to complete before timing out. Defaults to 15 seconds.
+ * @return {Promise<Object[]>} - A promise that resolves to an array of parsed source items from the RSS feed. If an error occurs, it returns an empty array.
  */
 export async function getParsedSourceItems(req, timeout = 15000) {
     let items = [];
@@ -105,17 +115,27 @@ export async function getParsedSourceItems(req, timeout = 15000) {
  * @param feedDescription {string}
  * @param feedUrl {string} - "self" link to the feed
  * @param siteUrl {string}
- * @param authorName {string} - A "site-global" authorname. Could just be sitename or some general term like "users".
+ * @param genericAuthorName {string} - A "global" feed/site authorname. Could just be sitename or some general term like "users".
  * @param logoUrl {string}
  * @param updatePeriod {'hourly'|'daily'|'weekly'|'monthly'|'yearly'} - update period
  * @param updateFrequency {number} - number to set the update frequency relative to the update period.
  * @returns {{title, description, home_page_url, language: string, feed_url, authors: [{name, url}], items: *[]}|{title, description, link, atom: {links: [{href, rel: string, type: string}]}, language: string, generator: string, items: *[]}|string|{readonly contentType: string, readonly template: {title: *, description: *, home_page_url: *, language: string, feed_url: *, authors: [{name: *, url: *}], items: []}|{title: *, description: *, link: *, atom: {links: [{href: *, rel: string, type: string}]}, language: string, generator: string, items: []}, createItem: {(*): {id: (*|string), title: string, content_html: string, author: {name: (*|string)}, authors: [{name: (*|string)}], url: string, date_published: Date}, (*): {guid: {value: (*|string), isPermaLink: boolean}, title: string, link: string, description: string, pubDate: *, dc: {creator: (*|string)}}}, createResponseBody: {(*): string, (*): *}}}
  */
-export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl, siteUrl, authorName, logoUrl, updatePeriod = 'hourly', updateFrequency = 1) {
+export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl, siteUrl, genericAuthorName, logoUrl, updatePeriod = 'hourly', updateFrequency = 1) {
 
     const contentType = (feedType === 'json' ?
         'application/feed+json; charset=utf-8'
         : 'application/rss+xml; charset=utf-8');
+
+    // FAR from perfect, but while waiting for https://github.com/macieklamberski/feedsmith/issues/6 ?
+    const matchEmailRegexp = /(?:^|\s|<|\()([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63})(?:$|\s|>|\))/g;
+    function authorName(item) {
+        // Quick fix to return an item-author *without* an eventual email-address included in value. // TODO
+        // Hoping for something better with: https://github.com/macieklamberski/feedsmith/issues/6
+        let name = (item.dc?.creator ?? item.authors?.at(0) ?? genericAuthorName ?? '').replace(matchEmailRegexp, '');
+        name = name.replace(/[><)(\]\[]*/g, '');
+        return name.trim();
+    }
 
     function createJsonItem(item) {
         const newItem = {
@@ -123,11 +143,11 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
             title: item.title ?? '(No title)',
             content_html: item.content?.encoded ?? item.description ?? '<p>(No content)</p>',
             author: {
-                name: item.dc?.creator ?? authorName ?? feedTitle
+                name: authorName(item)
             },
             authors: [
                 {
-                    name: item.dc?.creator ?? authorName ?? feedTitle
+                    name: authorName(item)
                 }
             ],
             url: item.link ?? siteUrl,
@@ -175,7 +195,7 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
             // RFC 2822 Date format (like "Sun, 13 Jul 2025 07:17:55 +0000") is supported as constructor-value, even if it's not part of ECMAScript standard
             pubDate: item.pubDate, // isRFC2822DateString(item.pubDate ?? '') ? new Date(item.pubDate) : new Date(),
             dc: {
-                creator: item.dc?.creator ?? authorName ?? feedTitle
+                creator: authorName(item)
             }
         };
         if (item.enclosures?.length) {
@@ -200,13 +220,13 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
         return newItem;
     }
 
-    function createJsonResponseBody(feedData) {
-        const jsonFeedObj = generateJsonFeed(feedData);
+    function createJsonResponseBody(feedData, options = {}) {
+        const jsonFeedObj = generateJsonFeed(feedData, options);
         return JSON.stringify(jsonFeedObj);
     }
 
-    function createRssResponseBody(feedData) {
-        return generateRssFeed(feedData);
+    function createRssResponseBody(feedData, options = {}) {
+        return generateRssFeed(feedData, options);
     }
 
 
@@ -222,9 +242,9 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
                     home_page_url: siteUrl,
                     language: 'en-US',
                     feed_url: feedUrl,
-                    authors: [ // TODO: but only if there are a "global" author?
+                    authors: [
                         {
-                            name: authorName,
+                            name: genericAuthorName,
                             url: siteUrl
                         }
                     ],

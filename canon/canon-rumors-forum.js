@@ -10,7 +10,7 @@ const feedLength = 12;
 
 /**
  * Tries to detect if an item is a comment-thread for a post on the main site.
- * Unfortunately, it is not exact science when based on only the content of the feed.
+ * Unfortunately, it is not exact science when based on only the content of the feed only.
  * @param item
  * @returns {boolean}
  */
@@ -134,7 +134,7 @@ export async function canonRumorsForum(feedType, reqHeaders, info, logging = fal
     latestRelevantItems.forEach((item) => {
         feedData.items.push(CreateFeedTool.createItem(item));
     });
-    const responseBody = CreateFeedTool.createResponseBody(feedData);
+    const responseBody = CreateFeedTool.createResponseBody(feedData, { lenient: true });
     return {
         body: responseBody,
         options: {
