@@ -14,7 +14,7 @@
         href="https://feed-bender.deno.dev/canon/crfeed.json"/>
   <link rel="alternate" type="application/rss+xml" title="Canon Rumors Forum - Latest new threads (RSS feed)"
         href="https://feed-bender.deno.dev/canon/crforumfeed.rss"/>
-  <link rel="alternate" type="application/feed+json" title="Canon Rumors - Latest new threads (JSON Feed)"
+  <link rel="alternate" type="application/feed+json" title="Canon Rumors Forum - Latest new threads (JSON Feed)"
         href="https://feed-bender.deno.dev/canon/crforumfeed.json"/>
   <link rel="alternate" type="application/rss+xml" title="Y.M. Cinema - Canon related posts (RSS feed)"
         href="https://feed-bender.deno.dev/canon/ymcfeed.rss"/>
@@ -85,9 +85,11 @@
         which contains <em>every new comment</em> posted in
         <a href="https://www.canonrumors.com/forum/">Canon Rumors Forum</a>, this custom-feed tries keeping track of
         only the latest <em>new threads</em> (topics) created in the forum. This feed also tries to avoid the threads
-        that are created to be "comment-sections" for news-posts on the main-site (only partially successful though,
-        not all "comment-section threads" are currently ignored). The custom-made feed is available in both
-        <i>JSON Feed</i> and <i>RSS</i> format:</p>
+        that are created to be "comment-sections" for news-posts on the main-site. While comment-threads for Craig's
+        news-posts usually have a pattern easy to identify, it is harder with comment-threads for Richard's posts, so
+        I am now ignoring all threads started by richard in the forum. A bit unfair to Richard, but I think it is
+        pretty rare he starts other topics in the forum.
+        The custom-made feed is available in both <i>JSON Feed</i> and <i>RSS</i> format:</p>
       <ul class="feeds">
         <li><a title="Canon Rumors Forum - Latest new threads (JSON Feed format)"
                href="./crforumfeed.json">JSON Feed</a>
@@ -100,7 +102,7 @@
     </section>
     <section>
       <h2>Y.M. Cinema - Canon related posts only</h2>
-      <p>(new - testing)</p>
+      <p>Looking for Canon related posts on Y.M. Cinema site.</p>
       <ul class="feeds">
         <li><a title="Y.M. Cinema - Canon related posts only (JSON Feed format)"
                href="./ymcfeed.json">JSON Feed</a>
@@ -113,7 +115,7 @@
     </section>
     <section>
       <h2>Image Sensor World - Canon related posts only</h2>
-      <p>(new - testing)</p>
+      <p>Looking for Canon related posts on the Image Sensor World blog.</p>
       <ul class="feeds">
         <li><a title="Image Sensor World - Canon related posts only (JSON Feed format)"
                href="./iswfeed.json">JSON Feed</a>
