@@ -16,10 +16,7 @@ const feedLength = 12;
  */
 function isCommentThread(item) {
     return /full\sarticle\s?(\.\.\.)?<\/a><\/div>$/i.test(item.content?.encoded?.trim())
-        || (
-            (item.content?.encoded.endsWith('\n\t\t\t\t\t\t\n\t\t\t\t\t</span>\n\t\t\t\t\twww.canonrumors.com\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div></div>')
-                && item.authors?.at(0)?.endsWith('(Richard CR)'))
-        );
+        || (item.authors?.at(0)?.endsWith('(Richard CR)'));
 }
 
 /**
