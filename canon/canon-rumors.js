@@ -30,12 +30,14 @@ const skipCategories = [
  */
 function inUnwantedCategory(item) {
     const categories = item.categories;
+    const canonCategorized = categories.find(category => category.name.trim().toLowerCase() === 'canon');
     let unwanted = false;
     categories?.forEach(category => {
         const categoryName = category.name.trim().toLowerCase();
-        // Also unwanted if just a "substring" of a category-name matches a skipCategory:
+        // Also - in most cases - unwanted if just a "substring" of the category-name matches a skipCategory:
         if (skipCategories.some(skipCategory => categoryName.includes(skipCategory))) {
-            unwanted = true; // is an unwanted item
+            // Unwanted, except if it is featured industry news/rumors AND "canon" category ALSO is present:
+            unwanted = !(categoryName.includes('featured industry') && canonCategorized);
         }
     });
     return unwanted;
