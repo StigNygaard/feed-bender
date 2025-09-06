@@ -17,10 +17,10 @@ const skipCategories = [
     'dealzone',
     'buyers guide',
     'smart picks',
-    'industry news',
-    'industry rumors',
-    'canon reviews',
-    // 'from the vault'
+    'industry news', // (can be 'featured')
+    'industry rumors', // (can be 'featured')
+    'canon reviews', // what I have seen is not really reviews
+    // 'from the vault' // do I want to exclude this?
 ];
 
 /**
@@ -36,8 +36,8 @@ function inUnwantedCategory(item) {
         const categoryName = category.name.trim().toLowerCase();
         // Also - in most cases - unwanted if just a "substring" of the category-name matches a skipCategory:
         if (skipCategories.some(skipCategory => categoryName.includes(skipCategory))) {
-            // Unwanted, except if it is featured industry news/rumors AND "canon" category ALSO is present:
-            unwanted = !(categoryName.includes('featured industry') && canonCategorized);
+            // Unwanted - except if it is "featured" industry news/rumors AND the "canon" category ALSO is present:
+            unwanted ||= !(categoryName.includes('featured industry') && canonCategorized);
         }
     });
     return unwanted;
