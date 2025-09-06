@@ -1,4 +1,4 @@
-import {parseRssFeed, generateJsonFeed, generateRssFeed} from 'npm:feedsmith@next';
+import {parseRssFeed, generateJsonFeed, generateRssFeed} from 'npm:feedsmith@latest';
 
 const corsAllowHostnames = Deno.env.get('feedbender_cors_allow_hostnames')?.toLowerCase()?.split(/\s*(?:[,;]|$)\s*/) ?? [];
 
