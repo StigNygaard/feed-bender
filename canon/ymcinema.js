@@ -2,11 +2,13 @@ import * as feeding from './../util/feeding.js';
 import * as caching from './../util/caching.js';
 import { shortDateTime } from '../static/datetime.js';
 
-const sourceFeed = 'https://ymcinema.com/tag/canon/feed/';
+const sourceFeed = 'https://ymcinema.com/feed';
 const sourceLabel = 'YMCINEMA';
 const cacheId = 'ymc-cache';
 const cacheMinuttes = 120;
 const feedLength = 12;
+
+const matchCanonRegex = feeding.wordMatchRegex('canon');
 
 /**
  * Unwanted categories of posts to be ignored (lowercase)
@@ -36,15 +38,17 @@ function inUnwantedCategory(item) {
 }
 
 /**
- * Returns a filtered list of items, omitting items in unwanted categories
+ * Returns a filtered list of canon-related items, omitting items in unwanted categories
  * @param items {Object[]}
  * @returns {Object[]}
  */
 function filteredItemList(items) {
     const filteredList = [];
     items.forEach((item) => {
-        if (!inUnwantedCategory(item)) {
-            filteredList.push(item);
+        if (item.categories?.some(category => matchCanonRegex.test(category.name))) {
+            if (!inUnwantedCategory(item)) {
+                filteredList.push(item);
+            }
         }
     });
     return filteredList;
