@@ -8,6 +8,10 @@ const cacheId = 'cr-cache';
 const cacheMinuttes = 60;
 const feedLength = 12;
 
+const matchCanonRegex = feeding.wordMatchRegex('canon');
+const matchEosRegex = feeding.wordMatchRegex('eos');
+const matchRfRegex = feeding.wordMatchRegex('rf');
+
 /**
  * Unwanted categories of posts to be ignored (lowercase)
  * @type {string[]}
@@ -17,6 +21,8 @@ const skipCategories = [
     'dealzone',
     'buyers guide',
     'smart picks',
+    'third party software',
+    'third party lenses',
     'industry news', // (can be 'featured')
     'industry rumors', // (can be 'featured')
     'canon reviews', // what I have seen is not really reviews
@@ -30,14 +36,20 @@ const skipCategories = [
  */
 function inUnwantedCategory(item) {
     const categories = item.categories;
-    const canonCategorized = categories.find(category => category.name.trim().toLowerCase() === 'canon');
+    const canonCategorized = categories.find(category => {
+        const cat = category.name.trim().toLowerCase();
+        return matchCanonRegex.test(cat) || matchEosRegex.test(cat) || matchRfRegex.test(cat);
+    });
     let unwanted = false;
     categories?.forEach(category => {
         const categoryName = category.name.trim().toLowerCase();
         // Also - in most cases - unwanted if just a "substring" of the category-name matches a skipCategory:
         if (skipCategories.some(skipCategory => categoryName.includes(skipCategory))) {
             // Unwanted - except if it is "featured" industry news/rumors AND the "canon" category ALSO is present:
-            unwanted ||= !(categoryName.includes('featured industry') && canonCategorized);
+            unwanted ||= !(
+                categoryName.includes('featured industry') && canonCategorized ||
+                categoryName.includes('third party') && canonCategorized
+            );
         }
     });
     return unwanted;
