@@ -2,9 +2,9 @@ import * as feeding from './../util/feeding.js';
 import * as caching from './../util/caching.js';
 import { shortDateTime } from '../static/datetime.js';
 
-const sourceFeed = 'https://ymcinema.com/feed';
-const sourceLabel = 'YMCINEMA';
-const cacheId = 'ymc-cache';
+const sourceFeed = 'https://www.cined.com/feed';
+const sourceLabel = 'CineD';
+const cacheId = 'cined-cache';
 const cacheMinuttes = 120;
 const feedLength = 12;
 
@@ -15,8 +15,7 @@ const matchCanonRegex = feeding.wordMatchRegex('canon');
  * @type {string[]}
  */
 const skipCategories = [
-    'deals',
-    'amazon'
+    // for future categories to ignore?
 ];
 
 /**
@@ -62,9 +61,10 @@ function filteredItemList(items) {
  * @returns {Object[]}
  */
 function tweakItems(items) {
-    const imgsrc = /<img\s[^>]*src="(https:\/\/ymcinema\.com\/wp-content\/uploads\/[^">]+\.(webp|jpg|avif|jxl))"[^>]*>/;
+    const imgsrc = /<img\s[^>]*src="(https:\/\/www\.cined\.com\/contents\/uploads\/[^">]+\.(webp|jpg|avif|jxl))"[^>]*>/;
     items.forEach((item) => {
         if (item.description && item.content) {
+            // "Backup image" to use if none is attached in enclosures
             const image = item.content.encoded.match(imgsrc);
             if (image?.length === 3 && !item._image) {
                 item._image = image[1]; // src value
@@ -126,16 +126,16 @@ async function feedItems() {
  * @param [logging=false] {boolean} - if true, potentially extra logging for debugging
  * @returns {Promise<{body: string, options: {status: number, statusText: string, headers: Headers}}>}
  */
-export async function ymCinema(feedType, reqHeaders, info, logging = false) {
+export async function cineD(feedType, reqHeaders, info, logging = false) {
 
     const CreateFeedTool = feeding.getCreateFeedTool(
         feedType,
-        'Y.M Cinema - Canon related post only',
-        'This is a filtered version of the official news feed from Y.M Cinema with only the Canon related posts.',
-        `https://feed-bender.deno.dev/canon/ymcfeed.${feedType}`,
-        'https://ymcinema.com/',
-        'Y.M Cinema',
-        'https://ymcinema.com/wp-content/uploads/2018/07/Company-Logo.png',
+        'CineD - Canon related post only',
+        'This is a filtered version of the official news feed from CineD with only the Canon related posts.',
+        `https://feed-bender.deno.dev/canon/cinedfeed.${feedType}`,
+        'https://cined.com/',
+        'CineD',
+        'https://www.cined.com/content/themes/cinemad/assets/images/favicons/android-icon-192x192.png?v=1.2',
         'daily',
         8 // every three hours
     );

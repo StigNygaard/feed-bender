@@ -3,6 +3,7 @@ import 'jsr:@std/dotenv/load';
 import { canonRumors } from './canon/canon-rumors.js';
 import { canonRumorsForum } from './canon/canon-rumors-forum.js';
 import { ymCinema } from './canon/ymcinema.js';
+import { cineD } from "./canon/cined.js";
 import { isWorld } from './canon/image-sensor-world.js';
 import { shortDateTime } from './static/datetime.js';
 
@@ -20,6 +21,7 @@ let responseHeadersArr = Object.entries(responseHeaders).map(([k, v]) => `${k}: 
 const crPathPattern = new URLPattern({ pathname: "/canon/crfeed.:type(json|rss)" });
 const crforumPathPattern = new URLPattern({ pathname: "/canon/crforumfeed.:type(json|rss)" });
 const ymcPathPattern = new URLPattern({ pathname: "/canon/ymcfeed.:type(json|rss)" });
+const cinedPathPattern = new URLPattern({ pathname: "/canon/cinedfeed.:type(json|rss)" });
 const iswPathPattern = new URLPattern({ pathname: "/canon/iswfeed.:type(json|rss)" });
 
 // we could set a port-number with Deno.serve({port: portno}, handler);
@@ -92,6 +94,15 @@ async function handler(req, info) {
             console.log(` 🤖 ${feedType.toUpperCase()} feed request for YMCINEMA by: ${req.headers?.get('User-Agent') ?? ''}`);
             const result = await ymCinema(feedType, req.headers, info, isLocalhost);
             console.log(` 🤖 Complete ${feedType.toUpperCase()} feed created for YMCINEMA`);
+            return new Response(result.body, { headers: responseHeaders, ...result.options });
+        }
+
+        /* Feed: CineD - Canon related only */
+        feedType = cinedPathPattern.exec(urlObj)?.pathname?.groups?.type;
+        if (feedType) { // if (cinedPathPattern.test(urlObj)) ...
+            console.log(` 🤖 ${feedType.toUpperCase()} feed request for CINED by: ${req.headers?.get('User-Agent') ?? ''}`);
+            const result = await cineD(feedType, req.headers, info, isLocalhost);
+            console.log(` 🤖 Complete ${feedType.toUpperCase()} feed created for CINED`);
             return new Response(result.body, { headers: responseHeaders, ...result.options });
         }
 
