@@ -15,7 +15,7 @@ if (fetcherUserAgent) {
  * @returns {RegExp}
  */
 export function wordMatchRegex(word, modifier = 'iu') {
-    return new RegExp(`(?:^|\\W)${word}(?:$|\\W)`, modifier);
+    return new RegExp(`\\b${word}\\b`, modifier);
 }
 
 /**
