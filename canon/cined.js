@@ -104,7 +104,7 @@ async function feedItems() {
     }
 
     cachedItems.forEach((item) => {
-        if (!relevantItems.find(relevant => relevant.guid?.value === item.guid?.value)) {
+        if (!relevantItems.some(relevant => relevant.guid?.value === item.guid?.value)) {
             relevantItems.push(item);
         }
     });
