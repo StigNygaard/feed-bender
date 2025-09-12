@@ -23,8 +23,8 @@ const skipCategories = [
     'smart picks',
     'third party software',
     'third party lenses',
-    'industry news', // (can be 'featured')
-    'industry rumors', // (can be 'featured')
+    'industry news', // (can also be 'featured...')
+    'industry rumors', // (can also be 'featured...')
     'canon reviews', // what I have seen is not really reviews
     // 'from the vault' // do I want to exclude this?
 ];
@@ -36,10 +36,12 @@ const skipCategories = [
  */
 function inUnwantedCategory(item) {
     const categories = item.categories;
-    const canonCategorized = categories.find(category => {
-        const cat = category.name.trim().toLowerCase();
-        return matchCanonRegex.test(cat) || matchEosRegex.test(cat) || matchRfRegex.test(cat);
-    });
+    const title = item.title.toLowerCase();
+    const canonReference = matchCanonRegex.test(title) || matchEosRegex.test(title) || matchRfRegex.test(title) ||
+        categories.some(category => {
+            const cat = category.name.trim().toLowerCase();
+            return matchCanonRegex.test(cat) || matchEosRegex.test(cat) || matchRfRegex.test(cat);
+        });
     let unwanted = false;
     categories?.forEach(category => {
         const categoryName = category.name.trim().toLowerCase();
@@ -47,8 +49,8 @@ function inUnwantedCategory(item) {
         if (skipCategories.some(skipCategory => categoryName.includes(skipCategory))) {
             // Unwanted - except if it is "featured" industry news/rumors AND the "canon" category ALSO is present:
             unwanted ||= !(
-                categoryName.includes('featured industry') && canonCategorized ||
-                categoryName.includes('third party') && canonCategorized
+                categoryName.includes('featured industry') && canonReference ||
+                categoryName.includes('third party') && canonReference
             );
         }
     });
@@ -99,7 +101,7 @@ async function feedItems() {
     }
 
     cachedItems.forEach((item) => {
-        if (!relevantItems.find(relevant => relevant.guid?.value === item.guid?.value)) {
+        if (!relevantItems.some(relevant => relevant.guid?.value === item.guid?.value)) {
             relevantItems.push(item);
         }
     });
