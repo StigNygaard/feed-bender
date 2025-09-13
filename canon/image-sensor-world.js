@@ -11,7 +11,7 @@ const feedLength = 6;
 const matchCanonRegex = feeding.wordMatchRegex('canon');
 
 /**
- * Returns a filtered list of items, omitting items in unwanted categories
+ * Returns a filtered list of items
  * @param items {Object[]}
  * @returns {Object[]}
  */
