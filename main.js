@@ -6,6 +6,7 @@ import { ymCinema } from './canon/ymcinema.js';
 import { cineD } from "./canon/cined.js";
 import { isWorld } from './canon/image-sensor-world.js';
 import { p2pSensor } from './canon/p2psensor.js';
+import { dprForumEosR, dprForumPowershot } from './canon/dpreview-forum.js';
 import { shortDateTime } from './static/datetime.js';
 
 let responseHeaders = {
@@ -25,6 +26,8 @@ const ymcPathPattern = new URLPattern({ pathname: "/canon/ymcfeed.:type(json|rss
 const cinedPathPattern = new URLPattern({ pathname: "/canon/cinedfeed.:type(json|rss)" });
 const iswPathPattern = new URLPattern({ pathname: "/canon/iswfeed.:type(json|rss)" });
 const p2psensorPathPattern = new URLPattern({ pathname: "/canon/p2psensorfeed.:type(json|rss)" });
+const dprforumeosrPathPattern = new URLPattern({ pathname: "/canon/dprfeosrfeed.:type(json|rss)" });
+const dprforumpowershotPathPattern = new URLPattern({ pathname: "/canon/dprfpowershotfeed.:type(json|rss)" });
 
 // we could set a port-number with Deno.serve({port: portno}, handler);
 Deno.serve(handler);
@@ -123,6 +126,24 @@ async function handler(req, info) {
             console.log(` 🤖 ${feedType.toUpperCase()} feed request for P2PSENSOR by: ${req.headers?.get('User-Agent') ?? ''}`);
             const result = await p2pSensor(feedType, req.headers, info, isLocalhost);
             console.log(` 🤖 Complete ${feedType.toUpperCase()} feed created for P2PSENSOR`);
+            return new Response(result.body, { headers: responseHeaders, ...result.options });
+        }
+
+        /* Feed: Canon EOS R Talk - DPReview Forums */
+        feedType = dprforumeosrPathPattern.exec(urlObj)?.pathname?.groups?.type;
+        if (feedType) { // if (dprforumeosrPathPattern.test(urlObj)) ...
+            console.log(` 🤖 ${feedType.toUpperCase()} feed request for DPRFORUMEOSR by: ${req.headers?.get('User-Agent') ?? ''}`);
+            const result = await dprForumEosR(feedType, req.headers, info, isLocalhost);
+            console.log(` 🤖 Complete ${feedType.toUpperCase()} feed created for DPRFORUMEOSR`);
+            return new Response(result.body, { headers: responseHeaders, ...result.options });
+        }
+
+        /* Feed: Canon PowerShot Talk - DPReview Forums */
+        feedType = dprforumpowershotPathPattern.exec(urlObj)?.pathname?.groups?.type;
+        if (feedType) { // if (dprforumpowershotPathPattern.test(urlObj)) ...
+            console.log(` 🤖 ${feedType.toUpperCase()} feed request for DPRFORUMPOWERSHOT by: ${req.headers?.get('User-Agent') ?? ''}`);
+            const result = await dprForumPowershot(feedType, req.headers, info, isLocalhost);
+            console.log(` 🤖 Complete ${feedType.toUpperCase()} feed created for DPRFORUMPOWERSHOT`);
             return new Response(result.body, { headers: responseHeaders, ...result.options });
         }
 

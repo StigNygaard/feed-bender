@@ -161,7 +161,7 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
         const newItem = {
             id: item.guid?.value ?? item.link ?? siteUrl,
             title: item.title ?? '(No title)',
-            content_html: item.content?.encoded ?? item.description ?? '<p>(No content)</p>',
+            content_html: item.content?.encoded ?? item.description ?? '', // This or content_text must be specified in JSON Feed (But empty string is ok)
             author: {
                 name: authorName(item)
             },
@@ -211,9 +211,8 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
             },
             title: item.title ?? '(No title)',
             link: item.link ?? siteUrl,
-            description: item.content?.encoded ?? item.description ?? '<p>(No content)</p>',
-            // RFC 2822 Date format (like "Sun, 13 Jul 2025 07:17:55 +0000") is supported as constructor-value, even if it's not part of ECMAScript standard
-            pubDate: item.pubDate, // isRFC2822DateString(item.pubDate ?? '') ? new Date(item.pubDate) : new Date(),
+            description: item.content?.encoded ?? item.description, // Can be undefined in RSS, if the title is specified
+            pubDate: item.pubDate, // RFC 2822 Date format (like "Sun, 13 Jul 2025 07:17:55 +0000") is supported as constructor-value, even if it's not part of ECMAScript standard
             dc: {
                 creator: authorName(item)
             }
