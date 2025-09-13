@@ -5,6 +5,7 @@ import { canonRumorsForum } from './canon/canon-rumors-forum.js';
 import { ymCinema } from './canon/ymcinema.js';
 import { cineD } from "./canon/cined.js";
 import { isWorld } from './canon/image-sensor-world.js';
+import { p2pSensor } from './canon/p2psensor.js';
 import { shortDateTime } from './static/datetime.js';
 
 let responseHeaders = {
@@ -23,6 +24,7 @@ const crforumPathPattern = new URLPattern({ pathname: "/canon/crforumfeed.:type(
 const ymcPathPattern = new URLPattern({ pathname: "/canon/ymcfeed.:type(json|rss)" });
 const cinedPathPattern = new URLPattern({ pathname: "/canon/cinedfeed.:type(json|rss)" });
 const iswPathPattern = new URLPattern({ pathname: "/canon/iswfeed.:type(json|rss)" });
+const p2psensorPathPattern = new URLPattern({ pathname: "/canon/p2psensorfeed.:type(json|rss)" });
 
 // we could set a port-number with Deno.serve({port: portno}, handler);
 Deno.serve(handler);
@@ -112,6 +114,15 @@ async function handler(req, info) {
             console.log(` 🤖 ${feedType.toUpperCase()} feed request for ISWORLD by: ${req.headers?.get('User-Agent') ?? ''}`);
             const result = await isWorld(feedType, req.headers, info, isLocalhost);
             console.log(` 🤖 Complete ${feedType.toUpperCase()} feed created for ISWORLD`);
+            return new Response(result.body, { headers: responseHeaders, ...result.options });
+        }
+
+        /* Feed: Photons to Photos (Sensor updates) - Canon related only */
+        feedType = p2psensorPathPattern.exec(urlObj)?.pathname?.groups?.type;
+        if (feedType) { // if (p2psensorPathPattern.test(urlObj)) ...
+            console.log(` 🤖 ${feedType.toUpperCase()} feed request for P2PSENSOR by: ${req.headers?.get('User-Agent') ?? ''}`);
+            const result = await p2pSensor(feedType, req.headers, info, isLocalhost);
+            console.log(` 🤖 Complete ${feedType.toUpperCase()} feed created for P2PSENSOR`);
             return new Response(result.body, { headers: responseHeaders, ...result.options });
         }
 
