@@ -5,7 +5,7 @@ import { shortDateTime } from '../static/datetime.js';
 const sourceFeed = 'https://www.photonstophotos.net/rss.xml';
 const sourceLabel = 'P2PSENSOR';
 const cacheId = 'p2psensor-cache';
-const cacheMinuttes = 180; // 3 hours
+const cacheMinutes = 180; // 3 hours
 const feedLength = 12;
 
 const matchCanonRegex = feeding.wordMatchRegex('canon');
@@ -45,7 +45,7 @@ async function feedItems() {
     }
     // console.log(` 🤖 CACHED CONTENT FROM ${cachedTime} WAS READ`);
 
-    if (cachedItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (cacheMinuttes * 60 * 1000))) {
+    if (cachedItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (cacheMinutes * 60 * 1000))) {
         console.log(` 🤖 For ${sourceLabel}, just use the recently updated (${shortDateTime(cachedTime,'shortOffset')}) CACHED ITEMS`);
         return cachedItems;
     }

@@ -5,7 +5,7 @@ import { shortDateTime } from '../static/datetime.js';
 const sourceFeed = 'https://ymcinema.com/feed';
 const sourceLabel = 'YMCINEMA';
 const cacheId = 'ymc-cache';
-const cacheMinuttes = 120;
+const cacheMinutes = 120;
 const feedLength = 12;
 
 const matchCanonRegex = feeding.wordMatchRegex('canon');
@@ -92,7 +92,7 @@ async function feedItems() {
     }
     // console.log(` 🤖 CACHED CONTENT FROM ${cachedTime} WAS READ`);
 
-    if (cachedItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (cacheMinuttes * 60 * 1000))) {
+    if (cachedItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (cacheMinutes * 60 * 1000))) {
         console.log(` 🤖 For ${sourceLabel}, just use the recently updated (${shortDateTime(cachedTime,'shortOffset')}) CACHED ITEMS`);
         return cachedItems;
     }

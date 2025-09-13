@@ -5,7 +5,7 @@ import {shortDateTime} from "../static/datetime.js";
 const sourceFeed = 'https://www.canonrumors.com/forum/forums/-/index.rss?order=post_date';
 const sourceLabel = 'CRFORUM';
 const cacheId = 'crforum-cache';
-const cacheMinuttes = 60;
+const cacheMinutes = 60;
 const feedLength = 12;
 
 /**
@@ -68,7 +68,7 @@ async function feedItems() {
     }
     // console.log(` 🤖 CACHED FORUM-CONTENT FROM ${cachedTime} WAS READ. There was ${finalItems?.length} cached items.`);
 
-    if (finalItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (cacheMinuttes * 60 * 1000))) {
+    if (finalItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (cacheMinutes * 60 * 1000))) {
         console.log(` 🤖 For ${sourceLabel}, just use the recently updated (${shortDateTime(cachedTime,'shortOffset')}) CACHED ITEMS`);
         return finalItems;
     }

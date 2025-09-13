@@ -5,7 +5,7 @@ import { shortDateTime } from '../static/datetime.js';
 const sourceFeed = 'https://image-sensors-world.blogspot.com/feeds/posts/default?alt=rss';
 const sourceLabel = 'ISWORLD';
 const cacheId = 'isw-cache';
-const cacheMinuttes = 240; // 4 hours
+const cacheMinutes = 240; // 4 hours
 const feedLength = 6;
 
 const matchCanonRegex = feeding.wordMatchRegex('canon');
@@ -45,7 +45,7 @@ async function feedItems() {
     }
     // console.log(` 🤖 CACHED CONTENT FROM ${cachedTime} WAS READ`);
 
-    if (cachedItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (cacheMinuttes * 60 * 1000))) {
+    if (cachedItems?.length && ((feedRequestTime.getTime() - cachedTime.getTime()) < (cacheMinutes * 60 * 1000))) {
         console.log(` 🤖 For ${sourceLabel}, just use the recently updated (${shortDateTime(cachedTime,'shortOffset')}) CACHED ITEMS`);
         return cachedItems;
     }
