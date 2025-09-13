@@ -6,7 +6,7 @@ const sourceFeed = 'https://www.photonstophotos.net/rss.xml';
 const sourceLabel = 'P2PSENSOR';
 const cacheId = 'p2psensor-cache';
 const cacheMinuttes = 180; // 3 hours
-const feedLength = 25; // TODO set lower!
+const feedLength = 12;
 
 const matchCanonRegex = feeding.wordMatchRegex('canon');
 
