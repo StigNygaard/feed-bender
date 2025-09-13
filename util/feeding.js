@@ -47,6 +47,26 @@ export function isAllowedForCors(origin) {
     return false;
 }
 
+export function tryJSONParse(str) {
+    let parsed = null;
+    try {
+        parsed = JSON.parse(str);
+    } catch (ignore) {
+        return {value: str, valid: false};
+    }
+    return {value: parsed, valid: true};
+}
+
+export function tryJSONStringify(o) {
+    let parsed = null;
+    try {
+        parsed = JSON.stringify(o);
+    } catch (ignore) {
+        return {value: o, valid: false};
+    }
+    return {value: parsed, valid: true};
+}
+
 /**
  * Fetches a text response from a URL
  * @param request

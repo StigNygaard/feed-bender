@@ -36,8 +36,8 @@ const skipCategories = [
  */
 function inUnwantedCategory(item) {
     const categories = item.categories;
-    const title = item.title.toLowerCase();
-    const canonReference = matchCanonRegex.test(title) || matchEosRegex.test(title) || matchRfRegex.test(title) ||
+    const title = item.title?.toLowerCase() ?? '';
+    const hasCanonReference = matchCanonRegex.test(title) || matchEosRegex.test(title) || matchRfRegex.test(title) ||
         categories.some(category => {
             const cat = category.name.trim().toLowerCase();
             return matchCanonRegex.test(cat) || matchEosRegex.test(cat) || matchRfRegex.test(cat);
@@ -47,10 +47,10 @@ function inUnwantedCategory(item) {
         const categoryName = category.name.trim().toLowerCase();
         // Also - in most cases - unwanted if just a "substring" of the category-name matches a skipCategory:
         if (skipCategories.some(skipCategory => categoryName.includes(skipCategory))) {
-            // Unwanted - except if it is "featured" industry news/rumors AND the "canon" category ALSO is present:
+            // Unwanted - except if it is a "featured industry..." or "third party..." category combined with a Canon reference:
             unwanted ||= !(
-                categoryName.includes('featured industry') && canonReference ||
-                categoryName.includes('third party') && canonReference
+                categoryName.includes('featured industry') && hasCanonReference ||
+                categoryName.includes('third party') && hasCanonReference
             );
         }
     });
