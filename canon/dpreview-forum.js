@@ -15,10 +15,11 @@ const feedLength = 12;
 /**
  * Returns a filtered list of items
  * @param items {Object[]}
+ * @param [maxLength=feedLength] {number} - maximum number of items to return, defaults to feedLength
  * @returns {Object[]}
  */
-function filteredItemList(items) {
-    return items; // No filtering for now!
+function filteredItemList(items, maxLength = feedLength) {
+    return items.slice(0, maxLength); // No filtering for now - return maxLength items!
 }
 
 /**

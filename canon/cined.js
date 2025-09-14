@@ -40,14 +40,15 @@ function inUnwantedCategory(item) {
 /**
  * Returns a filtered list of canon-related items, omitting items in unwanted categories
  * @param items {Object[]}
+ * @param [maxLength=feedLength] {number} - maximum number of items to return, defaults to feedLength
  * @returns {Object[]}
  */
-function filteredItemList(items) {
+function filteredItemList(items, maxLength = feedLength) {
     const filteredList = [];
     items.forEach((item) => {
         if (item.categories?.some(category => matchCanonRegex.test(category.name))) {
             if (!inUnwantedCategory(item)) {
-                filteredList.push(item);
+                if (filteredList.length < maxLength) filteredList.push(item);
             }
         }
     });

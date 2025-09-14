@@ -13,16 +13,17 @@ const matchCanonRegex = feeding.wordMatchRegex('canon');
 /**
  * Returns a filtered list of items
  * @param items {Object[]}
+ * @param [maxLength=feedLength] {number} - maximum number of items to return, defaults to feedLength
  * @returns {Object[]}
  */
-function filteredItemList(items) {
+function filteredItemList(items, maxLength = feedLength) {
     const filteredList = [];
     items.forEach((item) => {
         if (item.categories?.some(category => matchCanonRegex.test(category.name))
             || matchCanonRegex.test(item.title ?? '')
             || matchCanonRegex.test(item.description ?? '')
         ) {
-            filteredList.push(item);
+            if (filteredList.length < maxLength) filteredList.push(item);
         }
     });
     return filteredList;
