@@ -33,7 +33,7 @@ export function isRFC2822DateString(str) {
  * @returns {boolean}
  */
 export function isAllowedForCors(origin) {
-    let originHostname = URL.parse(origin)?.hostname?.toLowerCase();
+    const originHostname = URL.parse(origin)?.hostname?.toLowerCase();
     if (originHostname != null) {
         for (const corsAllowedHostname of corsAllowHostnames) {
             if (
@@ -51,7 +51,7 @@ export function tryJSONParse(str) {
     let parsed = null;
     try {
         parsed = JSON.parse(str);
-    } catch (ignore) {
+    } catch (_ignore) {
         return {value: str, valid: false};
     }
     return {value: parsed, valid: true};
@@ -61,7 +61,7 @@ export function tryJSONStringify(o) {
     let parsed = null;
     try {
         parsed = JSON.stringify(o);
-    } catch (ignore) {
+    } catch (_ignore) {
         return {value: o, valid: false};
     }
     return {value: parsed, valid: true};

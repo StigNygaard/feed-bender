@@ -79,8 +79,8 @@ async function feedItems() {
     let relevantSourceItems = [];
     if (sourceItems?.length) {
         sourceItems.sort((a, b) => {
-            let va = Number(a.guid?.value);
-            let vb = Number(b.guid?.value);
+            const va = Number(a.guid?.value);
+            const vb = Number(b.guid?.value);
             return (isNaN(vb) ? 0 : vb) - (isNaN(va) ? 0 : va)
         });
 
