@@ -1,7 +1,8 @@
 {
   "tasks": {
     "dev": "deno --unstable-kv --allow-net --allow-env --allow-read=./static,./canon/static,./.env --watch main.js",
-    "start": "deno --unstable-kv --allow-net --allow-env --allow-read=./static,./canon/static,./.env main.js"
+    "start": "deno --unstable-kv --allow-net --allow-env --allow-read=./static,./canon/static,./.env main.js",
+    "lint": "deno lint main.js canon/ util/"
   },
   "deploy": {
     "exclude": [
@@ -9,5 +10,10 @@
     ],
     "include": [],
     "entrypoint": "main.js"
+  },
+  "imports": {
+    "@std/dotenv": "jsr:@std/dotenv@^0.225.5",
+    "@std/http": "jsr:@std/http@^1.0.20",
+    "feedsmith": "npm:feedsmith@^2.0.0"
   }
 }

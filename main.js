@@ -1,5 +1,5 @@
-import { serveDir } from 'jsr:@std/http/file-server';
-import 'jsr:@std/dotenv/load';
+import { serveDir } from '@std/http/file-server';
+import '@std/dotenv/load';
 import { canonRumors } from './canon/canon-rumors.js';
 import { canonRumorsForum } from './canon/canon-rumors-forum.js';
 import { ymCinema } from './canon/ymcinema.js';
