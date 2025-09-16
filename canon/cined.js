@@ -9,6 +9,8 @@ const cacheMinutes = 120;
 const feedLength = 12;
 
 const matchCanonRegex = feeding.wordMatchRegex('canon');
+const matchEosRegex = feeding.wordMatchRegex('eos');
+const matchRfRegex = feeding.wordMatchRegex('rf');
 
 /**
  * Unwanted categories of posts to be ignored (lowercase)
@@ -38,7 +40,7 @@ function inUnwantedCategory(item) {
 }
 
 /**
- * Returns a filtered list of canon-related items, omitting items in unwanted categories
+ * Returns a filtered list of items looking related to Canon
  * @param items {Object[]}
  * @param [maxLength=feedLength] {number} - maximum number of items to return, defaults to feedLength
  * @returns {Object[]}
@@ -46,10 +48,10 @@ function inUnwantedCategory(item) {
 function filteredItemList(items, maxLength = feedLength) {
     const filteredList = [];
     items.forEach((item) => {
-        if (item.categories?.some(category => matchCanonRegex.test(category.name))) {
-            if (!inUnwantedCategory(item)) {
-                if (filteredList.length < maxLength) filteredList.push(item);
-            }
+        const title = item.title?.toLowerCase() ?? '';
+        const hasCanonTitleReference = matchCanonRegex.test(title) || matchEosRegex.test(title) || matchRfRegex.test(title);
+        if (hasCanonTitleReference && !inUnwantedCategory(item)) {
+            if (filteredList.length < maxLength) filteredList.push(item);
         }
     });
     return filteredList;
