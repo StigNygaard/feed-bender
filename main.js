@@ -7,6 +7,7 @@ import { cineD } from "./canon/cined.js";
 import { isWorld } from './canon/image-sensor-world.js';
 import { p2pSensor } from './canon/p2psensor.js';
 import { dprForumEosR, dprForumPowershot } from './canon/dpreview-forum.js';
+import { opticalLimits } from './canon/opticallimits.js';
 import { shortDateTime } from './static/datetime.js';
 
 let responseHeaders = {
@@ -28,6 +29,7 @@ const iswPathPattern = new URLPattern({ pathname: "/canon/iswfeed.:type(json|rss
 const p2psensorPathPattern = new URLPattern({ pathname: "/canon/p2psensorfeed.:type(json|rss)" });
 const dprforumeosrPathPattern = new URLPattern({ pathname: "/canon/dprfeosrfeed.:type(json|rss)" });
 const dprforumpowershotPathPattern = new URLPattern({ pathname: "/canon/dprfpowershotfeed.:type(json|rss)" });
+const opticallimitsPathPattern = new URLPattern({ pathname: "/canon/optlimitsfeed.:type(json|rss)" });
 
 // we could set a port-number with Deno.serve({port: portno}, handler);
 Deno.serve(handler);
@@ -108,6 +110,15 @@ async function handler(req, info) {
             console.log(` 🤖 ${feedType.toUpperCase()} feed request for CINED by: ${req.headers?.get('User-Agent') ?? ''}`);
             const result = await cineD(feedType, req.headers, info, isLocalhost);
             console.log(` 🤖 Complete ${feedType.toUpperCase()} feed created for CINED`);
+            return new Response(result.body, { headers: responseHeaders, ...result.options });
+        }
+
+        /* Feed: OpticalLimits - Canon mount lens reviews */
+        feedType = opticallimitsPathPattern.exec(urlObj)?.pathname?.groups?.type;
+        if (feedType) { // if (opticallimitsPathPattern.test(urlObj)) ...
+            console.log(` 🤖 ${feedType.toUpperCase()} feed request for OPTLIMITS by: ${req.headers?.get('User-Agent') ?? ''}`);
+            const result = await opticalLimits(feedType, req.headers, info, isLocalhost);
+            console.log(` 🤖 Complete ${feedType.toUpperCase()} feed created for OPTLIMITS`);
             return new Response(result.body, { headers: responseHeaders, ...result.options });
         }
 
