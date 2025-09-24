@@ -13,7 +13,7 @@
     "jsr:@std/net@^1.0.4": "1.0.6",
     "jsr:@std/path@^1.1.1": "1.1.2",
     "jsr:@std/streams@^1.0.10": "1.0.12",
-    "npm:feedsmith@^2.1.0": "2.1.0"
+    "npm:feedsmith@^2.1.1": "2.1.1"
   },
   "jsr": {
     "@std/cli@1.0.22": {
@@ -78,8 +78,8 @@
       ],
       "bin": true
     },
-    "feedsmith@2.1.0": {
-      "integrity": "sha512-EwkpBy3QMbmYbEoUyn2Wqrdq+CRe1poQZNgWlPmcy4xWEUxWUFr2Vnv8YoD3OiI+DNO2DnVC8UFFlFiGBu2v/g==",
+    "feedsmith@2.1.1": {
+      "integrity": "sha512-j3CRUI48aCzAhODloBiMg22AzbdtrNSrbeE0G3TMM55zUwXuJrWeudbSk/2VFWVl90eWegouzBLUGVeQc6CglA==",
       "dependencies": [
         "entities",
         "fast-xml-parser"
@@ -93,7 +93,7 @@
     "dependencies": [
       "jsr:@std/dotenv@~0.225.5",
       "jsr:@std/http@^1.0.20",
-      "npm:feedsmith@^2.1.0"
+      "npm:feedsmith@^2.1.1"
     ]
   }
 }
