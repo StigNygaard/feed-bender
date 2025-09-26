@@ -6,8 +6,10 @@
 
   color-scheme: light dark;
   --feed-orange: #ffa844;
-  --font-color: light-dark(rgb(34, 34, 34), #DDD);
+  --font-color: light-dark(rgb(34, 34, 34), #D0D0D0);
+  --font-strong-color: light-dark(rgb(0, 0, 0), #E0E0E0);
   --back-color: light-dark(#fff, #222);
+  --footer-back-color: var(--feed-orange);
 
   background-color: var(--back-color);
   color: var(--font-color);
@@ -19,6 +21,10 @@ body {
   padding: 0;
   display: flex; /* main & footer */
   flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6 { /* :heading */
+  color: var(--font-strong-color);
 }
 
 img {
