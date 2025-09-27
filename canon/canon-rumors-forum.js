@@ -81,7 +81,7 @@ async function feedItems() {
         sourceItems.sort((a, b) => {
             const va = Number(a.guid?.value);
             const vb = Number(b.guid?.value);
-            return (isNaN(vb) ? 0 : vb) - (isNaN(va) ? 0 : va)
+            return (Number.isNaN(vb) ? 0 : vb) - (Number.isNaN(va) ? 0 : va)
         });
 
         // console.log('\nsourceItems:\n', JSON.stringify(sourceItems));

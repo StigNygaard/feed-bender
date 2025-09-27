@@ -1,4 +1,4 @@
-import {parseRssFeed, generateJsonFeed, generateRssFeed} from 'feedsmith';
+import {parseRssFeed, parseRdfFeed, generateJsonFeed, generateRssFeed} from 'feedsmith';
 
 const corsAllowHostnames = Deno.env.get('feedbender_cors_allow_hostnames')?.toLowerCase()?.split(/\s*(?:[,;]|$)\s*/) ?? [];
 
@@ -113,12 +113,15 @@ export async function getParsedSourceItems(req, timeout = 15000) {
                 signal: AbortSignal.timeout(timeout) // timeout after (default) 15 seconds
             }
         );
-        const feed = parseRssFeed(text);
+        const feed = req.includes('asia.nikkei.com') ? parseRdfFeed(text) : parseRssFeed(text); // TODO this is a UGLY/TEMPORARY(?) hack :-/ ...
+        // const feed = parseFeed(text); // Or the easy way - if it worked!...
 
         // console.log(`The full feed:\n${JSON.stringify(feed)}`);
 
         items = feed.items ?? [];
-        console.log(` 🤖 RSS FEED ${req} WAS READ`);
+        console.log(` 🤖 FEED ${req} WAS READ`);
+
+        items.forEach((item) => {if (!item.pubDate) item.pubDate = new Date().toUTCString()});
     } catch (e) {
         if (text?.length) {
             console.log('Response body:\n', text);
@@ -158,9 +161,11 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
     }
 
     function createJsonItem(item) {
+        const publishDate = new Date(item.pubDate);
         const newItem = {
             id: item.guid?.value ?? item.link ?? siteUrl,
             title: item.title ?? '(No title)',
+            // CONSIDER: If '', just set content_text to '' instead of setting content_html !?
             content_html: item.content?.encoded ?? item.description ?? '', // This or content_text must be specified in JSON Feed (But empty string is ok)
             author: {
                 name: authorName(item)
@@ -172,7 +177,8 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
             ],
             url: item.link ?? siteUrl,
             // RFC 2822 Date format (like "Sun, 13 Jul 2025 07:17:55 +0000") is supported as constructor-value, even if it's not part of ECMAScript standard
-            date_published: isRFC2822DateString(item.pubDate ?? '') ? new Date(item.pubDate) : new Date(),
+            // date_published: isRFC2822DateString(item.pubDate ?? '') ? new Date(item.pubDate) : new Date() // TODO this is too late for new Date() - do it on read of feed if missing
+            date_published: !Number.isNaN(publishDate.valueOf()) ? publishDate : item.pubDate
         };
         if (item.enclosures?.length) {
             // newItem.image only used when creating a JSON Feed

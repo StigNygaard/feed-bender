@@ -9,6 +9,7 @@ import { p2pSensor } from './canon/p2psensor.js';
 import { dprForumEosR, dprForumPowershot } from './canon/dpreview-forum.js';
 import { opticalLimits } from './canon/opticallimits.js';
 import { shortDateTime } from './static/datetime.js';
+import { nikkeiAsia } from "./canon/asia-nikkei.js";
 
 let responseHeaders = {
     'Content-Security-Policy': `default-src 'none' ; script-src 'self' ; connect-src https: ; img-src https: blob: data: ; style-src 'self' ; frame-ancestors 'none' ; form-action 'self' ; base-uri 'none'`,
@@ -30,6 +31,7 @@ const p2psensorPathPattern = new URLPattern({ pathname: "/canon/p2psensorfeed.:t
 const dprforumeosrPathPattern = new URLPattern({ pathname: "/canon/dprfeosrfeed.:type(json|rss)" });
 const dprforumpowershotPathPattern = new URLPattern({ pathname: "/canon/dprfpowershotfeed.:type(json|rss)" });
 const opticallimitsPathPattern = new URLPattern({ pathname: "/canon/optlimitsfeed.:type(json|rss)" });
+const nikkeiPathPattern = new URLPattern({ pathname: "/canon/nikkeifeed.:type(json|rss)" });
 
 // we could set a port-number with Deno.serve({port: portno}, handler);
 Deno.serve(handler);
@@ -155,6 +157,15 @@ async function handler(req, info) {
             console.log(` 🤖 ${feedType.toUpperCase()} feed request for DPRFORUMPOWERSHOT by: ${req.headers?.get('User-Agent') ?? ''}`);
             const result = await dprForumPowershot(feedType, req.headers, info, isLocalhost);
             console.log(` 🤖 Complete ${feedType.toUpperCase()} feed created for DPRFORUMPOWERSHOT`);
+            return new Response(result.body, { headers: responseHeaders, ...result.options });
+        }
+
+        /* Feed: Canon PowerShot Talk - DPReview Forums */
+        feedType = nikkeiPathPattern.exec(urlObj)?.pathname?.groups?.type;
+        if (feedType) { // if (nikkeiPathPattern.test(urlObj)) ...
+            console.log(` 🤖 ${feedType.toUpperCase()} feed request for NIKKEI by: ${req.headers?.get('User-Agent') ?? ''}`);
+            const result = await nikkeiAsia(feedType, req.headers, info, isLocalhost);
+            console.log(` 🤖 Complete ${feedType.toUpperCase()} feed created for NIKKEI`);
             return new Response(result.body, { headers: responseHeaders, ...result.options });
         }
 
