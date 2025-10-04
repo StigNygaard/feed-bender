@@ -50,11 +50,11 @@ async function feedItems(sourceFeed, sourceLabel, cacheId, cacheMinutes, feedLen
         relevantItems = filteredItemList(sourceItems);
     }
 
-    cachedItems.forEach((item) => {
+    for (const item of cachedItems) {
         if (!relevantItems.some(relevant => relevant.guid?.value === item.guid?.value)) {
             relevantItems.push(item);
         }
-    });
+    }
     if (relevantItems.length) {
         if (relevantItems.length > cachedItems.length) {
             console.log(` 🌟 A new item was added to the ${sourceLabel} feed!`);
@@ -93,9 +93,9 @@ export async function dprForumEosR(feedType, reqHeaders, info, logging = false) 
     }
     const feedData = CreateFeedTool.template;
     const latestRelevantItems = await feedItems(sourceFeed1, sourceLabel1, cacheId1, cacheMinutes, feedLength);
-    latestRelevantItems.forEach((item) => {
+    for (const item of latestRelevantItems) {
         feedData.items.push(CreateFeedTool.createItem(item));
-    });
+    }
     const responseBody = CreateFeedTool.createResponseBody(feedData, { lenient: true });
     return {
         body: responseBody,
@@ -136,9 +136,9 @@ export async function dprForumPowershot(feedType, reqHeaders, info, logging = fa
     }
     const feedData = CreateFeedTool.template;
     const latestRelevantItems = await feedItems(sourceFeed2, sourceLabel2, cacheId2, cacheMinutes, feedLength);
-    latestRelevantItems.forEach((item) => {
+    for (const item of latestRelevantItems) {
         feedData.items.push(CreateFeedTool.createItem(item));
-    });
+    }
     const responseBody = CreateFeedTool.createResponseBody(feedData, { lenient: true });
     return {
         body: responseBody,

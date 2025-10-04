@@ -51,7 +51,9 @@ function setupFeedPeeker(el) {
     el.addEventListener('mouseenter', // mouseover?
         function (ev) {
             let popup = ev.target.querySelector('.peek-popup');
-            if (!popup) {
+            if (popup) {
+                popup.scrollTop = 0;
+            } else {
                 popup = cr('aside', {class: 'peek-popup'});
                 el.append(popup);
                 fetch(ev.target.dataset.json).then(
@@ -69,7 +71,7 @@ function setupFeedPeeker(el) {
                             popup.append(cr('p', {class: 'error'}, 'Did not retrieve any feed content - Try reloading page or come back later.'));
                             return;
                         }
-                        json.items.forEach(item => {
+                        for (const item of json.items) {
                             const htmlDoc = new DOMParser().parseFromString(item.content_html ?? '', 'text/html');
                             if (!item.image) {
                                 const img = htmlDoc.querySelector('img[src^="https://"],img[src^="//"]')?.src ?? '';
@@ -88,7 +90,7 @@ function setupFeedPeeker(el) {
                                             title: item.date_published
                                         },
                                         itemDate(item)), (author ? ` - by ${author}` : '')
-                                        // , item.id ? ` (${item.id})` : ''
+                                    // , item.id ? ` (${item.id})` : ''
                                 ),
                                 cr('p', {class: 'item-content'}, item.content_text ?? stripHtml(htmlDoc)),
                             );
@@ -96,7 +98,7 @@ function setupFeedPeeker(el) {
                                 itemEl.append(cr('div', {class: 'item-categories'}, item.tags.join(', ')));
                             }
                             popup.append(itemEl);
-                        })
+                        }
                     }
                 ).catch(
                     error => {
@@ -108,8 +110,6 @@ function setupFeedPeeker(el) {
                         popup.classList.add('fetched'); // remove "load-spinner"
                     }
                 )
-            } else {
-                popup.scrollTop = 0;
             }
         });
 }

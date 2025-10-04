@@ -28,11 +28,11 @@ function isCommentThread(item) {
  */
 function filteredItemList(items, maxLength = feedLength) {
     const filteredList = [];
-    items.forEach((item) => {
+    for (const item of items) {
         if (!isCommentThread(item)) {
             if (filteredList.length < maxLength) filteredList.push(item);
         }
-    });
+    }
     return filteredList;
 }
 
@@ -41,14 +41,14 @@ function filteredItemList(items, maxLength = feedLength) {
  * @param items {Object[]}
  * @returns {Object[]} */
 function tweakItems(items) {
-    items.forEach((item) => {
+    for (const item of items) {
         if (item.content?.encoded) {
             item.content.encoded = item.content.encoded.replace(
                 /<a\s+href="https:\/\/www\.canonrumors\.com\/forum\/threads\/[a-zA-Z0-9./_-]+"\s+class="link\s+link--internal">Read\s+more<\/a><\/div>$/,
                 '</div>'
             );
         }
-    });
+    }
     return items;
 }
 
@@ -129,9 +129,9 @@ export async function canonRumorsForum(feedType, reqHeaders, info, logging = fal
     }
     const feedData = CreateFeedTool.template;
     const latestRelevantItems = await feedItems();
-    latestRelevantItems.forEach((item) => {
+    for (const item of latestRelevantItems) {
         feedData.items.push(CreateFeedTool.createItem(item));
-    });
+    }
     const responseBody = CreateFeedTool.createResponseBody(feedData, { lenient: true });
     return {
         body: responseBody,

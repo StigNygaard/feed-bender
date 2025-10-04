@@ -121,7 +121,9 @@ export async function getParsedSourceItems(req, timeout = 15000) {
         items = feed.items ?? [];
         console.log(` 🤖 FEED ${req} WAS READ`);
 
-        items.forEach((item) => {if (!item.pubDate) item.pubDate = new Date().toUTCString()});
+        for (const item of items) {
+            if (!item.pubDate) item.pubDate = new Date().toUTCString()
+        }
     } catch (e) {
         if (text?.length) {
             console.log('Response body:\n', text);
@@ -185,7 +187,7 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
             newItem.image = item.enclosures.find(enclosure => enclosure.type?.startsWith('image/'))?.url;
             // newItem.attachments are used for both RSS and JSON Feeds
             newItem.attachments = [];
-            item.enclosures.forEach(enclosure => {
+            for (const enclosure of item.enclosures) {
                 const attachment = {
                     url: enclosure.url,
                     mime_type: enclosure.type
@@ -194,7 +196,7 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
                     attachment.size_in_bytes = enclosure.length;
                 }
                 newItem.attachments.push(attachment);
-            });
+            }
         }
         if (!newItem.image && item._image) {
             // item._image is a "custom property", which might be defined when parsing/tweaking the original feed.
@@ -202,9 +204,9 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
         }
         if (item.categories?.length) {
             newItem.tags = [];
-            item.categories.forEach(category => {
+            for (const category of item.categories) {
                 newItem.tags.push(category.name);
-            });
+            }
         }
         return newItem;
     }
@@ -225,7 +227,7 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
         };
         if (item.enclosures?.length) {
             newItem.enclosures = [];
-            item.enclosures.forEach(enclosure => {
+            for (const enclosure of item.enclosures) {
                 const newEnclosure = {
                     url: enclosure.url,
                     type: enclosure.type
@@ -234,13 +236,13 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
                     newEnclosure.length = enclosure.length;
                 }
                 newItem.enclosures.push(newEnclosure);
-            });
+            }
         }
         if (item.categories?.length) {
             newItem.categories = [];
-            item.categories.forEach(category => {
+            for (const category of item.categories) {
                 newItem.categories.push({name: category.name});
-            });
+            }
         }
         return newItem;
     }

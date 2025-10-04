@@ -26,13 +26,13 @@ const skipCategories = [
 function inUnwantedCategory(item) {
     let unwanted = false;
     if (skipCategories.length) {
-        item.categories?.forEach(category => {
+        for (const category of item.categories) {
             const categoryName = category.name.trim().toLowerCase();
             // Also unwanted if just a "substring" of a category-name matches a skipCategory:
             if (skipCategories.some(skipCategory => categoryName.includes(skipCategory))) {
                 unwanted = true; // is an unwanted item
             }
-        });
+        }
     }
     return unwanted;
 }
@@ -45,13 +45,13 @@ function inUnwantedCategory(item) {
  */
 function filteredItemList(items, maxLength = feedLength) {
     const filteredList = [];
-    items.forEach((item) => {
+    for (const item of items) {
         const title = item.title?.toLowerCase() ?? '';
         const hasCanonTitleReference = matchCanonRegex.test(title);
         if (hasCanonTitleReference && !inUnwantedCategory(item)) {
             if (filteredList.length < maxLength) filteredList.push(item);
         }
-    });
+    }
     return filteredList;
 }
 
@@ -83,11 +83,11 @@ async function feedItems() {
         relevantItems = filteredItemList(sourceItems);
     }
 
-    cachedItems.forEach((item) => {
+    for (const item of cachedItems) {
         if (!relevantItems.some(relevant => relevant.guid?.value === item.guid?.value)) {
             relevantItems.push(item);
         }
-    });
+    }
     if (relevantItems.length) {
         if (relevantItems.length > cachedItems.length) {
             console.log(` 🌟 A new item was added to the ${sourceLabel} feed!`);
@@ -128,9 +128,9 @@ export async function nikkeiAsia(feedType, reqHeaders, info, logging = false) {
     }
     const feedData = CreateFeedTool.template;
     const latestRelevantItems = await feedItems();
-    latestRelevantItems.forEach((item) => {
+    for (const item of latestRelevantItems) {
         feedData.items.push(CreateFeedTool.createItem(item));
-    });
+    }
     const responseBody = CreateFeedTool.createResponseBody(feedData, { lenient: true });
     return {
         body: responseBody,

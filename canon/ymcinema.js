@@ -27,13 +27,13 @@ const skipCategories = [
 function inUnwantedCategory(item) {
     let unwanted = false;
     if (skipCategories.length) {
-        item.categories?.forEach(category => {
+        for (const category of item.categories) {
             const categoryName = category.name.trim().toLowerCase();
             // Also unwanted if just a "substring" of a category-name matches a skipCategory:
             if (skipCategories.some(skipCategory => categoryName.includes(skipCategory))) {
                 unwanted = true; // is an unwanted item
             }
-        });
+        }
     }
     return unwanted;
 }
@@ -46,13 +46,13 @@ function inUnwantedCategory(item) {
  */
 function filteredItemList(items, maxLength = feedLength) {
     const filteredList = [];
-    items.forEach((item) => {
+    for (const item of items) {
         if (item.categories?.some(category => matchCanonRegex.test(category.name))) {
             if (!inUnwantedCategory(item)) {
                 if (filteredList.length < maxLength) filteredList.push(item);
             }
         }
-    });
+    }
     return filteredList;
 }
 
@@ -64,7 +64,7 @@ function filteredItemList(items, maxLength = feedLength) {
  */
 function tweakItems(items) {
     const imgsrc = /<img\s[^>]*src="(https:\/\/ymcinema\.com\/wp-content\/uploads\/[^">]+\.(webp|jpg|avif|jxl))"[^>]*>/;
-    items.forEach((item) => {
+    for (const item of items) {
         if (item.description && item.content) {
             const image = item.content.encoded.match(imgsrc);
             if (image?.length === 3 && !item._image) {
@@ -72,7 +72,7 @@ function tweakItems(items) {
             }
             delete item.content;
         }
-    });
+    }
     return items;
 }
 
@@ -104,11 +104,11 @@ async function feedItems() {
         relevantItems = tweakItems(filteredItemList(sourceItems));
     }
 
-    cachedItems.forEach((item) => {
+    for (const item of cachedItems) {
         if (!relevantItems.some(relevant => relevant.guid?.value === item.guid?.value)) {
             relevantItems.push(item);
         }
-    });
+    }
     if (relevantItems.length) {
         if (relevantItems.length > cachedItems.length) {
             console.log(` 🌟 A new item was added to the ${sourceLabel} feed!`);
@@ -149,9 +149,9 @@ export async function ymCinema(feedType, reqHeaders, info, logging = false) {
     }
     const feedData = CreateFeedTool.template;
     const latestRelevantItems = await feedItems();
-    latestRelevantItems.forEach((item) => {
+    for (const item of latestRelevantItems) {
         feedData.items.push(CreateFeedTool.createItem(item));
-    });
+    }
     const responseBody = CreateFeedTool.createResponseBody(feedData, { lenient: true });
     return {
         body: responseBody,
