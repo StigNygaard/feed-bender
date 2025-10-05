@@ -1,4 +1,5 @@
 import {parseRssFeed, parseRdfFeed, generateJsonFeed, generateRssFeed} from 'feedsmith';
+import { Parser, DomParser } from '@thednp/domparser'
 
 const corsAllowHostnames = Deno.env.get('feedbender_cors_allow_hostnames')?.toLowerCase()?.split(/\s*(?:[,;]|$)\s*/) ?? [];
 
@@ -25,6 +26,21 @@ export function wordMatchRegex(word, modifier = 'iu') {
  */
 export function isRFC2822DateString(str) {
     return /^(?:(Sun|Mon|Tue|Wed|Thu|Fri|Sat),\s+)?(0[1-9]|[1-2]?[0-9]|3[01])\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(19[0-9]{2}|[2-9][0-9]{3})\s+(2[0-3]|[0-1][0-9]):([0-5][0-9])(?::(60|[0-5][0-9]))?\s+([-+][0-9]{2}[0-5][0-9]|(?:UT|GMT|(?:E|C|M|P)(?:ST|DT)|[A-IK-Z]))(\s+|\(([^()]+|\\\(|\\\))*\))*$/.test(str);
+}
+
+/**
+ * Returns a string with the HTML tags stripped from it. Content in the htmlStr parameter needs to be within <html> tags.
+ * @param htmlStr {string}
+ * @returns {string}
+ */
+export function stripHtml(htmlStr) {
+    const doc = DomParser().parseFromString(htmlStr).root; // TODO: can throw error!
+    let retVal = doc.querySelector('html')?.textContent ?? ''; // TODO fail if html tags is not found?
+    // Far from W3C textContent, but somehow useful with following "hack" applied...
+    return retVal.trim().replaceAll(/(\S)\n/gu, '$1 \n')
+        .replaceAll(/([^\n])\n([^\n])/gu, '$1$2') // If there's only ONE newline, then remove it!
+        .replaceAll(/\n{2,}/gu, '\n')
+        .replaceAll(/\s+\n/gu, '\n');
 }
 
 /**

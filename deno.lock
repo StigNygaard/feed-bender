@@ -13,6 +13,7 @@
     "jsr:@std/net@^1.0.4": "1.0.6",
     "jsr:@std/path@^1.1.1": "1.1.2",
     "jsr:@std/streams@^1.0.10": "1.0.12",
+    "npm:@thednp/domparser@~0.1.6": "0.1.6",
     "npm:feedsmith@^2.1.1": "2.1.1"
   },
   "jsr": {
@@ -68,6 +69,9 @@
     }
   },
   "npm": {
+    "@thednp/domparser@0.1.6": {
+      "integrity": "sha512-fMRgm8/qFxdHh+6CfYSkulYN1Ehe0CJMoXiigLDWfUvUdPngkcq8scqdo4Tu/ZwIuVztYqJndPtyYQ4MlVL97g=="
+    },
     "entities@7.0.0": {
       "integrity": "sha512-FDWG5cmEYf2Z00IkYRhbFrwIwvdFKH07uV8dvNy0omp/Qb1xcyCWp2UDtcwJF4QZZvk0sLudP6/hAu42TaqVhQ=="
     },
@@ -93,6 +97,7 @@
     "dependencies": [
       "jsr:@std/dotenv@~0.225.5",
       "jsr:@std/http@^1.0.20",
+      "npm:@thednp/domparser@~0.1.6",
       "npm:feedsmith@^2.1.1"
     ]
   }
