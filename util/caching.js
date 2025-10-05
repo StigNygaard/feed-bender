@@ -10,8 +10,7 @@ export async function get(key) {
 }
 
 /**
- * Set a value in the cache
- * TODO: Note, Kv.set(key,val) throws exception if val > 65536 bytes
+ * Set a value in the cache. Throws error if failing.
  * @param key
  * @param value
  * @returns {Promise<Deno.KvCommitResult>}
@@ -19,6 +18,12 @@ export async function get(key) {
 export async function set(key, value) {
     if (!Array.isArray(key)) {
         key = [key];
+    }
+    const jsonValue = JSON.stringify(value);
+    if (jsonValue.length >= 32768) {
+        const err = `Cache value for key '${key}' is ${jsonValue.length} characters long, and larger than allowed`;
+        console.error(err);
+        throw new Error(err);
     }
     return await kv.set(key, JSON.stringify(value));
 }
