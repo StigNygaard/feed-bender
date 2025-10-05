@@ -198,6 +198,11 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
                 newItem.attachments.push(attachment);
             }
         }
+        if (item.media?.thumbnails?.length) {
+            if (!newItem.image) {
+                newItem.image = item.media.thumbnails[0].url;
+            }
+        }
         if (!newItem.image && item._image) {
             // item._image is a "custom property", which might be defined when parsing/tweaking the original feed.
             newItem.image = item._image;
@@ -236,6 +241,21 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
                     newEnclosure.length = enclosure.length;
                 }
                 newItem.enclosures.push(newEnclosure);
+            }
+        }
+        if (item.media?.thumbnails?.length) {
+            newItem.media = {thumbnails: []};
+            for (const thumbnail of item.media.thumbnails) {
+                const newThumb = {
+                    url: thumbnail.url,
+                }
+                if (thumbnail.width) {
+                    newThumb.width = thumbnail.width;
+                }
+                if (thumbnail.height) {
+                    newThumb.height = thumbnail.height;
+                }
+                newItem.media.thumbnails.push(newThumb);
             }
         }
         if (item.categories?.length) {
