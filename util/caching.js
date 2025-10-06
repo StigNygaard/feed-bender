@@ -21,9 +21,11 @@ export async function set(key, value) {
     }
     const jsonValue = JSON.stringify(value);
     if (jsonValue.length >= 32768) {
-        const err = `Cache value for key '${key}' is ${jsonValue.length} characters long, and larger than allowed`;
+        const err = `Cache value for key '${key}' is ${jsonValue.length} 'code units' long, and larger than allowed`;
         console.error(err);
         throw new Error(err);
     }
-    return await kv.set(key, JSON.stringify(value));
+    const retVal = await kv.set(key, JSON.stringify(value));
+    retVal.info = `String value of length ${jsonValue.length} is cached on key '${key}'`;
+    return retVal;
 }

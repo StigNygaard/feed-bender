@@ -180,7 +180,7 @@ img.colorinline {
     }
     .peek-item {
       padding-bottom: .3rem;
-      clear: both;
+      clear: left;
       img {
         max-width: 8rem;
         max-height: 6rem;

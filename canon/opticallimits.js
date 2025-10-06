@@ -53,10 +53,22 @@ async function feedItems() {
     }
     if (relevantItems.length) {
         if (relevantItems.length > cachedItems.length) {
-            console.log(` 🌟 A new item was added to the ${sourceLabel} feed!`);
+            console.log(` 🌟 New item(s) was added to the ${sourceLabel} feed!`);
         }
-        await caching.set(cacheId, {cachedTime: feedRequestTime, cachedItems: relevantItems.slice(0, feedLength)});
-        console.log(` 🤖 The cached ${sourceLabel} content was ${sourceItems?.length ? 'updated' : '"extended"'}`);
+        let cached = {};
+        try {
+            cached = await caching.set(cacheId, {
+                cachedTime: feedRequestTime,
+                cachedItems: relevantItems.slice(0, feedLength)
+            });
+        } catch (err) {
+            console.error(` 💣 Error when trying to update cache for ${sourceLabel}!`, err);
+        }
+        if (cached?.ok) {
+            console.log(` 🤖 Cache for ${sourceLabel} was ${sourceItems?.length ? 'updated' : '"extended"'}. ${cached.info}.`);
+        } else {
+            console.warn(` 💣 Failed updating cache for ${sourceLabel}!`)
+        }
     }
     return relevantItems;
 }

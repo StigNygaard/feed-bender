@@ -94,8 +94,20 @@ async function feedItems() {
         console.log(` 🌟 ${finalItems?.length - lengthOfCachedItems} new thread(s) was added to the ${sourceLabel} feed!`);
     }
     if (finalItems.length) {
-        await caching.set(cacheId, {cachedTime: feedRequestTime, cachedItems: finalItems.slice(0, feedLength)});
-        console.log(` 🤖 The cached ${sourceLabel} content was ${sourceItems?.length ? 'updated' : '"extended"'}`);
+        let cached = {};
+        try {
+            cached = await caching.set(cacheId, {
+                cachedTime: feedRequestTime,
+                cachedItems: finalItems.slice(0, feedLength)
+            });
+        } catch (err) {
+            console.error(` 💣 Error when trying to update cache for ${sourceLabel}!`, err);
+        }
+        if (cached?.ok) {
+            console.log(` 🤖 Cache for ${sourceLabel} was ${sourceItems?.length ? 'updated' : '"extended"'}. ${cached.info}.`);
+        } else {
+            console.warn(` 💣 Failed updating cache for ${sourceLabel}!`)
+        }
     }
     return finalItems;
 }
