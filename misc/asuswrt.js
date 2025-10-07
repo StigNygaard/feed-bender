@@ -2,6 +2,8 @@ import * as feeding from './../util/feeding.js';
 import * as caching from './../util/caching.js';
 import {shortDateTime} from "../static/datetime.js";
 
+// XenForo forum system
+
 // In RSS:
 //  <category domain="https://www.snbforums.com/forums/asuswrt-official.51/"><![CDATA[ASUSWRT - Official]]></category>
 
@@ -44,7 +46,7 @@ async function feedItems() {
     const feedRequestTime = new Date();
     let cachedTime = new Date('2000-01-01');
     let finalItems = [];
-    const cached = await caching.get(cacheId);
+    const cached = {}; // await caching.get(cacheId); // TODO this temporarily disabled
     if (cached?.cachedTime) {
         cachedTime = new Date(cached.cachedTime);
     }
