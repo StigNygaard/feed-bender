@@ -11,6 +11,7 @@ import { opticalLimits } from './canon/opticallimits.js';
 import { shortDateTime } from './static/datetime.js';
 import { nikkeiAsia } from "./canon/asia-nikkei.js";
 import { eosMagazine } from "./canon/eos-magazine.js";
+import { asuswrtForum } from "./misc/asuswrt.js";
 
 let responseHeaders = {
     'Content-Security-Policy': `default-src 'none' ; script-src 'self' ; connect-src https: ; img-src https: blob: data: ; style-src 'self' ; frame-ancestors 'none' ; form-action 'self' ; base-uri 'none'`,
@@ -23,6 +24,7 @@ let responseHeadersArr = Object.entries(responseHeaders).map(([k, v]) => `${k}: 
 // const crPathPattern = new URLPattern({ pathname: "/canon/crfeed{/}?" });
 // const mainStaticPathPattern = new URLPattern({ pathname: "{/*}?" });
 // const mainStaticPathPattern = new URLPattern({ pathname: "/:file?" });
+// CANON related:
 const crPathPattern = new URLPattern({ pathname: "/canon/crfeed.:type(json|rss)" });
 const crforumPathPattern = new URLPattern({ pathname: "/canon/crforumfeed.:type(json|rss)" });
 const ymcPathPattern = new URLPattern({ pathname: "/canon/ymcfeed.:type(json|rss)" });
@@ -34,6 +36,9 @@ const dprforumpowershotPathPattern = new URLPattern({ pathname: "/canon/dprfpowe
 const opticallimitsPathPattern = new URLPattern({ pathname: "/canon/optlimitsfeed.:type(json|rss)" });
 const nikkeiPathPattern = new URLPattern({ pathname: "/canon/nikkeifeed.:type(json|rss)" });
 const eosmagPathPattern = new URLPattern({ pathname: "/canon/eosmagfeed.:type(json|rss)" });
+// MISC:
+const asuswrtPathPattern = new URLPattern({ pathname: "/misc/asuswrtfeed.:type(json|rss)" });
+
 
 // we could set a port-number with Deno.serve({port: portno}, handler);
 Deno.serve(handler);
@@ -177,6 +182,15 @@ async function handler(req, info) {
             console.log(` 🤖 ${feedType.toUpperCase()} feed request for NIKKEI by: ${req.headers?.get('User-Agent') ?? ''}`);
             const result = await nikkeiAsia(feedType, req.headers, info, isLocalhost);
             console.log(` 🤖 Complete ${feedType.toUpperCase()} feed created for NIKKEI`);
+            return new Response(result.body, { headers: responseHeaders, ...result.options });
+        }
+
+        /* Feed: ASUSWRT Forums */
+        feedType = asuswrtPathPattern.exec(urlObj)?.pathname?.groups?.type;
+        if (feedType) { // if (asuswrtPathPattern.test(urlObj)) ...
+            console.log(` 🤖 ${feedType.toUpperCase()} feed request for ASUSWRT by: ${req.headers?.get('User-Agent') ?? ''}`);
+            const result = await asuswrtForum(feedType, req.headers, info, isLocalhost);
+            console.log(` 🤖 Complete ${feedType.toUpperCase()} feed created for ASUSWRT`);
             return new Response(result.body, { headers: responseHeaders, ...result.options });
         }
 
