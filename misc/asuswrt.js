@@ -46,7 +46,7 @@ async function feedItems() {
     const feedRequestTime = new Date();
     let cachedTime = new Date('2000-01-01');
     let finalItems = [];
-    const cached = {}; // await caching.get(cacheId); // TODO this temporarily disabled
+    const cached = await caching.get(cacheId);
     if (cached?.cachedTime) {
         cachedTime = new Date(cached.cachedTime);
     }

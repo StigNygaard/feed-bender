@@ -2,6 +2,8 @@ import * as feeding from './../util/feeding.js';
 import * as caching from './../util/caching.js';
 import {shortDateTime} from "../static/datetime.js";
 
+// XenForo forum system
+
 const sourceFeed = 'https://www.canonrumors.com/forum/forums/-/index.rss?order=post_date';
 const sourceLabel = 'CRFORUM';
 const cacheId = 'crforum-cache';
