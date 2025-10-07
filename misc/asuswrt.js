@@ -9,9 +9,8 @@ const cacheMinutes = 120;
 const feedLength = 6;
 
 const matchAx88uRegex = feeding.wordMatchRegex('rt-ax88u');
-// const matchAsuswrtRegex = feeding.wordMatchRegex('asuswrt - official'); // TODO enable this instead of below
-const matchAsuswrtRegex = feeding.wordMatchRegex('asuswrt');
-// const matchFirmwareRegex = feeding.wordMatchRegex('firmware');
+const matchAsuswrtRegex = feeding.wordMatchRegex('asuswrt - official'); // TODO enable this check when there's "meat"
+const matchFirmwareRegex = feeding.wordMatchRegex('firmware'); // TODO remove this when there's "meat"
 
 // TODO: Maybe look only for *category* "ASUSWRT - Official" only (https://www.snbforums.com/forums/asuswrt-official.51/) ?
 //  <category domain="https://www.snbforums.com/forums/asuswrt-official.51/"><![CDATA[ASUSWRT - Official]]></category>
@@ -26,11 +25,11 @@ const matchAsuswrtRegex = feeding.wordMatchRegex('asuswrt');
 function filteredItemList(items, maxLength = feedLength) {
     const filteredList = [];
     for (const item of items) {
-        if (item.categories?.some(category => matchAsuswrtRegex.test(category.name))) {
-            if (matchAx88uRegex.test(item.title ?? '')) {
+        // if (item.categories?.some(category => matchAsuswrtRegex.test(category.name))) {  // TODO enable this check...
+            if (matchAx88uRegex.test(item.title ?? '') || matchFirmwareRegex.test(item.title ?? '')) {  // TODO disable/remove the "or firmware" logic
                 if (filteredList.length < maxLength) filteredList.push(item);
             }
-        }
+        // }
     }
 
 
