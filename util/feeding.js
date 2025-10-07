@@ -10,12 +10,13 @@ if (fetcherUserAgent) {
 }
 
 /**
- * Returns a RegExp for checking if an exact word (not part of a longer word) is in a string
+ * Returns a RegExp for checking if an exact "token" (not just part of a longer word/token) is in a string
  * @param word {string}
  * @param [modifier='iu'] {string}
  * @returns {RegExp}
  */
 export function wordMatchRegex(word, modifier = 'iu') {
+    // return new RegExp(`\\b${RegExp.escape(word)}\\b`, modifier);  // TODO: RegExp.escape() requires Deno 2.3.2+. Check version on Deno Deploy!
     return new RegExp(`\\b${word}\\b`, modifier);
 }
 
@@ -36,10 +37,10 @@ export function isRFC2822DateString(str) {
 export function stripHtml(htmlStr) {
     const doc = DomParser().parseFromString(htmlStr).root; // TODO: can throw error!
     let retVal = doc.querySelector('html')?.textContent ?? ''; // TODO fail if html tags is not found?
-    // Far from W3C textContent, but somehow useful with following "hack" applied...
+    // Far from W3C/browser's .textContent property, but somehow useful with following hack applied...
     return retVal.trim().replaceAll(/(\S)\n/gu, '$1 \n')
-        .replaceAll(/([^\n])\n([^\n])/gu, '$1$2') // If there's only ONE newline, then remove it!
-        .replaceAll(/\n{2,}/gu, '\n')
+        .replaceAll(/([^\n])\n([^\n])/gu, '$1$2') // If it is a *single* newline, then remove it!
+        .replaceAll(/\n{2,}/gu, '\n') // collapse groups of newlines to single newlines
         .replaceAll(/\s+\n/gu, '\n');
 }
 
