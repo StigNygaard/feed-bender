@@ -2,18 +2,20 @@ import * as feeding from './../util/feeding.js';
 import * as caching from './../util/caching.js';
 import {shortDateTime} from "../static/datetime.js";
 
-const sourceFeed = 'https://www.snbforums.com/forums/-/index.rss?order=post_date';
+// In RSS:
+//  <category domain="https://www.snbforums.com/forums/asuswrt-official.51/"><![CDATA[ASUSWRT - Official]]></category>
+
+// const sourceFeed = 'https://www.snbforums.com/forums/-/index.rss?order=post_date'; // all forums
+const sourceFeed = 'https://www.snbforums.com/forums/51/index.rss?order=post_date'; // only /asuswrt-official.51/ (ASUSWRT - Official)
+// const sourceFeed = 'https://www.snbforums.com/forums/asuswrt-official.51/index.rss?order=post_date'; // same as above
 const sourceLabel = 'ASUSWRTFORUM';
 const cacheId = 'asuswrt-cache';
 const cacheMinutes = 120;
 const feedLength = 6;
 
 const matchAx88uRegex = feeding.wordMatchRegex('rt-ax88u');
-const matchAsuswrtRegex = feeding.wordMatchRegex('asuswrt - official'); // TODO enable this check when there's "meat"
+// const matchAsuswrtRegex = feeding.wordMatchRegex('asuswrt - official');
 const matchFirmwareRegex = feeding.wordMatchRegex('firmware'); // TODO remove this when there's "meat"
-
-// TODO: Maybe look only for *category* "ASUSWRT - Official" only (https://www.snbforums.com/forums/asuswrt-official.51/) ?
-//  <category domain="https://www.snbforums.com/forums/asuswrt-official.51/"><![CDATA[ASUSWRT - Official]]></category>
 
 /**
  * Returns a filtered list of new threads (topics) in forum, trying to avoid the
@@ -25,11 +27,9 @@ const matchFirmwareRegex = feeding.wordMatchRegex('firmware'); // TODO remove th
 function filteredItemList(items, maxLength = feedLength) {
     const filteredList = [];
     for (const item of items) {
-        // if (item.categories?.some(category => matchAsuswrtRegex.test(category.name))) {  // TODO enable this check...
-            if (matchAx88uRegex.test(item.title ?? '') || matchFirmwareRegex.test(item.title ?? '')) {  // TODO disable/remove the "or firmware" logic
-                if (filteredList.length < maxLength) filteredList.push(item);
-            }
-        // }
+        if (matchAx88uRegex.test(item.title ?? '') || matchFirmwareRegex.test(item.title ?? '')) {  // TODO disable/remove the "or firmware" logic
+            if (filteredList.length < maxLength) filteredList.push(item);
+        }
     }
 
 
