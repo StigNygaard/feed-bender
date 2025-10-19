@@ -12,6 +12,7 @@ import { shortDateTime } from './static/datetime.js';
 import { nikkeiAsia } from "./canon/asia-nikkei.js";
 import { eosMagazine } from "./canon/eos-magazine.js";
 import { asuswrtForum } from "./misc/asuswrt.js";
+import {sigmaUK} from "./canon/sigma-uk.js";
 
 let responseHeaders = {
     'Content-Security-Policy': `default-src 'none' ; script-src 'self' ; connect-src https: ; img-src https: blob: data: ; style-src 'self' ; frame-ancestors 'none' ; form-action 'self' ; base-uri 'none'`,
@@ -36,6 +37,7 @@ const dprforumpowershotPathPattern = new URLPattern({ pathname: "/canon/dprfpowe
 const opticallimitsPathPattern = new URLPattern({ pathname: "/canon/optlimitsfeed.:type(json|rss)" });
 const nikkeiPathPattern = new URLPattern({ pathname: "/canon/nikkeifeed.:type(json|rss)" });
 const eosmagPathPattern = new URLPattern({ pathname: "/canon/eosmagfeed.:type(json|rss)" });
+const sigmaukPathPattern = new URLPattern({ pathname: "/canon/sigmaukfeed.:type(json|rss)" });
 // MISC:
 const asuswrtPathPattern = new URLPattern({ pathname: "/misc/asuswrtfeed.:type(json|rss)" });
 
@@ -155,6 +157,15 @@ async function handler(req, info) {
             console.log(` 🤖 ${feedType.toUpperCase()} feed request for EOSMAG by: ${req.headers?.get('User-Agent') ?? ''}`);
             const result = await eosMagazine(feedType, req.headers, info, isLocalhost);
             console.log(` 🤖 Complete ${feedType.toUpperCase()} feed created for EOSMAG`);
+            return new Response(result.body, { headers: responseHeaders, ...result.options });
+        }
+
+        /* Feed: Sigma UK News */
+        feedType = sigmaukPathPattern.exec(urlObj)?.pathname?.groups?.type;
+        if (feedType) { // if (sigmaukPathPattern.test(urlObj)) ...
+            console.log(` 🤖 ${feedType.toUpperCase()} feed request for SIGMAUK by: ${req.headers?.get('User-Agent') ?? ''}`);
+            const result = await sigmaUK(feedType, req.headers, info, isLocalhost);
+            console.log(` 🤖 Complete ${feedType.toUpperCase()} feed created for SIGMAUK`);
             return new Response(result.body, { headers: responseHeaders, ...result.options });
         }
 
