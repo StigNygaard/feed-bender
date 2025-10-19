@@ -11,6 +11,7 @@ const feedLength = 12;
 const matchCanonRegex = feeding.wordMatchRegex('canon');
 const matchEosRegex = feeding.wordMatchRegex('eos');
 const matchRfRegex = feeding.wordMatchRegex('rf');
+const matchEfRegex = feeding.wordMatchRegex('ef');
 
 /**
  * Unwanted categories of posts to be ignored (lowercase)
@@ -37,10 +38,10 @@ const skipCategories = [
 function inUnwantedCategory(item) {
     const categories = item.categories;
     const title = item.title?.toLowerCase() ?? '';
-    const hasCanonReference = matchCanonRegex.test(title) || matchEosRegex.test(title) || matchRfRegex.test(title) ||
+    const hasCanonReference = matchCanonRegex.test(title) || matchEosRegex.test(title) || matchRfRegex.test(title) || matchEfRegex.test(title) ||
         categories.some(category => {
             const cat = category.name.trim().toLowerCase();
-            return matchCanonRegex.test(cat) || matchEosRegex.test(cat) || matchRfRegex.test(cat);
+            return matchCanonRegex.test(cat) || matchEosRegex.test(cat) || matchRfRegex.test(cat) || matchEfRegex.test(cat);
         });
     let unwanted = false;
     for (const category of categories) {

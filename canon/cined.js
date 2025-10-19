@@ -3,7 +3,7 @@ import * as caching from './../util/caching.js';
 import { shortDateTime } from '../static/datetime.js';
 
 const sourceFeed = 'https://www.cined.com/feed';
-const sourceLabel = 'CineD';
+const sourceLabel = 'CINED';
 const cacheId = 'cined-cache';
 const cacheMinutes = 120;
 const feedLength = 12;

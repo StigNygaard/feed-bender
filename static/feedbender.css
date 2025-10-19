@@ -6,8 +6,8 @@
 
   color-scheme: light dark;
   --feed-orange: #ffa844;
-  --font-color: light-dark(rgb(34, 34, 34), #D0D0D0);
-  --font-strong-color: light-dark(rgb(0, 0, 0), #E0E0E0);
+  --font-color: light-dark(rgb(34 34 34), #D0D0D0);
+  --font-strong-color: light-dark(rgb(0 0 0), #E0E0E0);
   --back-color: light-dark(#fff, #222);
   --footer-back-color: var(--feed-orange);
 
@@ -148,9 +148,9 @@ img.colorinline {
     display: none;
     position: absolute;
     z-index: 1;
-    top: 0.8lh;
+    top: 0.8lh; /* See '@media screen' later for large width screens... */
     left: -5rem;
-    width: 30rem;
+    width: 28rem;
     min-width: 20rem;
     max-width: 80svw;
     height: 30rem;
@@ -220,9 +220,9 @@ img.colorinline {
 
 @media screen and (min-width: 42rem) {
   .peek .peek-popup {
-    top: -14lh;
+    top: -12lh;
     left: 1em;
-    height: 40rem;
+    height: 38rem;
     max-height: 60svh;
   }
 }
