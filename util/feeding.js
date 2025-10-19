@@ -1,8 +1,8 @@
 import {parseRssFeed, parseRdfFeed, generateJsonFeed, generateRssFeed} from 'feedsmith';
-import { Parser, DomParser } from '@thednp/domparser'
+import { DomParser } from '@thednp/domparser';
 
 const corsAllowHostnames = Deno.env.get('feedbender_cors_allow_hostnames')?.toLowerCase()?.split(/\s*(?:[,;]|$)\s*/) ?? [];
-
+const parser = DomParser();
 export const fetcherUserAgent = Deno.env.get('feedbender_fetcher_useragent');
 const feedFetcherHeaders = new Headers({});
 if (fetcherUserAgent) {
@@ -30,13 +30,13 @@ export function isRFC2822DateString(str) {
 }
 
 /**
- * Returns a string with the HTML tags stripped from it. Content in the htmlStr parameter needs to be within <html> tags.
+ * Returns a string with the HTML tags stripped from it. Content in the htmlStr parameter needs to be within <html> tags (?!)
  * @param htmlStr {string}
  * @returns {string}
  */
 export function stripHtml(htmlStr) {
-    const doc = DomParser().parseFromString(htmlStr).root; // TODO: can throw error!
-    let retVal = doc.querySelector('html')?.textContent ?? ''; // TODO fail if html tags is not found?
+    const doc = parser.parseFromString(htmlStr, 'text/html')?.root; // TODO: can throw error!
+    let retVal = doc?.querySelector('html')?.textContent ?? ''; // TODO fail if html tags is not found? TODO: or use .body instead?
     // Far from W3C/browser's .textContent property, but somehow useful with following hack applied...
     return retVal.trim().replaceAll(/(\S)\n/gu, '$1 \n')
         .replaceAll(/([^\n])\n([^\n])/gu, '$1$2') // If it is a *single* newline, then remove it!

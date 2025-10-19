@@ -32,6 +32,7 @@ function filteredItemList(items, maxLength = feedLength) {
 function tweakItems(items) {
     for (const item of items) {
         const desc = feeding.stripHtml(`<html>${item.description}</html>`).substring(0, 500);
+        // const desc = feeding.stripHtml(item.description ?? '').substring(0, 500);
         const regexp = /[.,([\s]+/gu;
         const allMatches = Array.from(desc.matchAll(regexp));
         const last = allMatches.length - 1;
