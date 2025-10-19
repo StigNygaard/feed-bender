@@ -45,6 +45,32 @@ export function stripHtml(htmlStr) {
 }
 
 /**
+ * Returns the src attribute of the first "relevant" image found in htmlStr.
+ * @param htmlStr {string}
+ * @param [imgSelector='img'] {string}
+ * @param [srcRegex] {RegExp}
+ * @returns {?string}
+ */
+export function findImageSrc(htmlStr, imgSelector= 'img', srcRegex) {
+    // const { components, tags, root } = parser.parseFromString(content, 'text/html');
+    const root =  parser.parseFromString(htmlStr, 'text/html')?.root; // TODO: can throw error!
+    if (!root) return null;
+    if (srcRegex) {
+        const imgs = root.querySelectorAll(imgSelector);
+        for (const img of imgs) {
+            const src = img.getAttribute('src'); // or srcset, currentSrc ?
+            if (srcRegex.test(src)) {
+                return src;
+            }
+        }
+        return null;
+    } else {
+        const img = root.querySelector(imgSelector);
+        return img?.getAttribute('src'); // or srcset, currentSrc ?
+    }
+}
+
+/**
  * Checks if the origin is allowed for CORS
  * @param origin
  * @returns {boolean}

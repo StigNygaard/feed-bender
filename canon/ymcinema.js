@@ -63,12 +63,13 @@ function filteredItemList(items, maxLength = feedLength) {
  * @returns {Object[]}
  */
 function tweakItems(items) {
-    const imgsrc = /<img\s[^>]*src="(https:\/\/ymcinema\.com\/wp-content\/uploads\/[^">]+\.(webp|jpg|avif|jxl))"[^>]*>/;
+    const srcRegExp = /^https:\/\/ymcinema\.com\/wp-content\/uploads\/[^"'>]+\.(webp|jpg|jpeg|avif|jxl)/;
     for (const item of items) {
         if (item.description && item.content) {
-            const image = item.content.encoded.match(imgsrc);
-            if (image?.length === 3 && !item._image) {
-                item._image = image[1]; // src value
+            // const imageSrc = feeding.findImageSrc(item.content.encoded, 'img[^="https://ymcinema.com/wp-content/uploads/"]'); // Advanced selector not supported
+            const imageSrc = feeding.findImageSrc(item.content.encoded, 'img', srcRegExp);
+            if (imageSrc && !item._image) {
+                item._image = imageSrc;
             }
             delete item.content;
         }

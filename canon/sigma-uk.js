@@ -1,9 +1,7 @@
 import * as feeding from './../util/feeding.js';
 import * as caching from './../util/caching.js';
 import { shortDateTime } from '../static/datetime.js';
-import { DomParser } from '@thednp/domparser';
 
-const parser = DomParser();
 const sourceFeed = 'https://sigmauk.com/feed';
 const sourceLabel = 'SIGMAUK';
 const cacheId = 'sigmauk-cache';
@@ -39,10 +37,7 @@ function filteredAndTweakedItemList(items, maxLength = feedLength) {
             || matchCanonRegex.test(description) || matchRfRegex.test(description) || matchRfMountRegex.test(description)
             || matchCanonRegex.test(content) || matchRfRegex.test(content) || matchRfMountRegex.test(content);
         if (hasCanonReference && (filteredList.length < maxLength)) {
-            const { components, tags, root } =  parser.parseFromString(content, 'text/html');
-            // const { components, tags, root } =  parser.parseFromString(`<html>${content}</html>`, 'text/html');
-            const img = root.querySelector('img');
-            const imgSrc = img?.getAttribute('src'); // or srcset, currentSrc ?
+            const imgSrc = feeding.findImageSrc(content);
             if (imgSrc) {
                 item._image = imgSrc;
             }
