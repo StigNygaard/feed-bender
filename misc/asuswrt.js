@@ -16,8 +16,9 @@ const cacheMinutes = 120;
 const feedLength = 6;
 
 const matchAx88uRegex = feeding.wordMatchRegex('rt-ax88u');
+const matchBe88uRegex = feeding.wordMatchRegex('rt-be88u'); // The successor to the RT-AX88U
 // const matchAsuswrtRegex = feeding.wordMatchRegex('asuswrt - official');
-const matchFirmwareRegex = feeding.wordMatchRegex('firmware'); // TODO remove this when there's "meat"
+const matchFirmwareRegex = feeding.wordMatchRegex('firmware'); // TODO remove this when there's more "meat" in feed :-)
 
 /**
  * Returns a filtered list of new threads (topics) in forum, trying to avoid the
@@ -29,12 +30,10 @@ const matchFirmwareRegex = feeding.wordMatchRegex('firmware'); // TODO remove th
 function filteredItemList(items, maxLength = feedLength) {
     const filteredList = [];
     for (const item of items) {
-        if (matchAx88uRegex.test(item.title ?? '') || matchFirmwareRegex.test(item.title ?? '')) {  // TODO disable/remove the "or firmware" logic
+        if (matchAx88uRegex.test(item.title ?? '') || matchBe88uRegex.test(item.title ?? '') || matchFirmwareRegex.test(item.title ?? '')) {  // TODO disable/remove the "or firmware" logic
             if (filteredList.length < maxLength) filteredList.push(item);
         }
     }
-
-
     return filteredList;
 }
 
@@ -110,8 +109,8 @@ export async function asuswrtForum(feedType, reqHeaders, info, logging = false) 
 
     const CreateFeedTool = feeding.getCreateFeedTool(
         feedType,
-        'Asus WRT - New RT-AX88U firmware threads (topics)',
-        'Keeping track of new RT-AX88U firmware threads (topics) in Asus WRT Forum',
+        'Asus WRT - New RT-AX88U or RT-BE88U firmware threads (topics)',
+        'Keeping track of threads/topics about new firmwares for RT-AX88U or RT-BE88U in Asus WRT Forum',
         `https://feed-bender.deno.dev/misc/asuswrtfeed.${feedType}`,
         'https://www.snbforums.com/forums/asuswrt-official.51/',
         'ASUS WRT Forum users',
