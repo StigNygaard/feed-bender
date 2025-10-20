@@ -18,7 +18,7 @@ const feedLength = 6;
 const matchAx88uRegex = feeding.wordMatchRegex('rt-ax88u');
 const matchBe88uRegex = feeding.wordMatchRegex('rt-be88u'); // The successor to the RT-AX88U
 // const matchAsuswrtRegex = feeding.wordMatchRegex('asuswrt - official');
-const matchFirmwareRegex = feeding.wordMatchRegex('firmware'); // TODO remove this when there's more "meat" in feed :-)
+const matchFirmwareRegex = feeding.wordMatchRegex('firmware'); // TODO remove this when there's "real meat" in the feed :-)
 
 /**
  * Returns a filtered list of new threads (topics) in forum, trying to avoid the
@@ -109,8 +109,8 @@ export async function asuswrtForum(feedType, reqHeaders, info, logging = false) 
 
     const CreateFeedTool = feeding.getCreateFeedTool(
         feedType,
-        'Asus WRT - New RT-AX88U or RT-BE88U firmware threads (topics)',
-        'Keeping track of threads/topics about new firmwares for RT-AX88U or RT-BE88U in Asus WRT Forum',
+        'ASUS WRT - New RT-AX88U or RT-BE88U firmware threads',
+        'Keeping track of threads/topics about new firmwares for RT-AX88U or RT-BE88U in the "ASUSWRT - Official" forum',
         `https://feed-bender.deno.dev/misc/asuswrtfeed.${feedType}`,
         'https://www.snbforums.com/forums/asuswrt-official.51/',
         'ASUS WRT Forum users',

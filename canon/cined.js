@@ -68,7 +68,6 @@ function tweakItems(items) {
     for (const item of items) {
         if (item.description && item.content) {
             // "Backup image" to use if none is attached in enclosures
-            // const imageSrc = feeding.findImageSrc(item.content.encoded, 'img[^="https://www.cined.com/content/uploads/"]'); // Advanced selector not supported
             const imageSrc = feeding.findImageSrc(item.content.encoded, 'img', srcRegExp);
             if (imageSrc && !item._image) {
                 item._image = imageSrc;
@@ -151,7 +150,7 @@ export async function cineD(feedType, reqHeaders, info, logging = false) {
         `https://feed-bender.deno.dev/canon/cinedfeed.${feedType}`,
         'https://cined.com/',
         'CineD',
-        'https://www.cined.com/content/themes/cinemad/assets/images/favicons/android-icon-192x192.png?v=1.2',
+        'https://www.cined.com/content/themes/cinemad/assets/images/favicons/android-icon-192x192.png',
         'daily',
         8 // every three hours
     );
