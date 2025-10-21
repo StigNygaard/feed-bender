@@ -18,7 +18,6 @@ const feedLength = 6;
 const matchAx88uRegex = feeding.wordMatchRegex('rt-ax88u');
 const matchBe88uRegex = feeding.wordMatchRegex('rt-be88u'); // The successor to the RT-AX88U
 // const matchAsuswrtRegex = feeding.wordMatchRegex('asuswrt - official');
-const matchFirmwareRegex = feeding.wordMatchRegex('firmware'); // TODO remove this when there's "real meat" in the feed :-)
 
 /**
  * Returns a filtered list of new threads (topics) in forum, trying to avoid the
@@ -30,7 +29,7 @@ const matchFirmwareRegex = feeding.wordMatchRegex('firmware'); // TODO remove th
 function filteredItemList(items, maxLength = feedLength) {
     const filteredList = [];
     for (const item of items) {
-        if (matchAx88uRegex.test(item.title ?? '') || matchBe88uRegex.test(item.title ?? '') || matchFirmwareRegex.test(item.title ?? '')) {  // TODO disable/remove the "or firmware" logic
+        if (matchAx88uRegex.test(item.title ?? '') || matchBe88uRegex.test(item.title ?? '')) {
             if (filteredList.length < maxLength) filteredList.push(item);
         }
     }
