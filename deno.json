@@ -13,8 +13,8 @@
   },
   "imports": {
     "@std/dotenv": "jsr:@std/dotenv@^0.225.5",
-    "@std/http": "jsr:@std/http@^1.0.20",
+    "@std/http": "jsr:@std/http@^1.0.21",
     "@thednp/domparser": "npm:@thednp/domparser@^0.1.6",
-    "feedsmith": "npm:feedsmith@^2.1.1"
+    "feedsmith": "npm:feedsmith@^2.2.0"
   }
 }
