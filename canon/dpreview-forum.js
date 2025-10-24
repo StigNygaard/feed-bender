@@ -92,7 +92,7 @@ export async function dprForumEosR(feedType, reqHeaders, info, logging = false) 
         'DPReview Forums - Canon EOS R talk',
         'Canon EOS R talk - Keeping track of new threads (topics) in the DPreview Forum.',
         `https://feed-bender.deno.dev/canon/dprfeosrfeed.${feedType}`,
-        'https://www.dpreview.com/feeds/forums/1070',
+        'https://www.dpreview.com/forums/1070',
         'DPReview Forum user',
         'https://2.img-dpreview.com/resources/images/logo-site-header.png'
     );
@@ -135,7 +135,7 @@ export async function dprForumPowershot(feedType, reqHeaders, info, logging = fa
         'DPReview Forums - Canon PowerShot talk',
         'Canon PowerShot talk - Keeping track of new threads (topics) in the DPreview Forum.',
         `https://feed-bender.deno.dev/canon/dprfpowershotfeed.${feedType}`,
-        'https://www.dpreview.com/feeds/forums/1010',
+        'https://www.dpreview.com/forums/1010',
         'DPReview Forum user',
         'https://2.img-dpreview.com/resources/images/logo-site-header.png'
     );

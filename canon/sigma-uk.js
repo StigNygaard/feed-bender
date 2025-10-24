@@ -2,7 +2,7 @@ import * as feeding from './../util/feeding.js';
 import * as caching from './../util/caching.js';
 import { shortDateTime } from '../static/datetime.js';
 
-const sourceFeed = 'https://sigmauk.com/feed';
+const sourceFeed = 'https://sigmauk.com/feed';   // Alternatively US: https://press.sigmaphoto.com/feed/ ?
 const sourceLabel = 'SIGMAUK';
 const cacheId = 'sigmauk-cache';
 const cacheMinutes = 120;
