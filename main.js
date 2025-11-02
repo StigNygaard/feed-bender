@@ -12,7 +12,7 @@ import { shortDateTime } from './static/datetime.js';
 import { nikkeiAsia } from "./canon/asia-nikkei.js";
 import { eosMagazine } from "./canon/eos-magazine.js";
 import { asuswrtForum } from "./misc/asuswrt.js";
-import {sigmaUK} from "./canon/sigma-uk.js";
+import { sigmaUK } from "./canon/sigma-uk.js";
 
 let responseHeaders = {
     'Content-Security-Policy': `default-src 'none' ; script-src 'self' ; connect-src https: ; img-src https: blob: data: ; style-src 'self' ; frame-ancestors 'none' ; form-action 'self' ; base-uri 'none'`,

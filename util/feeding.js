@@ -1,4 +1,4 @@
-import {parseRssFeed, parseRdfFeed, generateJsonFeed, generateRssFeed} from 'feedsmith';
+import { parseRssFeed, parseRdfFeed, generateJsonFeed, generateRssFeed } from 'feedsmith';
 import { DomParser } from '@thednp/domparser';
 
 const corsAllowHostnames = Deno.env.get('feedbender_cors_allow_hostnames')?.toLowerCase()?.split(/\s*(?:[,;]|$)\s*/) ?? [];
@@ -16,8 +16,7 @@ if (fetcherUserAgent) {
  * @returns {RegExp}
  */
 export function wordMatchRegex(word, modifier = 'iu') {
-    // return new RegExp(`\\b${RegExp.escape(word)}\\b`, modifier);  // TODO: RegExp.escape() requires Deno 2.3.2+. Check version on Deno Deploy!
-    return new RegExp(`\\b${word}\\b`, modifier);
+    return new RegExp(`\\b${RegExp.escape ? RegExp.escape(word) : word}\\b`, modifier); // RegExp.escape() supported in Deno 2.3.2+
 }
 
 /**
@@ -36,7 +35,10 @@ export function isRFC2822DateString(str) {
  */
 export function stripHtml(htmlStr) {
     const doc = parser.parseFromString(htmlStr, 'text/html')?.root; // TODO: can throw error!
-    let retVal = doc?.querySelector('html')?.textContent ?? ''; // TODO fail if html tags is not found? TODO: or use .body instead?
+
+    const retVal = doc?.querySelector('html')?.textContent ?? ''; // TODO fail if 'html' tags is not found?
+    // let retVal = doc?.body?.textContent ?? ''; // Wish I could do something like this instead?!
+
     // Far from W3C/browser's .textContent property, but somehow useful with following hack applied...
     return retVal.trim().replaceAll(/(\S)\n/gu, '$1 \n')
         .replaceAll(/([^\n])\n([^\n])/gu, '$1$2') // If it is a *single* newline, then remove it!
@@ -156,9 +158,8 @@ export async function getParsedSourceItems(req, timeout = 15000) {
                 signal: AbortSignal.timeout(timeout) // timeout after (default) 15 seconds
             }
         );
-        const feed = req.includes('asia.nikkei.com') ? parseRdfFeed(text) : parseRssFeed(text); // TODO this is a UGLY/TEMPORARY(?) hack :-/ ...
-        // const feed = parseFeed(text); // Or the easy way - if it worked!...
-
+        const feed = req.includes('asia.nikkei.com') ? parseRdfFeed(text) : parseRssFeed(text); // A hack because parseFeed "misbehaves".
+        // const feed = parseFeed(text); // TODO: I wish I could just do this instead?!
         // console.log(`The full feed:\n${JSON.stringify(feed)}`);
 
         items = feed.items ?? [];
