@@ -14,7 +14,7 @@
     "jsr:@std/path@^1.1.2": "1.1.2",
     "jsr:@std/streams@^1.0.13": "1.0.13",
     "npm:@thednp/domparser@~0.1.6": "0.1.6",
-    "npm:feedsmith@^2.3.0": "2.3.0"
+    "npm:feedsmith@^2.4.0": "2.4.0"
   },
   "jsr": {
     "@std/cli@1.0.23": {
@@ -75,15 +75,15 @@
     "entities@7.0.0": {
       "integrity": "sha512-FDWG5cmEYf2Z00IkYRhbFrwIwvdFKH07uV8dvNy0omp/Qb1xcyCWp2UDtcwJF4QZZvk0sLudP6/hAu42TaqVhQ=="
     },
-    "fast-xml-parser@5.3.0": {
-      "integrity": "sha512-gkWGshjYcQCF+6qtlrqBqELqNqnt4CxruY6UVAWWnqb3DQ6qaNFEIKqzYep1XzHLM/QtrHVCxyPOtTk4LTQ7Aw==",
+    "fast-xml-parser@5.3.1": {
+      "integrity": "sha512-jbNkWiv2Ec1A7wuuxk0br0d0aTMUtQ4IkL+l/i1r9PRf6pLXjDgsBsWwO+UyczmQlnehi4Tbc8/KIvxGQe+I/A==",
       "dependencies": [
         "strnum"
       ],
       "bin": true
     },
-    "feedsmith@2.3.0": {
-      "integrity": "sha512-diZ+U1XploTZKumEZYNoGtPp1WIew4QO+m1JdQDtb1Oqn0EHbI3gC9J7sKy3wcCTG58xmjAF2uhauQhKtYjfjw==",
+    "feedsmith@2.4.0": {
+      "integrity": "sha512-2yZSUERJ+ctCpb/ADrMlP/vfBXDKtN6hpVAvHLZaE17WAyXdI2UGq/NsKxBE+Wb3hRF6wTzBoJ4/yEginfIPZQ==",
       "dependencies": [
         "entities",
         "fast-xml-parser"
@@ -98,7 +98,7 @@
       "jsr:@std/dotenv@~0.225.5",
       "jsr:@std/http@^1.0.21",
       "npm:@thednp/domparser@~0.1.6",
-      "npm:feedsmith@^2.3.0"
+      "npm:feedsmith@^2.4.0"
     ]
   }
 }
