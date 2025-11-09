@@ -3,7 +3,9 @@ import * as caching from './../util/caching.js';
 import { shortDateTime } from '../static/datetime.js';
 
 const sourceFeed1 = 'https://www.dpreview.com/feeds/forums/1070'; // EOS R
+// const sourceFeed1 = 'https://www.dpreview.com/forums/forums/canon-eos-r-talk.1070/index.rss?order=post_date'; // Future EOS R - NOT YET FOUND!?
 const sourceFeed2 = 'https://www.dpreview.com/feeds/forums/1010'; // PowerShot
+// const sourceFeed2 = 'https://www.dpreview.com/forums/forums/canon-powershot-talk.1010/index.rss?order=post_date'; // PowerShot - NOT YET FOUND!?
 const sourceLabel1 = 'DPRFORUMEOSR';
 const sourceLabel2 = 'DPRFORUMPOWERSHOT';
 const cacheId1 = 'dprforumeosr-cache';

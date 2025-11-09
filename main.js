@@ -7,6 +7,7 @@ import { cineD } from "./canon/cined.js";
 import { isWorld } from './canon/image-sensor-world.js';
 import { p2pSensor } from './canon/p2psensor.js';
 import { dprForumEosR, dprForumPowershot } from './canon/dpreview-forum.js';
+import { dprForumAll } from './canon/dpreview-forum-all.js';
 import { opticalLimits } from './canon/opticallimits.js';
 import { shortDateTime } from './static/datetime.js';
 import { nikkeiAsia } from "./canon/asia-nikkei.js";
@@ -34,6 +35,7 @@ const iswPathPattern = new URLPattern({ pathname: "/canon/iswfeed.:type(json|rss
 const p2psensorPathPattern = new URLPattern({ pathname: "/canon/p2psensorfeed.:type(json|rss)" });
 const dprforumeosrPathPattern = new URLPattern({ pathname: "/canon/dprfeosrfeed.:type(json|rss)" });
 const dprforumpowershotPathPattern = new URLPattern({ pathname: "/canon/dprfpowershotfeed.:type(json|rss)" });
+const dprforumallPathPattern = new URLPattern({ pathname: "/canon/dprfallfeed.:type(json|rss)" });
 const opticallimitsPathPattern = new URLPattern({ pathname: "/canon/optlimitsfeed.:type(json|rss)" });
 const nikkeiPathPattern = new URLPattern({ pathname: "/canon/nikkeifeed.:type(json|rss)" });
 const eosmagPathPattern = new URLPattern({ pathname: "/canon/eosmagfeed.:type(json|rss)" });
@@ -184,6 +186,15 @@ async function handler(req, info) {
             console.log(` 🤖 ${feedType.toUpperCase()} feed request for DPRFORUMPOWERSHOT by: ${req.headers?.get('User-Agent') ?? ''}`);
             const result = await dprForumPowershot(feedType, req.headers, info, isLocalhost);
             console.log(` 🤖 Complete ${feedType.toUpperCase()} feed created for DPRFORUMPOWERSHOT`);
+            return new Response(result.body, { headers: responseHeaders, ...result.options });
+        }
+
+        /* Feed: NEW DPReview Forums ALL */
+        feedType = dprforumallPathPattern.exec(urlObj)?.pathname?.groups?.type;
+        if (feedType) { // if (dprforumallPathPattern.test(urlObj)) ...
+            console.log(` 🤖 ${feedType.toUpperCase()} feed request for DPRFORUMALL by: ${req.headers?.get('User-Agent') ?? ''}`);
+            const result = await dprForumAll(feedType, req.headers, info, isLocalhost);
+            console.log(` 🤖 Complete ${feedType.toUpperCase()} feed created for DPRFORUMALL`);
             return new Response(result.body, { headers: responseHeaders, ...result.options });
         }
 
