@@ -8,7 +8,7 @@ const sourceFeed = 'https://www.dpreview.com/forums/forums/-/index.rss?order=pos
 const sourceLabel = 'DPRFORUMALL';
 const cacheId = 'dprforumall-cache';
 const cacheMinutes = 60;
-const feedLength = 14;
+const feedLength = 12;
 
 
 /**
