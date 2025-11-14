@@ -7,8 +7,8 @@ import {shortDateTime} from "../static/datetime.js";
 const sourceFeed = 'https://www.dpreview.com/forums/forums/-/index.rss?order=post_date';
 const sourceLabel = 'DPRFORUMALL';
 const cacheId = 'dprforumall-cache';
-const cacheMinutes = 60;
-const feedLength = 12;
+const cacheMinutes = 180; // 60
+const feedLength = 8; // 12
 
 
 /**
