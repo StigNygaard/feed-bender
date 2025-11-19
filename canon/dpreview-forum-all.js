@@ -26,16 +26,26 @@ function filteredItemList(items, maxLength = feedLength) {
 }
 
 /**
- * Removes "read more" links
+ * Tweak items...
  * @param items {Object[]}
  * @returns {Object[]} */
 function tweakItems(items) {
     for (const item of items) {
         if (item.content?.encoded) {
+            // Removes "read more" links...
             item.content.encoded = item.content.encoded.replace(
                 /<a\s+href="https:\/\/www\.dpreview\.com\/forums\/threads\/[a-zA-Z0-9./_-]+"\s+class="link\s+link--internal">Read\s+more<\/a><\/div>$/,
                 '</div>'
             );
+            // Extract plain text (html stripped) and possible image link from content.encoded...
+            const { textContent, imageSrc } = feeding.extract(`<html>${item.content.encoded}</html>`);
+            if (textContent?.length) {
+                item.description = textContent.substring(0, 500);
+                delete item.content;
+            }
+            if (imageSrc && !item._image) {
+                item._image = imageSrc;
+            }
         }
     }
     return items;
