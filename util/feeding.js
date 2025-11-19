@@ -28,17 +28,10 @@ export function isRFC2822DateString(str) {
     return /^(?:(Sun|Mon|Tue|Wed|Thu|Fri|Sat),\s+)?(0[1-9]|[1-2]?[0-9]|3[01])\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(19[0-9]{2}|[2-9][0-9]{3})\s+(2[0-3]|[0-1][0-9]):([0-5][0-9])(?::(60|[0-5][0-9]))?\s+([-+][0-9]{2}[0-5][0-9]|(?:UT|GMT|(?:E|C|M|P)(?:ST|DT)|[A-IK-Z]))(\s+|\(([^()]+|\\\(|\\\))*\))*$/.test(str);
 }
 
-/**
- * Returns a string with the HTML tags stripped from it. Content in the htmlStr parameter needs to be within <html> tags (?!)
- * @param htmlStr {string}
- * @returns {string}
- */
-export function stripHtml(htmlStr) {
-    const doc = parser.parseFromString(htmlStr, 'text/html')?.root; // TODO: can throw error!
 
-    const retVal = doc?.querySelector('html')?.textContent ?? ''; // TODO fail if 'html' tags is not found?
+function extractTextContent(root) {
+    const retVal = root?.querySelector('html')?.textContent ?? ''; // TODO fail if 'html' tags is not found?
     // let retVal = doc?.body?.textContent ?? ''; // Wish I could do something like this instead?!
-
     // Far from W3C/browser's .textContent property, but somehow useful with following hack applied...
     return retVal.trim().replaceAll(/(\S)\n/gu, '$1 \n')
         .replaceAll(/([^\n])\n([^\n])/gu, '$1$2') // If it is a *single* newline, then remove it!
@@ -46,16 +39,7 @@ export function stripHtml(htmlStr) {
         .replaceAll(/\s+\n/gu, '\n');
 }
 
-/**
- * Returns the src attribute of the first "relevant" image found in htmlStr.
- * @param htmlStr {string}
- * @param [imgSelector='img'] {string}
- * @param [srcRegex] {RegExp}
- * @returns {?string}
- */
-export function findImageSrc(htmlStr, imgSelector= 'img', srcRegex) {
-    // const { components, tags, root } = parser.parseFromString(content, 'text/html');
-    const root =  parser.parseFromString(htmlStr, 'text/html')?.root; // TODO: can throw error!
+function extractImageSrc(root, imgSelector= 'img', srcRegex) {
     if (!root) return null;
     if (srcRegex) {
         const imgs = root.querySelectorAll(imgSelector);
@@ -70,6 +54,34 @@ export function findImageSrc(htmlStr, imgSelector= 'img', srcRegex) {
         const img = root.querySelector(imgSelector);
         return img?.getAttribute('src'); // or srcset, currentSrc ?
     }
+}
+
+export function extract(htmlStr, imgSelector= 'img', srcRegex) {
+    const root = parser.parseFromString(htmlStr, 'text/html')?.root; // TODO: can throw error!
+    return { textContent: extractTextContent(root), imageSrc: extractImageSrc(root, imgSelector, srcRegex) };
+}
+
+/**
+ * Returns a string with the HTML tags stripped from it. Content in the htmlStr parameter needs to be within <html> tags (?!)
+ * @param htmlStr {string}
+ * @returns {string}
+ */
+export function stripHtml(htmlStr) {
+    const doc = parser.parseFromString(htmlStr, 'text/html')?.root; // TODO: can throw error!
+    return extractTextContent(doc);
+}
+
+/**
+ * Returns the src attribute of the first "relevant" image found in htmlStr.
+ * @param htmlStr {string}
+ * @param [imgSelector='img'] {string}
+ * @param [srcRegex] {RegExp}
+ * @returns {?string}
+ */
+export function findImageSrc(htmlStr, imgSelector= 'img', srcRegex) {
+    // const { components, tags, root } = parser.parseFromString(content, 'text/html');
+    const root =  parser.parseFromString(htmlStr, 'text/html')?.root; // TODO: can throw error!
+    return extractImageSrc(root, imgSelector, srcRegex);
 }
 
 /**
