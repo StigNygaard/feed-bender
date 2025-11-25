@@ -40,7 +40,7 @@ export function getTimezoneDisplay(dt = new Date(), timezoneFormat = 'short') {
         const trimmed = full.substring(0, shortIndex) + full.substring(shortIndex + short.length);
         // by this time `trimmed` should be the timezone's name with some punctuation -
         // trim it from both sides
-        return trimmed.replace(/^[\s,.\-:;]+|[\s,.\-:;]+$/g, '');
+        return trimmed.replace(/^[\s,.\-:;]+|[\s,.\-:;]+$/u, '');
     } else {
         // Fallback to offset in ISO format
         return getTimezoneOffset(dt)

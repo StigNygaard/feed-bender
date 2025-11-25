@@ -10,7 +10,7 @@ const sourceLabel1 = 'DPRFORUMEOSR';
 const sourceLabel2 = 'DPRFORUMPOWERSHOT';
 const cacheId1 = 'dprforumeosr-cache';
 const cacheId2 = 'dprforumpowershot-cache';
-const cacheMinutes = 60; // 1 hour
+const cacheMinutes = 720; // 12 hours (semi-disabled for know)
 const feedLength = 12;
 
 

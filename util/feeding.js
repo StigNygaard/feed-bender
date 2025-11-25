@@ -108,7 +108,7 @@ export function tryJSONParse(str) {
     let parsed = null;
     try {
         parsed = JSON.parse(str);
-    } catch (_ignore) {
+    } catch (error_) {
         return {value: str, valid: false};
     }
     return {value: parsed, valid: true};
@@ -118,7 +118,7 @@ export function tryJSONStringify(o) {
     let parsed = null;
     try {
         parsed = JSON.stringify(o);
-    } catch (_ignore) {
+    } catch (error_) {
         return {value: o, valid: false};
     }
     return {value: parsed, valid: true};
@@ -190,7 +190,7 @@ export async function getParsedSourceItems(req, timeout = 15000) {
 }
 
 /**
- * Returns a "tool" that can help creating a JSONFeed or RSS feed
+ * Returns a "tool" to create a new feed (RSS or JSONFeed) based on the provided parameters.
  * @param feedType {'json'|'rss'}
  * @param feedTitle {string}
  * @param feedDescription {string}
@@ -200,7 +200,7 @@ export async function getParsedSourceItems(req, timeout = 15000) {
  * @param logoUrl {string}
  * @param updatePeriod {'hourly'|'daily'|'weekly'|'monthly'|'yearly'} - update period
  * @param updateFrequency {number} - number to set the update frequency relative to the update period.
- * @returns {{title, description, home_page_url, language: string, feed_url, authors: [{name, url}], items: *[]}|{title, description, link, atom: {links: [{href, rel: string, type: string}]}, language: string, generator: string, items: *[]}|string|{readonly contentType: string, readonly template: {title: *, description: *, home_page_url: *, language: string, feed_url: *, authors: [{name: *, url: *}], items: []}|{title: *, description: *, link: *, atom: {links: [{href: *, rel: string, type: string}]}, language: string, generator: string, items: []}, createItem: {(*): {id: (*|string), title: string, content_html: string, author: {name: (*|string)}, authors: [{name: (*|string)}], url: string, date_published: Date}, (*): {guid: {value: (*|string), isPermaLink: boolean}, title: string, link: string, description: string, pubDate: *, dc: {creator: (*|string)}}}, createResponseBody: {(*): string, (*): *}}}
+ * @returns {{title, description, home_page_url, language: string, feed_url, authors: [{name, url}], items: *[]}|{title, description, link, atom: {links: [{href, rel: string, type: string}]}, language: string, generator: string, items: *[]}|string|{readonly contentType: string, readonly template: {title: *, description: *, home_page_url: *, language: string, feed_url: *, authors: [{name: *, url: *}], items: []}|{title: *, description: *, link: *, atom: {links: [{href: *, rel: string, type: string}]}, language: string, generator: string, items: []}, createItem: {(*): {id: (*|string), title: string, content_html: string, author: {name: (*|string)}, authors: [{name: (*|string)}], url: string, date_published: Date}, (*): {guid: {value: (*|string), isPermaLink: boolean}, title: string, link: string, description: string, pubDate: *, dc: {creators: [(*|string)]}}}, createResponseBody: {(*): string, (*): *}}}
  */
 export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl, siteUrl, genericAuthorName, logoUrl, updatePeriod = 'hourly', updateFrequency = 1) {
 
@@ -209,12 +209,12 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
         : 'application/rss+xml; charset=utf-8');
 
     // FAR from perfect, but while waiting for https://github.com/macieklamberski/feedsmith/issues/6 ?
-    const matchEmailRegexp = /(?:^|\s|<|\()([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63})(?:$|\s|>|\))/g;
+    const matchEmailRegexp = /(?:^|\s|<|\()([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63})(?:$|\s|>|\))/gu;
     function authorName(item) {
         // Quick fix to return an item-author *without* an eventual email-address included in value. // TODO
         // Hoping for something better with: https://github.com/macieklamberski/feedsmith/issues/6
-        let name = (item.dc?.creator ?? item.authors?.at(0) ?? genericAuthorName ?? '').replace(matchEmailRegexp, '');
-        name = name.replace(/[><)(\]\[]*/g, '');
+        let name = (item.dc?.creators?.at(0) ?? item.authors?.at(0) ?? genericAuthorName ?? '').replaceAll(matchEmailRegexp, '');
+        name = name.replaceAll(/[><)(\]\[]*/gu, '');
         return name.trim();
     }
 
@@ -236,7 +236,7 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
             url: item.link ?? siteUrl,
             // RFC 2822 Date format (like "Sun, 13 Jul 2025 07:17:55 +0000") is supported as constructor-value, even if it's not part of ECMAScript standard
             // date_published: isRFC2822DateString(item.pubDate ?? '') ? new Date(item.pubDate) : new Date() // TODO this is too late for new Date() - do it on read of feed if missing
-            date_published: !Number.isNaN(publishDate.valueOf()) ? publishDate : item.pubDate
+            date_published: Number.isNaN(publishDate.valueOf()) ? item.pubDate : publishDate
         };
         if (item.enclosures?.length) {
             // newItem.image only used when creating a JSON Feed
@@ -283,7 +283,7 @@ export function getCreateFeedTool(feedType, feedTitle, feedDescription, feedUrl,
             description: item.content?.encoded ?? item.description, // Can be undefined in RSS, if the title is specified
             pubDate: item.pubDate, // RFC 2822 Date format (like "Sun, 13 Jul 2025 07:17:55 +0000") is supported as constructor-value, even if it's not part of ECMAScript standard
             dc: {
-                creator: authorName(item)
+                creators: [authorName(item)]
             }
         };
         if (item.enclosures?.length) {
