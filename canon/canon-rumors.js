@@ -25,8 +25,8 @@ const skipCategories = [
     'third party software',
     'third party lenses',
     'industry news', // (can also be 'featured...')
-    'industry rumors', // (can also be 'featured...')
-    'canon reviews', // what I have seen is not really reviews
+    'industry rumors' // (can also be 'featured...')
+    // 'canon reviews', // what I have seen is not really reviews
     // 'from the vault' // do I want to exclude this?
 ];
 
