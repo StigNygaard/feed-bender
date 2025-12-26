@@ -80,7 +80,15 @@ export function stripHtml(htmlStr) {
  */
 export function findImageSrc(htmlStr, imgSelector= 'img', srcRegex) {
     // const { components, tags, root } = parser.parseFromString(content, 'text/html');
-    const root =  parser.parseFromString(htmlStr, 'text/html')?.root; // TODO: can throw error!
+
+    // console.log(`html to parse (length=${htmlStr.length}) : \n${htmlStr}`);
+    let root;
+    try {
+        root = parser.parseFromString(htmlStr, 'text/html')?.root;
+    } catch (e) {
+        console.error('Error parsing html when trying to extract images', e);
+        return null;
+    }
     return extractImageSrc(root, imgSelector, srcRegex);
 }
 
