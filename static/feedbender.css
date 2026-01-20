@@ -165,6 +165,7 @@ img.colorinline {
     font-size: 80%;
     overflow-x: hidden;
     overflow-y: auto;
+    overscroll-behavior: contain; /* prevent scroll chaining from happening */
     background-image: url("loading.gif"); /* initial load spinner */
     background-position: center;
     background-repeat: no-repeat;
