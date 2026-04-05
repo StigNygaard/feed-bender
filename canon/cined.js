@@ -147,7 +147,7 @@ export async function cineD(feedType, reqHeaders, info, logging = false) {
         feedType,
         'CineD - Canon related post only',
         'This is a filtered version of the official news feed from CineD with only the Canon related posts.',
-        `https://feed-bender.deno.dev/canon/cinedfeed.${feedType}`,
+        `${feeding.DeployedAt}/canon/cinedfeed.${feedType}`,
         'https://cined.com/',
         'CineD',
         'https://www.cined.com/content/themes/cinemad/assets/images/favicons/android-icon-192x192.png',

@@ -98,7 +98,7 @@ export async function isWorld(feedType, reqHeaders, info, logging = false) {
         feedType,
         'Image Sensor World - Canon related post only',
         'This is a filtered version of the official news feed from Image Sensor World with only the Canon related posts.',
-        `https://feed-bender.deno.dev/canon/iswfeed.${feedType}`,
+        `${feeding.DeployedAt}/canon/iswfeed.${feedType}`,
         'https://image-sensors-world.blogspot.com/',
         'Image Sensor World',
         'https://www.feed-bender.deno.dev/favicon-32x32.png', // because I don't have anything better to use right now // TODO ?

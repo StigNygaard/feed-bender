@@ -145,7 +145,7 @@ export async function ymCinema(feedType, reqHeaders, info, logging = false) {
         feedType,
         'Y.M Cinema - Canon related post only',
         'This is a filtered version of the official news feed from Y.M Cinema with only the Canon related posts.',
-        `https://feed-bender.deno.dev/canon/ymcfeed.${feedType}`,
+        `${feeding.DeployedAt}/canon/ymcfeed.${feedType}`,
         'https://ymcinema.com/',
         'Y.M Cinema',
         'https://ymcinema.com/wp-content/uploads/2018/07/Company-Logo.png',

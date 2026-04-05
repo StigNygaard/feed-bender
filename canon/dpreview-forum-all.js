@@ -125,7 +125,7 @@ export async function dprForumAll(feedType, reqHeaders, info, logging = false) {
         feedType,
         'DPReview Forums - New threads (topics)',
         'Keeping track of new threads (topics) in DPReview Forums',
-        `https://feed-bender.deno.dev/canon/dprforumallfeed.${feedType}`,
+        `${feeding.DeployedAt}/canon/dprforumallfeed.${feedType}`,
         'https://www.dpreview.com/forums/',
         'DPreview Forums users',
         'https://www.dpreview.com/forums/data/styles/4/styles/dpreview/xenforo/icon.png'

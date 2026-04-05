@@ -112,7 +112,7 @@ export async function eosMagazine(feedType, reqHeaders, info, logging = false) {
         feedType,
         'EOS Magazine News',
         'Posts from the EOS Magazine news.',
-        `https://feed-bender.deno.dev/canon/eosmagfeed.${feedType}`,
+        `${feeding.DeployedAt}/canon/eosmagfeed.${feedType}`,
         'https://eos-magazine-news.blogspot.com/',
         'EOS Magazine',
         'https://www.feed-bender.deno.dev/canon/eosmag1024.png',

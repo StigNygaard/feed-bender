@@ -87,7 +87,7 @@ export async function opticalLimits(feedType, reqHeaders, info, logging = false)
         feedType,
         'OpticalLimits - Canon mount lens reviews',
         'Canon mount lens reviews from OpticalLimits',
-        `https://feed-bender.deno.dev/canon/optlimitsfeed.${feedType}`,
+        `${feeding.DeployedAt}/canon/optlimitsfeed.${feedType}`,
         'https://opticallimits.com/',
         'OpticalLimits',
         'https://www.feed-bender.deno.dev/favicon-32x32.png', // TODO ? https://opticallimits.com/wp-content/uploads/2024/06/logo_sx.png - https://opticallimits.com/favicon.ico

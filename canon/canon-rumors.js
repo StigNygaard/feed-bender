@@ -20,6 +20,7 @@ const matchEfRegex = feeding.wordMatchRegex('ef');
 const skipCategories = [
     'deal zone',
     'dealzone',
+    'featured deal',
     'buyers guide',
     'smart picks',
     'third party software',
@@ -143,7 +144,7 @@ export async function canonRumors(feedType, reqHeaders, info, logging = false) {
         feedType,
         'Canon Rumors - Essential posts only',
         'This is a filtered version of the official news feed from Canon Rumors. Posts in some categories are omitted',
-        `https://feed-bender.deno.dev/canon/crfeed.${feedType}`,
+        `${feeding.DeployedAt}/canon/crfeed.${feedType}`,
         'https://www.canonrumors.com/',
         'Canon Rumors',
         'https://www.canonrumors.com/wp-content/uploads/2022/05/logo-alt.png'

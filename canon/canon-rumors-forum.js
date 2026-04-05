@@ -129,7 +129,7 @@ export async function canonRumorsForum(feedType, reqHeaders, info, logging = fal
         feedType,
         'Canon Rumors Forum - New threads (topics)',
         'Keeping track of new threads (topics) in Canon Rumors Forum, but trying to ignore threads created as comment-section for a news-post on the main-site',
-        `https://feed-bender.deno.dev/canon/crforumfeed.${feedType}`,
+        `${feeding.DeployedAt}/canon/crforumfeed.${feedType}`,
         'https://www.canonrumors.com/forum/',
         'Canon Rumors Forum users',
         'https://www.canonrumors.com/wp-content/uploads/2022/05/logo-alt.png'

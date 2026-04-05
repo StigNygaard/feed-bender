@@ -124,7 +124,7 @@ export async function nikkeiAsia(feedType, reqHeaders, info, logging = false) {
         feedType,
         'Nikkei Asia - Canon related post only',
         'This is a filtered version of the official news feed from Nikkei Asia with only the Canon related posts.',
-        `https://feed-bender.deno.dev/canon/nikkeifeed.${feedType}`,
+        `${feeding.DeployedAt}/canon/nikkeifeed.${feedType}`,
         'https://asia.nikkei.com/',
         'Nikkei',
         'https://asia.nikkei.com/images/frontend/favicons/288x288.png',

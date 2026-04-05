@@ -98,7 +98,7 @@ export async function p2pSensor(feedType, reqHeaders, info, logging = false) {
         feedType,
         'Photons to Photos (Sensor updates) - Canon related post only',
         'This is a filtered version of the official news feed from Photons to Photos with only the Canon related posts.',
-        `https://feed-bender.deno.dev/canon/p2psensorfeed.${feedType}`,
+        `${feeding.DeployedAt}/canon/p2psensorfeed.${feedType}`,
         'https://www.photonstophotos.net/',
         'Photons to Photos',
         'https://www.feed-bender.deno.dev/favicon-32x32.png', // because I don't have anything better to use right now // TODO ?

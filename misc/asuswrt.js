@@ -110,7 +110,7 @@ export async function asuswrtForum(feedType, reqHeaders, info, logging = false) 
         feedType,
         'ASUS WRT - New RT-AX88U or RT-BE88U firmware threads',
         'Keeping track of threads/topics about new firmwares for RT-AX88U or RT-BE88U in the "ASUSWRT - Official" forum',
-        `https://feed-bender.deno.dev/misc/asuswrtfeed.${feedType}`,
+        `${feeding.DeployedAt}/misc/asuswrtfeed.${feedType}`,
         'https://www.snbforums.com/forums/asuswrt-official.51/',
         'ASUS WRT Forum users',
         'https://www.snbforums.com/styles/snb_new_round.jpg',

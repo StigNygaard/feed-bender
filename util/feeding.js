@@ -3,6 +3,7 @@ import { DomParser } from '@thednp/domparser';
 
 const corsAllowHostnames = Deno.env.get('feedbender_cors_allow_hostnames')?.toLowerCase()?.split(/\s*(?:[,;]|$)\s*/) ?? [];
 const parser = DomParser();
+export const DeployedAt = 'https://feed-bender.deno.dev'; // TODO Or via env?
 export const fetcherUserAgent = Deno.env.get('feedbender_fetcher_useragent');
 const feedFetcherHeaders = new Headers({});
 if (fetcherUserAgent) {

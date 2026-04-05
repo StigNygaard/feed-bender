@@ -117,7 +117,7 @@ export async function sigmaUK(feedType, reqHeaders, info, logging = false) {
         feedType,
         'Sigma UK - Canon related post only',
         'This is a filtered version of the official news feed from Sigma UK with only the Canon related posts.',
-        `https://feed-bender.deno.dev/canon/sigmaukfeed.${feedType}`,
+        `${feeding.DeployedAt}/canon/sigmaukfeed.${feedType}`,
         'https://sigmauk.com/category/discover/news',
         'Sigma UK',
         'https://sigmauk.com/wp-content/uploads/2025/02/SIGMA_Wordmark_Black_RGB.svg',
