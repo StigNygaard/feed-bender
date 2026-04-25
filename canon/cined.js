@@ -11,6 +11,8 @@ const feedLength = 12;
 const matchCanonRegex = feeding.wordMatchRegex('canon');
 const matchEosRegex = feeding.wordMatchRegex('eos');
 const matchRfRegex = feeding.wordMatchRegex('rf');
+const matchLensRegex = feeding.wordMatchRegex('lens');
+const matchMountRegex = feeding.wordMatchRegex('mount');
 
 /**
  * Unwanted categories of posts to be ignored (lowercase)
@@ -49,7 +51,8 @@ function filteredItemList(items, maxLength = feedLength) {
     const filteredList = [];
     for (const item of items) {
         const title = item.title?.toLowerCase() ?? '';
-        const hasCanonTitleReference = matchCanonRegex.test(title) || matchEosRegex.test(title) || matchRfRegex.test(title);
+        const hasCanonTitleReference = matchCanonRegex.test(title) || matchEosRegex.test(title)
+            || matchRfRegex.test(title) && (matchLensRegex.test(title) || matchMountRegex.test(title));
         if (hasCanonTitleReference && !inUnwantedCategory(item)) {
             if (filteredList.length < maxLength) filteredList.push(item);
         }
